@@ -1,0 +1,36 @@
+{
+  "name": "the-last-town",
+  "version": "1.0.0",
+  "description": "a hex field survival game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "babylonjs": "^2.3.0",
+    "express": "^4.13.4",
+    "jquery": "^2.2.1",
+    "knockout": "^3.4.0",
+    "mongodb": "^2.1.7",
+    "mongoose": "^4.4.7",
+    "pathfinding": "git://github.com/schteppe/PathFinding3D.js.git#master",
+    "requirejs": "^2.1.22",
+    "socket.io": "^1.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iiceman40/The-Last-Town.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "socket.io"
+  ],
+  "author": "iice",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iiceman40/The-Last-Town/issues"
+  },
+  "homepage": "https://github.com/iiceman40/The-Last-Town#readme"
+}
