@@ -25,6 +25,7 @@ function start() {
 	var modulesForClient = [
 		'requirejs',
 		'text',
+		'socket.io',
 		'underscore',
 		'jquery',
 		'knockout',

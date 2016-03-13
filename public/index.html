@@ -13,12 +13,33 @@
 <body>
 <div class="container">
 	<h1>The Last Town</h1>
-	<p>First name: <input data-bind="value: firstName"/></p>
-	<p>Last name: <input data-bind="value: lastName"/></p>
-	<p>Full name: <strong data-bind="text: fullName"></strong></p>
+	<div class="row">
+		<div class="col-sm-6">
+			<h3>Login</h3>
+			<form>
+				<p>Username: <input data-bind="value: username" /></p>
+				<p>Password: <input data-bind="value: password" type="password" /></p>
+				<p>Message: <strong data-bind="text: message"></strong></p>
+				<p>Login Status: <strong data-bind="text: status"></strong></p>
 
-	<div data-bind='component: "message-editor"'></div>
-	<div data-bind='component: {name: "message-editor", params: { initialText: "Hello, world!", receiver: fullName }}'></div>
+				<!-- ko if: status() == STATUS_SIGNED_OUT -->
+				<button class="btn btn-primary" data-bind="click: signIn" type="submit">Sign In</button>
+				<button class="btn btn-default" data-bind="click: signUp">Sign Up</button>
+				<!-- /ko -->
+				<!-- ko if: status() == STATUS_SIGNED_IN -->
+				<button class="btn btn-primary" data-bind="click: signOut">Sign Out</button>
+				<!-- /ko -->
+			</form>
+		</div>
+		<div class="col-sm-6">
+			<!-- ko if: status() == STATUS_SIGNED_IN -->
+			<div data-bind='component: {name: "users-list", params: { connectedUsers: connectedUsers }}'></div>
+			<!-- /ko -->
+		</div>
+	</div>
+
+	<!--div data-bind='component: "message-editor"'></div>
+	<div data-bind='component: {name: "message-editor", params: { initialText: "Hello, world!", receiver: fullName }}'></div-->
 </div>
 <!--canvas id="canvas"></canvas-->
 </body>

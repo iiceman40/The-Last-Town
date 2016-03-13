@@ -2,9 +2,15 @@
 
 require.config({
 	baseUrl: "/",
+	shim: {
+		'socketio': {
+			exports: 'io'
+		},
+	},
 	paths: {
 		// VENDOR
-		text: '/modules/text/text',
+		text: 'modules/text/text',
+		'socket.io': 'socket.io/socket.io',
 		underscore: 'modules/underscore/underscore-min',
 		jquery: 'modules/jquery/dist/jquery',
 		knockout: 'modules/knockout/build/output/knockout-latest',
@@ -14,7 +20,8 @@ require.config({
 		// FACTORIES
 		SceneFactory: 'js/factories/SceneFactory',
 		// COMPONENTS
-		MessageEditor: 'js/components/MessageEditorComponent'
+		MessageEditorComponent: 'js/components/MessageEditorComponent',
+		UsersListComponent: 'js/components/UsersListComponent'
 	}
 
 });
