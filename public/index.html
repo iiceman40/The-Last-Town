@@ -4,12 +4,22 @@
 	<meta charset="UTF-8">
 	<title>The Last Town</title>
 	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="modules/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<!-- JS -->
-	<script type="text/javascript" src="/scripts/requirejs/require.js"></script>
+	<script type="text/javascript" src="/modules/requirejs/require.js"></script>
 	<script type="text/javascript" src="js/client.js"></script>
 </head>
 <body>
-	<canvas id="canvas"></canvas>
+<div class="container">
+	<h1>The Last Town</h1>
+	<p>First name: <input data-bind="value: firstName"/></p>
+	<p>Last name: <input data-bind="value: lastName"/></p>
+	<p>Full name: <strong data-bind="text: fullName"></strong></p>
+
+	<div data-bind='component: "message-editor"'></div>
+	<div data-bind='component: {name: "message-editor", params: { initialText: "Hello, world!", receiver: fullName }}'></div>
+</div>
+<!--canvas id="canvas"></canvas-->
 </body>
 </html>

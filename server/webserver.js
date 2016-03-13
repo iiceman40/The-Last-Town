@@ -24,20 +24,22 @@ function start() {
 	// make some modules available for client
 	var modulesForClient = [
 		'requirejs',
+		'text',
 		'underscore',
 		'jquery',
 		'knockout',
-		'babylonjs'
+		'babylonjs',
+		'bootstrap'
 	];
 	for (var i = 0; i < modulesForClient.length; i++) {
-		console.log('node_modules/' + modulesForClient[i], path.resolve('node_modules/' + modulesForClient[i]));
-		app.use('/scripts/' + modulesForClient[i] + '/', express.static(path.resolve('node_modules/' + modulesForClient[i])));
+		//console.log('node_modules/' + modulesForClient[i], path.resolve('node_modules/' + modulesForClient[i]));
+		app.use('/modules/' + modulesForClient[i] + '/', express.static(path.resolve('node_modules/' + modulesForClient[i])));
 	}
 
 	// if path / is called
 	app.get('/', function (req, res) {
 		// deploy index.html
-		console.log('path to index: ', pathToIndex);
+		//console.log('path to index: ', pathToIndex);
 		res.sendfile(pathToIndex);
 	});
 
