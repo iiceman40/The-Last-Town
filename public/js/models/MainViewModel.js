@@ -1,3 +1,6 @@
+'use strict';
+
+// TODO use log in functionality to own component, but use observables from the main view model to keep information available for other components?
 define(['knockout', 'socket.io', 'UsersListComponent'], function(ko, io, UsersListComponent) {
 	var MainViewModel =  function MainViewModel(params) {
 		this.STATUS_SIGNED_OUT = 0;
@@ -8,6 +11,7 @@ define(['knockout', 'socket.io', 'UsersListComponent'], function(ko, io, UsersLi
 
 		// main observables
 		_this.username = ko.observable('');
+		_this.email = ko.observable('');
 		_this.password = ko.observable('');
 		_this.status = ko.observable(_this.STATUS_SIGNED_OUT);
 		_this.message = ko.observable('');
@@ -17,16 +21,17 @@ define(['knockout', 'socket.io', 'UsersListComponent'], function(ko, io, UsersLi
 
 		// methods
 		_this.signIn = function(){
-			_this.socket.emit('signIn', {name: _this.username(), password: _this.password()});
+			_this.socket.emit('signIn', {email: _this.email(), password: _this.password()});
+			return true;
 		};
 
 		_this.signOut = function(){
-			console.log('trigger signing user out');
-			_this.socket.emit('signOut', {});
+			_this.connectedUsers([]);
+			_this.socket.emit('signOut', {email: _this.email()});
 		};
 
 		_this.signUp = function(){
-			_this.socket.emit('signUp', {name: _this.username(), password: _this.password()});
+			_this.socket.emit('signUp', {email: _this.email(), password: _this.password()});
 		};
 
 		// events
@@ -61,6 +66,7 @@ define(['knockout', 'socket.io', 'UsersListComponent'], function(ko, io, UsersLi
 		// register components
 		ko.components.register('users-list', UsersListComponent);
 		//ko.components.register('message-editor', MessageEditor);
+
 	};
 
 	// TODO use prototype - test with multiple client connections

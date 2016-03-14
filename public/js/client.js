@@ -5,7 +5,7 @@ require.config({
 	shim: {
 		'socketio': {
 			exports: 'io'
-		},
+		}
 	},
 	paths: {
 		// VENDOR
@@ -31,6 +31,7 @@ require(['knockout', 'MainViewModel'], function(ko, MainViewModel) {
 	ko.applyBindings(new MainViewModel());
 });
 
+// TODO implement rendering
 //require(['SceneFactory'], function(SceneFactory) {
 	//console.log(SceneFactory);
 	//var sceneFactory = SceneFactory.getInstance();

@@ -26,7 +26,7 @@ io.on('connection', function (socket) {
 	});
 
 	socket.on('signOut', function(data){
-		userManagement.signUserOut(socket);
+		userManagement.signUserOut(socket, data);
 	});
 
 	socket.on('disconnect', function(){

@@ -8,12 +8,12 @@ var ClientNotificationService = function(io){
 	return this;
 };
 
-ClientNotificationService.prototype.emit = function(event, data, to){
+ClientNotificationService.prototype.emit = function(event, data, targetSocketId){
 	if(this.logAllEvents) {
-		console.log('EMIT', event, data, to);
+		console.log('EMIT', event, data, targetSocketId);
 	}
-	if(to) {
-		this.io.to(to).emit(event, data);
+	if(targetSocketId) {
+		this.io.to(targetSocketId).emit(event, data);
 	} else {
 		this.io.emit(event, data);
 	}
