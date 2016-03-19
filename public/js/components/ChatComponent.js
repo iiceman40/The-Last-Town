@@ -1,19 +1,5 @@
-define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'underscore', 'moment'],
-	function (ko, template, UserViewModel, _, moment) {
-
-		// TODO move to own file
-	var MessageViewModel = function(data){
-		var _this = this;
-
-		this.sender = ko.observable(data.sender);
-		this.recepient = ko.observable(data.recepient);
-		this.text = ko.observable(data.text || '');
-		this.date = ko.observable(moment.isMoment(data.date) ? data.date : moment(data.date));
-
-		this.formattedDate = ko.computed(function(){
-			return _this.date() ? _this.date().format('l') : '';
-		}, this);
-	};
+define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewModel', 'underscore', 'moment'],
+	function (ko, template, UserViewModel, MessageViewModel, _, moment) {
 
 	var ChatViewModel = function (params) {
 		if(!params) params = {};
