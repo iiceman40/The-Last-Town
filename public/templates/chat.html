@@ -1,0 +1,18 @@
+<h3>Chat</h3>
+
+<div class="well well-sm chat-messages" id="chat-messages" data-bind="foreach: messages">
+	<div>
+		<span class="semi-transparent" data-bind="text: formattedDate"></span>
+		<span class="semi-transparent" data-bind="text: sender"></span>:
+		<span data-bind="text: text"></span>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-8" data-bind="">
+		<textarea class="form-control input-sm" data-bind="textInput : newMessage().text, event: {keypress: onEnter}"></textarea>
+	</div>
+	<div class="col-sm-4">
+		<button class="btn btn-default btn-block" data-bind="click: onSubmit">Submit</button>
+	</div>
+</div>

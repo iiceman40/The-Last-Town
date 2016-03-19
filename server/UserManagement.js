@@ -5,36 +5,39 @@ var instance = null;
 var UserManagement = function (io, UserModel) {
 	var _this = this;
 
-	_this.comService = require('../server/ClientNotificationService.js').getInstance(io);
+	_this.comService = require('../server/CommunicationService').getInstance(io);
 	_this.UserModel = UserModel;
 	_this.clients = io.sockets.sockets;
 
-	// handle incoming events
-	io.on('connection', function (socket) {
-		console.log('connection established');
+	return _this;
+};
 
-		socket.on('signUp', function(data){
-			_this.signUserUp(socket, data);
-		});
+/**
+ * handles all UserManagement related incoming requests
+ * @param socket
+ */
+UserManagement.prototype.handleIncomingEvents = function(socket){
+	var _this = this;
 
-		socket.on('signIn', function(data){
-			_this.signUserIn(socket, data);
-		});
-
-		socket.on('signOut', function(data){
-			_this.signUserOut(socket, data);
-		});
-
-		socket.on('updateData', function(data){
-			_this.updateData(socket, data);
-		});
-
-		socket.on('disconnect', function(){
-			_this.signUserOut(socket);
-		});
+	socket.on('signUp', function(data){
+		_this.signUserUp(socket, data);
 	});
 
-	return _this;
+	socket.on('signIn', function(data){
+		_this.signUserIn(socket, data);
+	});
+
+	socket.on('signOut', function(data){
+		_this.signUserOut(socket, data);
+	});
+
+	socket.on('updateData', function(data){
+		_this.updateData(socket, data);
+	});
+
+	socket.on('disconnect', function(){
+		_this.signUserOut(socket);
+	});
 };
 
 /**
@@ -105,7 +108,7 @@ UserManagement.prototype.signUserIn = function (socket, data) {
 					socket.user = user;
 					// send updated data to logged in user
 					var connectedUsersData = _this.getConnectedUsersData();
-					_this.comService.emit('signedIn', {
+					_this.comService.emit(socket, 'signedIn', {
 						success: true,
 						message: 'signed in successfully',
 						messageType: 'success',
@@ -113,13 +116,13 @@ UserManagement.prototype.signUserIn = function (socket, data) {
 						connectedUsers: connectedUsersData
 					}, socket.id);
 					// send updated user list to all users
-					_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+					_this.comService.emit(socket, 'updateConnectedUsers', {connectedUsers: connectedUsersData});
 				} else {
-					_this.comService.emit('info', {message: 'password incorrect', messageType: 'warning'}, socket.id);
+					_this.comService.emit(socket, 'info', {message: 'password incorrect', messageType: 'warning'}, socket.id);
 				}
 			});
 		} else {
-			_this.comService.emit('info', {message: 'user not found', messageType: 'warning'}, socket.id);
+			_this.comService.emit(socket, 'info', {message: 'user not found', messageType: 'warning'}, socket.id);
 		}
 	});
 };
@@ -134,8 +137,8 @@ UserManagement.prototype.signUserOut = function (socket, data) {
 	if(socket.hasOwnProperty('user')) {
 		delete socket.user; // delete reference to user account
 		var connectedUsersData = _this.getConnectedUsersData();
-		_this.comService.emit('signedOut', {message: 'signed out', messageType: 'info'}, socket.id);
-		_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+		_this.comService.emit(socket, 'signedOut', {message: 'signed out', messageType: 'info'}, socket.id);
+		_this.comService.emit(socket, 'updateConnectedUsers', {connectedUsers: connectedUsersData});
 	}
 };
 
@@ -156,15 +159,15 @@ UserManagement.prototype.signUserUp = function (socket, data) {
 		user.save(function (err, user) {
 			if (err) {
 				if (err.code == 11000) {
-					_this.comService.emit('info', {message: 'username already exists!', messageType: 'warning'}, socket.id);
+					_this.comService.emit(socket, 'info', {message: 'username already exists!', messageType: 'warning'}, socket.id);
 				}
 				return console.error(err);
 			}
-			_this.comService.emit('info', {message: 'user successfully saved', messageType: 'success'}, socket.id);
+			_this.comService.emit(socket, 'info', {message: 'user successfully saved', messageType: 'success'}, socket.id);
 			_this.signUserIn(socket, data);
 		});
 	} else {
-		_this.comService.emit('info', {message: 'incomplete user data', messageType: 'warning'}, socket.id);
+		_this.comService.emit(socket, 'info', {message: 'incomplete user data', messageType: 'warning'}, socket.id);
 	}
 };
 
@@ -181,9 +184,9 @@ UserManagement.prototype.updateData = function (socket, data) {
 		socket.user.password = data.password;
 		socket.user.save(function(err){
 			if(err) return console.error(err);
-			_this.comService.emit('info', {message: 'user data updated', messageType: 'success'}, socket.id);
+			_this.comService.emit(socket, 'info', {message: 'user data updated', messageType: 'success'}, socket.id);
 			var connectedUsersData = _this.getConnectedUsersData();
-			_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+			_this.comService.emit(socket, 'updateConnectedUsers', {connectedUsers: connectedUsersData});
 		});
 	} else {
 		console.log('user data update failed - no such user signed in');

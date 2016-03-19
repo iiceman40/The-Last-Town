@@ -14,5 +14,10 @@ define(['knockout'], function(ko) {
 		this._id = ko.observable('');
 		this.connectionStatus = ko.observable(this.CONNECTION_STATUS_DISCONNECTED);
 		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
+
+		// computed observable
+		this.isOnline = ko.computed(function(){
+			return this.connectionStatus() && this.loginStatus();
+		}, this);
 	};
 });

@@ -14,6 +14,7 @@
     "express": "^4.13.4",
     "jquery": "^2.2.1",
     "knockout": "^3.4.0",
+    "moment": "^2.12.0",
     "mongodb": "^2.1.7",
     "mongoose": "^4.4.7",
     "pathfinding": "git://github.com/schteppe/PathFinding3D.js.git#master",

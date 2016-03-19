@@ -17,21 +17,14 @@
 		<div class="col-sm-4">
 			<div data-bind='component: {name: "login", params: { socket: socket, user: user, connectedUsers: connectedUsers }}'></div>
 		</div>
-		<div class="col-sm-4">
-			<!-- ko if:
-			user().connectionStatus() == user().CONNECTION_STATUS_CONNECTED &&
-			user().loginStatus() == user().LOGIN_STATUS_LOGGED_IN
-			-->
+		<div class="col-sm-4" data-bind="visible: user().isOnline">
 			<div data-bind='component: {name: "users-list", params: { connectedUsers: connectedUsers }}'></div>
-			<!-- /ko -->
 		</div>
-		<div class="col-sm-4">
-
+		<div class="col-sm-4" data-bind="visible: user().isOnline">
+			<div data-bind='component: {name: "chat", params: { socket: socket, user: user, connectedUsers: connectedUsers }}'></div>
 		</div>
 	</div>
 
-	<!--div data-bind='component: "message-editor"'></div>
-	<div data-bind='component: {name: "message-editor", params: { initialText: "Hello, world!", receiver: fullName }}'></div-->
 </div>
 <!--canvas id="canvas"></canvas-->
 </body>

@@ -17,3 +17,12 @@ canvas {
 .login-message-icon {
 	margin-right: 5px;
 }
+
+.chat-messages {
+	height: 300px;
+	overflow-y: scroll;
+}
+
+.semi-transparent {
+	opacity: 0.5;
+}

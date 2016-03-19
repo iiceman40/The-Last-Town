@@ -16,5 +16,13 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 
 	var userManagement = require('./server/UserManagement.js').getInstance(io, models.User);
+	var chat = require('./server/Chat.js').getInstance(io, models.User);
+
+	// handle incoming events
+	io.on('connection', function (socket) {
+		console.log('connection established');
+		userManagement.handleIncomingEvents(socket);
+		chat.handleIncomingEvents(socket);
+	});
 
 });

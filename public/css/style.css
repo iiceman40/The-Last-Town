@@ -22,3 +22,14 @@ canvas {
 .login-message-icon {
   margin-right: 5px;
 }
+
+/* line 21, ../sass/style.scss */
+.chat-messages {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+/* line 26, ../sass/style.scss */
+.semi-transparent {
+  opacity: 0.5;
+}

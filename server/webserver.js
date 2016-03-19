@@ -26,6 +26,7 @@ function start() {
 		'text',
 		'socket.io',
 		'underscore',
+		'moment',
 		'jquery',
 		'knockout',
 		'babylonjs',

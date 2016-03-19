@@ -1,7 +1,14 @@
 'use strict';
 
-define(['knockout', 'socket.io', 'UserViewModel', 'UsersListComponent', 'LoginComponent'],
-function(ko, io, UserViewModel, UsersListComponent, LoginComponent) {
+define([
+	'knockout',
+	'socket.io',
+	'UserViewModel',
+	'UsersListComponent',
+	'LoginComponent',
+	'ChatComponent'
+],
+function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponent) {
 
 	return function MainViewModel(params) {
 		var _this = this;
@@ -18,6 +25,6 @@ function(ko, io, UserViewModel, UsersListComponent, LoginComponent) {
 		// register components
 		ko.components.register('login', LoginComponent);
 		ko.components.register('users-list', UsersListComponent);
-		// TODO chat component
+		ko.components.register('chat', ChatComponent);
 	};
 });

@@ -9,21 +9,23 @@ require.config({
 	},
 	paths: {
 		// VENDOR
-		text: 'modules/text/text',
+		'text': 'modules/text/text',
 		'socket.io': 'socket.io/socket.io',
-		underscore: 'modules/underscore/underscore-min',
-		jquery: 'modules/jquery/dist/jquery',
-		knockout: 'modules/knockout/build/output/knockout-latest',
-		babylonjs: 'modules/babylonjs/babylon.max',
+		'underscore': 'modules/underscore/underscore-min',
+		'moment': 'modules/moment/min/moment.min',
+		'jquery': 'modules/jquery/dist/jquery',
+		'knockout': 'modules/knockout/build/output/knockout-latest',
+		'babylonjs': 'modules/babylonjs/babylon.max',
 		// VIEW MODELS
-		MainViewModel: 'js/models/MainViewModel',
-		UserViewModel: 'js/models/UserViewModel',
+		'MainViewModel': 'js/models/MainViewModel',
+		'UserViewModel': 'js/models/UserViewModel',
 		// FACTORIES
-		SceneFactory: 'js/factories/SceneFactory',
+		'SceneFactory': 'js/factories/SceneFactory',
 		// COMPONENTS
-		MessageEditorComponent: 'js/components/MessageEditorComponent',
-		UsersListComponent: 'js/components/UsersListComponent',
-		LoginComponent: 'js/components/LoginComponent'
+		'MessageEditorComponent': 'js/components/MessageEditorComponent',
+		'UsersListComponent': 'js/components/UsersListComponent',
+		'LoginComponent': 'js/components/LoginComponent',
+		'ChatComponent': 'js/components/ChatComponent'
 	}
 
 });
