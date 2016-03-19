@@ -91,29 +91,33 @@ UserManagement.prototype.signUserIn = function (socket, data) {
 		if (err) return console.error(err);
 		if (user) {
 			// check if the password is correct
-			if (user.password === data.password) {
-				// sign user out if already logged in
-				var oldSocket = _this.getSocketForUser(user);
-				console.log('USER ALREADY CONNECTED', oldSocket);
-				if(oldSocket instanceof Object){
-					_this.signUserOut(oldSocket, {});
+			user.comparePassword(data.password, function(err, isMatch) {
+				if (err) throw err;
+				console.log('password correct: ', isMatch);
+				if (isMatch) {
+					// sign user out if already logged in
+					var oldSocket = _this.getSocketForUser(user);
+					console.log('USER ALREADY CONNECTED', oldSocket);
+					if(oldSocket instanceof Object){
+						_this.signUserOut(oldSocket, {});
+					}
+					// sign user in by adding a reference to his account
+					socket.user = user;
+					// send updated data to logged in user
+					var connectedUsersData = _this.getConnectedUsersData();
+					_this.comService.emit('signedIn', {
+						success: true,
+						message: 'signed in successfully',
+						messageType: 'success',
+						user: user,
+						connectedUsers: connectedUsersData
+					}, socket.id);
+					// send updated user list to all users
+					_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+				} else {
+					_this.comService.emit('info', {message: 'password incorrect', messageType: 'warning'}, socket.id);
 				}
-				// sign user in by adding a reference to his account
-				socket.user = user;
-				// send updated data to logged in user
-				var connectedUsersData = _this.getConnectedUsersData();
-				_this.comService.emit('signedIn', {
-					success: true,
-					message: 'signed in successfully',
-					messageType: 'success',
-					user: user,
-					connectedUsers: connectedUsersData
-				}, socket.id);
-				// send updated user list to all users
-				_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
-			} else {
-				_this.comService.emit('info', {message: 'password incorrect', messageType: 'warning'}, socket.id);
-			}
+			});
 		} else {
 			_this.comService.emit('info', {message: 'user not found', messageType: 'warning'}, socket.id);
 		}
@@ -146,7 +150,7 @@ UserManagement.prototype.signUserUp = function (socket, data) {
 		var user = new _this.UserModel({
 			name: data.name,
 			email: data.email,
-			password: data.password // TODO encrypt password
+			password: data.password
 		});
 
 		user.save(function (err, user) {
