@@ -11,6 +11,7 @@ define(['knockout'], function(ko) {
 		this.name = ko.observable('');
 		this.email = ko.observable('');
 		this.password = ko.observable('');
+		this._id = ko.observable('');
 		this.connectionStatus = ko.observable(this.CONNECTION_STATUS_DISCONNECTED);
 		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
 	};

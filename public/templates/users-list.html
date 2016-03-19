@@ -1,8 +1,10 @@
 <h3>Users List</h3>
 <div data-bind="foreach: connectedUsersArray">
-	<div>
-		<span data-bind="text: name"></span>
-		-
-		<span data-bind="text: email"></span>
+	<div class="panel panel-default">
+		<div class="panel-heading" data-bind="text: name"></div>
+		<div class="panel-body">
+			<div data-bind="text: email"></div>
+			<div data-bind="text: _id"></div>
+		</div>
 	</div>
 </div>

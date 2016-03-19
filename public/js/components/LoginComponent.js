@@ -1,4 +1,4 @@
-define(['knockout', 'text!templates/login.html'],function (ko, template) {
+define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],function (ko, template, UserViewModel, _) {
 
 	var LoginViewModel = function (params) {
 		if(!params) params = {};
@@ -29,6 +29,16 @@ define(['knockout', 'text!templates/login.html'],function (ko, template) {
 
 		_this.signUp = function(){
 			_this.socket.emit('signUp', ko.toJS(_this.user));
+		};
+
+		_this.updateConnectedUsers = function(connectedUsersData){
+			_.each(connectedUsersData, function(userData, index){
+				var userViewModel = _.findWhere(_this.connectedUsers(), {_id: userData._id});
+				if(userViewModel === undefined){
+					_this.connectedUsers.push(new UserViewModel(userData));
+				}
+			});
+			_this.connectedUsers(connectedUsersData);
 		};
 
 		// watch data changes
@@ -64,7 +74,7 @@ define(['knockout', 'text!templates/login.html'],function (ko, template) {
 			_this.notifyServer = false;
 			_this.user().email(data.user.email);
 			_this.notifyServer = true;
-			_this.connectedUsers(data.connectedUsers); // TODO use user view model
+			_this.updateConnectedUsers(data.connectedUsers);
 			_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_IN);
 		});
 
@@ -77,7 +87,7 @@ define(['knockout', 'text!templates/login.html'],function (ko, template) {
 
 		_this.socket.on('updateConnectedUsers', function(data){
 			console.log('updating connected users', data);
-			_this.connectedUsers(data.connectedUsers); // TODO use user view model
+			_this.updateConnectedUsers(data.connectedUsers);
 		});
 
 		_this.socket.on('info', function(data){

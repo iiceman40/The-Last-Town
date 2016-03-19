@@ -51,6 +51,7 @@ UserManagement.prototype.getConnectedUsersData = function(){
 				var userData = {};
 				userData.name = client.user.name;
 				userData.email = client.user.email;
+				userData._id = String(client.user._id);
 				connectedUsersData.push(userData);
 			}
 		}
