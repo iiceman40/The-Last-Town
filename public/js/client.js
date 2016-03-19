@@ -17,11 +17,13 @@ require.config({
 		babylonjs: 'modules/babylonjs/babylon.max',
 		// VIEW MODELS
 		MainViewModel: 'js/models/MainViewModel',
+		UserViewModel: 'js/models/UserViewModel',
 		// FACTORIES
 		SceneFactory: 'js/factories/SceneFactory',
 		// COMPONENTS
 		MessageEditorComponent: 'js/components/MessageEditorComponent',
-		UsersListComponent: 'js/components/UsersListComponent'
+		UsersListComponent: 'js/components/UsersListComponent',
+		LoginComponent: 'js/components/LoginComponent'
 	}
 
 });

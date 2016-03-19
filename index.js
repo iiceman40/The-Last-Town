@@ -3,33 +3,18 @@
 var server = require('./server/webserver').start();
 var io = require('socket.io').listen(server);
 
-var ClientNotificationService = require('./server/ClientNotificationService.js');
-var clientNotificationService = ClientNotificationService.getInstance(io);
+// DATABASE
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/the_last_town');
+var models = {
+	User: require('./server/models/user')
+};
 
-var UserManagement = require('./server/UserManagement.js');
-var userManagement = new UserManagement(clientNotificationService);
+// Connection to DB
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
 
-console.log('node js server running');
+	var userManagement = require('./server/UserManagement.js').getInstance(io, models.User);
 
-// TODO map management
-var maps = [];
-
-io.on('connection', function (socket) {
-	console.log('connection established');
-
-	socket.on('signUp', function(data){
-		userManagement.signUserUp(socket, data);
-	});
-
-	socket.on('signIn', function(data){
-		userManagement.signUserIn(socket, data);
-	});
-
-	socket.on('signOut', function(data){
-		userManagement.signUserOut(socket, data);
-	});
-
-	socket.on('disconnect', function(){
-		userManagement.signUserOut(socket);
-	});
 });

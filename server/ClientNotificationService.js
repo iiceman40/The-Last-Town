@@ -1,30 +1,36 @@
+'use strict';
+
 var instance = null;
 
-var ClientNotificationService = function(io){
+var CommunicationService = function(io){
 	this.io = io;
 	this.logAllEvents = true;
-
 
 	return this;
 };
 
-ClientNotificationService.prototype.emit = function(event, data, targetSocketId){
+CommunicationService.prototype.emit = function(event, data, targetSocketId){
 	if(this.logAllEvents) {
-		console.log('EMIT', event, data, targetSocketId);
+		console.log('LOGGING - EMIT', {
+			event: event,
+			data: data,
+			targetSocketId: targetSocketId
+		});
 	}
 	if(targetSocketId) {
 		this.io.to(targetSocketId).emit(event, data);
 	} else {
 		this.io.emit(event, data);
 	}
-	console.log(this.io.engine.clientsCount);
-	//console.log(this.io.engine.clients);
+	//console.log('clients count: ', this.io.engine.clientsCount);
+	//console.log('all clients: ', this.io.engine.clients);
 };
 
 var getInstance = function(io){
 	if(!instance){
-		instance = new ClientNotificationService(io);
+		instance = new CommunicationService(io);
 	}
 	return instance;
 };
+
 exports.getInstance = getInstance;

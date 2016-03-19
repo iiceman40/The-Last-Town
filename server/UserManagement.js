@@ -1,17 +1,79 @@
 'use strict';
 
-var UserManagement = function(clientNotificationService){
+var instance = null;
+
+var UserManagement = function (io, UserModel) {
 	var _this = this;
 
-	_this.registeredUsers = {};
-	_this.connectedUsers = {};
-	_this.cns = clientNotificationService;
+	_this.comService = require('../server/ClientNotificationService.js').getInstance(io);
+	_this.UserModel = UserModel;
+	_this.clients = io.sockets.sockets;
 
-	// TODO use singleton
-	// TODO code review and comments
-	console.log('DEBUG - init new user management');
+	// handle incoming events
+	io.on('connection', function (socket) {
+		console.log('connection established');
+
+		socket.on('signUp', function(data){
+			_this.signUserUp(socket, data);
+		});
+
+		socket.on('signIn', function(data){
+			_this.signUserIn(socket, data);
+		});
+
+		socket.on('signOut', function(data){
+			_this.signUserOut(socket, data);
+		});
+
+		socket.on('updateData', function(data){
+			_this.updateData(socket, data);
+		});
+
+		socket.on('disconnect', function(){
+			_this.signUserOut(socket);
+		});
+	});
 
 	return _this;
+};
+
+/**
+ * collects and returns data about all connected users
+ * @returns {Array}
+ */
+UserManagement.prototype.getConnectedUsersData = function(){
+	var _this = this;
+	var connectedUsersData = [];
+	for(var clientSocketId in _this.clients){
+		if(_this.clients.hasOwnProperty(clientSocketId)){
+			var client = _this.clients[clientSocketId];
+			if(client.hasOwnProperty('user')) {
+				var userData = {};
+				userData.name = client.user.name;
+				userData.email = client.user.email;
+				connectedUsersData.push(userData);
+			}
+		}
+	}
+	return connectedUsersData;
+};
+
+/**
+ * finds and returns a socket for a given user 
+ * @param user
+ * @returns {*}
+ */
+UserManagement.prototype.getSocketForUser = function(user){
+	var _this = this;
+	for(var clientSocketId in _this.clients) {
+		if (_this.clients.hasOwnProperty(clientSocketId)) {
+			var client = _this.clients[clientSocketId];
+			if(client.hasOwnProperty('user') && String(client.user._id) == String(user._id)) {
+				return client;
+			}
+		}
+	}
+	return null;
 };
 
 /**
@@ -19,36 +81,56 @@ var UserManagement = function(clientNotificationService){
  * @param {{}} socket
  * @param {{}} data
  */
-UserManagement.prototype.signUserIn = function(socket, data){
+UserManagement.prototype.signUserIn = function (socket, data) {
+	console.log('sign in attempt', data);
 	var _this = this;
-	console.log('DEBUG - connected users', this.connectedUsers);
 	// check if a user with that name is registered
-	var user = _this.registeredUsers[data.email];
-	if(user) {
-		// check if the password is correct
-		if (user.password == data.password) {
-			// check if user is already signed in
-			var connectedUser = _this.connectedUsers[socket.id];
-			if(connectedUser) {
-				_this.signUserOut(connectedUser.socketId);
+	var query  = _this.UserModel.where({name: data.name});
+	query.findOne(function (err, user) {
+		if (err) return console.error(err);
+		if (user) {
+			// check if the password is correct
+			if (user.password === data.password) {
+				// sign user out if already logged in
+				var oldSocket = _this.getSocketForUser(user);
+				console.log('USER ALREADY CONNECTED', oldSocket);
+				if(oldSocket instanceof Object){
+					_this.signUserOut(oldSocket, {});
+				}
+				// sign user in by adding a reference to his account
+				socket.user = user;
+				// send updated data to logged in user
+				var connectedUsersData = _this.getConnectedUsersData();
+				_this.comService.emit('signedIn', {
+					success: true,
+					message: 'signed in successfully',
+					messageType: 'success',
+					user: user,
+					connectedUsers: connectedUsersData
+				}, socket.id);
+				// send updated user list to all users
+				_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+			} else {
+				_this.comService.emit('info', {message: 'password incorrect', messageType: 'warning'}, socket.id);
 			}
-			user.socketId = socket.id;
-			_this.connectedUsers[data.email] = user;
-			_this.cns.emit('signedIn', {
-				success: true,
-				message: 'signed in successfully',
-				connectedUsers: _this.connectedUsers
-			}, socket.id);
-			_this.cns.emit('updateConnectedUsers', {connectedUsers: _this.connectedUsers});
 		} else {
-			_this.cns.emit('info',{message: 'password incorrect'}, socket.id);
-			// sign user out if current socket enters wrong password
-			if (user.socketId === socket.id) {
-				_this.signUserOut(socket, user)
-			}
+			_this.comService.emit('info', {message: 'user not found', messageType: 'warning'}, socket.id);
 		}
-	} else {
-		_this.cns.emit('info', {message: 'user not found'}, socket.id);
+	});
+};
+
+/**
+ *
+ * @param socket
+ * @param data
+ */
+UserManagement.prototype.signUserOut = function (socket, data) {
+	var _this = this;
+	if(socket.hasOwnProperty('user')) {
+		delete socket.user; // delete reference to user account
+		var connectedUsersData = _this.getConnectedUsersData();
+		_this.comService.emit('signedOut', {message: 'signed out', messageType: 'info'}, socket.id);
+		_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
 	}
 };
 
@@ -57,44 +139,57 @@ UserManagement.prototype.signUserIn = function(socket, data){
  * @param socket
  * @param data
  */
-UserManagement.prototype.signUserOut = function(socket, data){
+UserManagement.prototype.signUserUp = function (socket, data) {
 	var _this = this;
-	var user = (!data || !data.email) ? data : this.getConnectedUserBySocketId(socket.id);
-	if(!user) return false;
-	delete _this.connectedUsers[user.email];
-	_this.cns.emit('signedOut', {message: 'signed out'}, socket.id);
-	_this.cns.emit('updateConnectedUsers', {connectedUsers: _this.connectedUsers});
-};
+	if (data && data.name && data.password) {
+		var user = new _this.UserModel({
+			name: data.name,
+			email: data.email,
+			password: data.password // TODO encrypt password
+		});
 
-/**
- *
- * @param socket
- * @param data
- */
-UserManagement.prototype.signUserUp = function(socket, data){
-	var _this = this;
-	if(data && data.email && data.password) {
-		var user = _this.registeredUsers[data.email];
-		if (!user) {
-			_this.registeredUsers[data.email] = data;
+		user.save(function (err, user) {
+			if (err) {
+				if (err.code == 11000) {
+					_this.comService.emit('info', {message: 'username already exists!', messageType: 'warning'}, socket.id);
+				}
+				return console.error(err);
+			}
+			_this.comService.emit('info', {message: 'user successfully saved', messageType: 'success'}, socket.id);
 			_this.signUserIn(socket, data);
-		} else {
-			_this.cns.emit('info', {message: 'user name already exists'}, socket.id);
-		}
+		});
 	} else {
-		_this.cns.emit('info', {message: 'incomplete user data'}, socket.id);
+		_this.comService.emit('info', {message: 'incomplete user data', messageType: 'warning'}, socket.id);
 	}
 };
 
-UserManagement.prototype.getConnectedUserBySocketId = function(socketId){
-	for(var email in this.connectedUsers){
-		if (this.connectedUsers.hasOwnProperty(email)) {
-			if(this.connectedUsers[email].socketId == socketId){
-				return this.connectedUsers[email];
-			}
-		}
+/**
+ * 
+ * @param socket
+ * @param data
+ */
+UserManagement.prototype.updateData = function (socket, data) {
+	var _this = this;
+	if(socket.hasOwnProperty('user') && socket.user instanceof _this.UserModel) {
+		socket.user.name = data.name;
+		socket.user.email = data.email;
+		socket.user.password = data.password;
+		socket.user.save(function(err){
+			if(err) return console.error(err);
+			_this.comService.emit('info', {message: 'user data updated', messageType: 'success'}, socket.id);
+			var connectedUsersData = _this.getConnectedUsersData();
+			_this.comService.emit('updateConnectedUsers', {connectedUsers: connectedUsersData});
+		});
+	} else {
+		console.log('user data update failed - no such user signed in');
 	}
-	return null;
 };
 
-module.exports = UserManagement;
+var getInstance = function(io, UserModel){
+	if(!instance){
+		instance = new UserManagement(io, UserModel);
+	}
+	return instance;
+};
+
+exports.getInstance = getInstance;

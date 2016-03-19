@@ -7,3 +7,13 @@ canvas {
 	top: 0;
 	left: 0;
 }
+
+.login-message-text {
+	display: inline-block;
+	&::first-letter {
+		text-transform: capitalize;
+	}
+}
+.login-message-icon {
+	margin-right: 5px;
+}
