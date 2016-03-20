@@ -24,6 +24,15 @@
 			<div data-bind='component: {name: "chat", params: { socket: socket, user: user, connectedUsers: connectedUsers }}'></div>
 		</div>
 	</div>
+	<div class="row" data-bind="visible: user().isOnline">
+		<div class="col-sm-4">
+			<div data-bind='component: {name: "maps", params: { socket: socket, user: user, connectedUsers: connectedUsers }}'></div>
+		</div>
+		<div class="col-sm-4">
+		</div>
+		<div class="col-sm-4">
+		</div>
+	</div>
 
 </div>
 <!--canvas id="canvas"></canvas-->

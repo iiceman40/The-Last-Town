@@ -6,9 +6,10 @@ define([
 	'UserViewModel',
 	'UsersListComponent',
 	'LoginComponent',
-	'ChatComponent'
+	'ChatComponent',
+	'MapsComponent'
 ],
-function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponent) {
+function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponent, MapsComponent) {
 
 	return function MainViewModel(params) {
 		var _this = this;
@@ -26,5 +27,7 @@ function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponen
 		ko.components.register('login', LoginComponent);
 		ko.components.register('users-list', UsersListComponent);
 		ko.components.register('chat', ChatComponent);
+		ko.components.register('maps', MapsComponent);
+		// TODO make separate component for flash messages
 	};
 });

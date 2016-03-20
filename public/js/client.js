@@ -25,7 +25,8 @@ require.config({
 		// COMPONENTS
 		'UsersListComponent':       'js/components/UsersListComponent',
 		'LoginComponent':           'js/components/LoginComponent',
-		'ChatComponent':            'js/components/ChatComponent'
+		'ChatComponent':            'js/components/ChatComponent',
+		'MapsComponent':            'js/components/MapsComponent'
 	}
 
 });

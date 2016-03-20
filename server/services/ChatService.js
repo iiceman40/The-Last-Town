@@ -2,10 +2,10 @@
 
 var instance = null;
 
-var Chat = function (io, UserModel) {
+var ChatService = function (io, UserModel) {
 	var _this = this;
 
-	_this.comService = require('../server/CommunicationService').getInstance(io);
+	_this.comService = require('../services/CommunicationService').getInstance(io);
 	_this.UserModel = UserModel;
 	_this.clients = io.sockets.sockets;
 
@@ -13,10 +13,10 @@ var Chat = function (io, UserModel) {
 };
 
 /**
- * handles all Chat related incoming requests
+ * handles all ChatService related incoming requests
  * @param socket
  */
-Chat.prototype.handleIncomingEvents = function(socket){
+ChatService.prototype.handleIncomingEvents = function(socket){
 	var _this = this;
 
 	socket.on('chatMessageToServer', function(data){
@@ -26,7 +26,7 @@ Chat.prototype.handleIncomingEvents = function(socket){
 
 var getInstance = function(io, UserModel){
 	if(!instance){
-		instance = new Chat(io, UserModel);
+		instance = new ChatService(io, UserModel);
 	}
 	return instance;
 };

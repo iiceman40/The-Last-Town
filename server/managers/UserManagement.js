@@ -5,7 +5,7 @@ var instance = null;
 var UserManagement = function (io, UserModel) {
 	var _this = this;
 
-	_this.comService = require('../server/CommunicationService').getInstance(io);
+	_this.comService = require('../services/CommunicationService').getInstance(io);
 	_this.UserModel = UserModel;
 	_this.clients = io.sockets.sockets;
 
