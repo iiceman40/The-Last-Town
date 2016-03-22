@@ -1,4 +1,5 @@
-define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],function (ko, template, UserViewModel, _) {
+define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessageViewModel'],
+	function (ko, koPostBox, template, FlashMessageViewModel) {
 
 	var LoginViewModel = function (params) {
 		if(!params) params = {};
@@ -10,9 +11,6 @@ define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],
 
 		// observables
 		_this.user = params.user;
-		_this.message = ko.observable('');
-		_this.messageType = ko.observable(this.MESSAGE_TYPE_DEFAULT);
-		_this.connectedUsers = params.connectedUsers;
 
 		// computed observables
 
@@ -23,22 +21,11 @@ define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],
 		};
 
 		_this.signOut = function(){
-			_this.connectedUsers([]);
 			_this.socket.emit('signOut', ko.toJS(_this.user));
 		};
 
 		_this.signUp = function(){
 			_this.socket.emit('signUp', ko.toJS(_this.user));
-		};
-
-		_this.updateConnectedUsers = function(connectedUsersData){
-			_.each(connectedUsersData, function(userData, index){
-				var userViewModel = _.findWhere(_this.connectedUsers(), {_id: userData._id});
-				if(userViewModel === undefined){
-					_this.connectedUsers.push(new UserViewModel(userData));
-				}
-			});
-			_this.connectedUsers(connectedUsersData);
 		};
 
 		// watch data changes
@@ -56,6 +43,7 @@ define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],
 		});
 
 		_this.user().password.subscribe(function(){
+			// TODO better check if data update should be requested to avoid sending update request on login
 			if(_this.notifyServer) {
 				_this.socket.emit('updateData', ko.toJS(_this.user));
 			}
@@ -68,37 +56,26 @@ define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],
 		});
 
 		_this.socket.on('signedIn', function(data){
-			console.log('signed in', data);
-			_this.message(data.message);
-			_this.messageType(data.messageType || _this.MESSAGE_TYPE_DEFAULT);
+			ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
 			_this.notifyServer = false;
 			_this.user().email(data.user.email);
 			_this.notifyServer = true;
-			_this.updateConnectedUsers(data.connectedUsers);
+			//_this.updateConnectedUsers(data.connectedUsers); // FIXME
 			_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_IN);
 		});
 
 		_this.socket.on('signedOut', function(data){
-			console.log('signed out', data);
-			_this.message(data.message);
-			_this.messageType(data.messageType || _this.MESSAGE_TYPE_DEFAULT);
+			ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
 			_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_OUT);
 		});
 
-		_this.socket.on('updateConnectedUsers', function(data){
-			console.log('updating connected users', data);
-			_this.updateConnectedUsers(data.connectedUsers);
-		});
-
 		_this.socket.on('info', function(data){
-			console.log(data.message, data);
-			_this.message(data.message);
-			_this.messageType(data.messageType || _this.MESSAGE_TYPE_DEFAULT);
+			ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
 		});
 
 		_this.socket.on('disconnect', function(){
-			_this.message('client got disconnected');
-			_this.messageType('danger');
+			var message = {text: 'disconnected from server', type: 'danger'};
+			ko.postbox.publish('flashMessages', new FlashMessageViewModel(message));
 			_this.user().connectionStatus(_this.user().CONNECTION_STATUS_DISCONNECTED);
 			_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_OUT);
 		});
@@ -108,9 +85,8 @@ define(['knockout', 'text!templates/login.html', 'UserViewModel', 'underscore'],
 		});
 
 		_this.socket.on('reconnect', function(){
-			console.log('reconnected successfully');
-			_this.message('reconnected');
-			_this.messageType('success');
+			var message = {text: 'reconnected to server', type: 'success'};
+			ko.postbox.publish('flashMessages', new FlashMessageViewModel(message));
 			_this.user().connectionStatus(_this.user().CONNECTION_STATUS_CONNECTED);
 		});
 

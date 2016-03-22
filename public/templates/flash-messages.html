@@ -1,0 +1,14 @@
+<!-- ko foreach: flashMessages -->
+	<!-- ko if: isVisible-->
+		<div class="alert" data-bind="css: 'alert-' + type()">
+			<i class="glyphicon glyphicon-comment flash-message-icon"></i>
+			<span class="flash-message-text" data-bind="text: text"></span>
+			<span class="pull-right">
+				<span class="semi-transparent" data-bind="text: formattedDateTime"></span>
+			<a href="#" data-bind="click: $parent.hideFlashMessage">
+				<i class="glyphicon glyphicon-remove" data-bind="css: 'text-' + type()"></i>
+			</a>
+			</span>
+		</div>
+	<!-- /ko -->
+<!-- /ko -->

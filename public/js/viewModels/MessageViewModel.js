@@ -11,7 +11,11 @@ define(['knockout', 'moment'], function(ko, moment) {
 		this.date = ko.observable(moment.isMoment(data.date) ? data.date : moment(data.date));
 
 		this.formattedDate = ko.computed(function () {
-			return _this.date() ? _this.date().format('l') : '';
+			return _this.date() ? _this.date().format('YYYY-MM-DD') : '';
+		}, this);
+
+		this.formattedTime = ko.computed(function () {
+			return _this.date() ? _this.date().format('HH:mm') : '';
 		}, this);
 	};
 });

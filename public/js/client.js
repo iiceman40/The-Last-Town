@@ -15,18 +15,22 @@ require.config({
 		'moment':                   'modules/moment/min/moment.min',
 		'jquery':                   'modules/jquery/dist/jquery',
 		'knockout':                 'modules/knockout/build/output/knockout-latest',
+		'knockout-postbox':         'modules/knockout-postbox/build/knockout-postbox.min',
 		'babylonjs':                'modules/babylonjs/babylon.max',
 		// VIEW MODELS
 		'MainViewModel':            'js/viewModels/MainViewModel',
 		'UserViewModel':            'js/viewModels/UserViewModel',
 		'MessageViewModel':         'js/viewModels/MessageViewModel',
+		'FlashMessageViewModel':    'js/viewModels/FlashMessageViewModel',
 		// FACTORIES
 		'SceneFactory':             'js/factories/SceneFactory',
 		// COMPONENTS
 		'UsersListComponent':       'js/components/UsersListComponent',
+		'FlashMessagesComponent':   'js/components/FlashMessagesComponent',
 		'LoginComponent':           'js/components/LoginComponent',
 		'ChatComponent':            'js/components/ChatComponent',
-		'MapsComponent':            'js/components/MapsComponent'
+		'MapsComponent':            'js/components/MapsComponent',
+		'Map3dComponent':           'js/components/Map3dComponent'
 	}
 
 });
@@ -36,7 +40,7 @@ require(['knockout', 'MainViewModel'], function(ko, MainViewModel) {
 	ko.applyBindings(new MainViewModel());
 });
 
-// TODO implement rendering
+// TODO implement rendering and add component to display canvas
 //require(['SceneFactory'], function(SceneFactory) {
 	//console.log(SceneFactory);
 	//var sceneFactory = SceneFactory.getInstance();

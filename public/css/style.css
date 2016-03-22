@@ -10,16 +10,16 @@ canvas {
 }
 
 /* line 11, ../sass/style.scss */
-.login-message-text {
+.flash-message-text {
   display: inline-block;
 }
 /* line 13, ../sass/style.scss */
-.login-message-text::first-letter {
+.flash-message-text::first-letter {
   text-transform: capitalize;
 }
 
 /* line 17, ../sass/style.scss */
-.login-message-icon {
+.flash-message-icon {
   margin-right: 5px;
 }
 

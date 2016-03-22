@@ -4,14 +4,15 @@ define([
 	'knockout',
 	'socket.io',
 	'UserViewModel',
+	'FlashMessagesComponent',
 	'UsersListComponent',
 	'LoginComponent',
 	'ChatComponent',
 	'MapsComponent'
 ],
-function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponent, MapsComponent) {
+function(ko, io, UserViewModel, FlashMessagesComponent, UsersListComponent, LoginComponent, ChatComponent, MapsComponent) {
 
-	return function MainViewModel(params) {
+	return function MainViewModel() {
 		var _this = this;
 		_this.socket = io();
 
@@ -24,10 +25,10 @@ function(ko, io, UserViewModel, UsersListComponent, LoginComponent, ChatComponen
 		// methods
 
 		// register components
+		ko.components.register('flash-messages', FlashMessagesComponent);
 		ko.components.register('login', LoginComponent);
 		ko.components.register('users-list', UsersListComponent);
 		ko.components.register('chat', ChatComponent);
 		ko.components.register('maps', MapsComponent);
-		// TODO make separate component for flash messages
 	};
 });

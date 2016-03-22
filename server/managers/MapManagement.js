@@ -9,6 +9,7 @@ var MapManagement = function (io, UserModel) {
 	_this.mapFactory = require('../factories/MapFactory').getInstance();
 	_this.UserModel = UserModel;
 	_this.clients = io.sockets.sockets;
+	_this.maps = [];
 
 	return _this;
 };
@@ -34,8 +35,10 @@ MapManagement.prototype.handleIncomingEvents = function(socket){
 MapManagement.prototype.createNewMap = function(socket, data){
 	var newMapData = this.mapFactory.build();
 	console.log(newMapData);
+
 	// TODO add the user that created the map as a player
 	// TODO save the complete map in the database
+
 	this.comService.emit(socket, 'mapCreated', {message: 'map has been successfully created', messageType: 'success', mapData: newMapData}, 'all');
 	return newMapData;
 };

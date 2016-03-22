@@ -2,7 +2,8 @@
 
 <div class="well well-sm chat-messages" id="chat-messages" data-bind="foreach: messages">
 	<div>
-		<span class="semi-transparent" data-bind="text: formattedDate"></span>
+		<span class="semi-transparent" data-bind="text: formattedTime, attr: {title: formattedDate}"></span>
+		-
 		<span class="semi-transparent" data-bind="text: sender"></span>:
 		<span data-bind="text: text"></span>
 	</div>

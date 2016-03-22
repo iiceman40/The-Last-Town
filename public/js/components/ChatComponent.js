@@ -9,7 +9,6 @@ define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewMod
 
 		// observables
 		_this.user = params.user;
-		_this.connectedUsers = params.connectedUsers;
 		_this.newMessage = ko.observable(new MessageViewModel({}));
 		_this.messages = ko.observableArray([]);
 

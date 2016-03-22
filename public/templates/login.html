@@ -18,15 +18,6 @@
 
 <iframe id="remember" name="remember" class="hidden" src="about:blank"></iframe>
 
-<div class="row " data-bind="if: message">
-	<div class="col-sm-9 col-sm-offset-3">
-		<div class="alert" data-bind="css: 'alert-' + messageType()">
-			<i class="glyphicon glyphicon-comment login-message-icon"></i>
-			<span class="login-message-text" data-bind="text: message"></span>
-		</div>
-	</div>
-</div>
-
 <form target="remember" method="get" action="remember.html" id="login-form" class="form-horizontal">
 	<div class="form-group">
 		<label class="col-sm-3">Username:</label>

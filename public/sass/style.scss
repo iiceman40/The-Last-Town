@@ -8,13 +8,13 @@ canvas {
 	left: 0;
 }
 
-.login-message-text {
+.flash-message-text {
 	display: inline-block;
 	&::first-letter {
 		text-transform: capitalize;
 	}
 }
-.login-message-icon {
+.flash-message-icon {
 	margin-right: 5px;
 }
 

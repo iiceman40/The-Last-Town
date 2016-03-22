@@ -29,6 +29,7 @@ function start() {
 		'moment',
 		'jquery',
 		'knockout',
+		'knockout-postbox',
 		'babylonjs',
 		'bootstrap'
 	];
