@@ -11,27 +11,47 @@
 	<script type="text/javascript" src="js/client.js"></script>
 </head>
 <body>
-<div class="container">
-	<h1>The Last Town</h1>
-	<div data-bind='component: {name: "flash-messages", params: {}}'></div>
-	<div class="row">
-		<div class="col-sm-4">
-			<div data-bind='component: {name: "login", params: { socket: socket, user: user }}'></div>
-		</div>
-		<div class="col-sm-4" data-bind="visible: user().isOnline">
-			<div data-bind='component: {name: "users-list", params: { socket: socket, user: user }}'></div>
-		</div>
-		<div class="col-sm-4" data-bind="visible: user().isOnline">
-			<div data-bind='component: {name: "chat", params: { socket: socket, user: user }}'></div>
+<div class="container-fluid">
+	<h1 class="page-header text-center">
+		The Last Town
+		<span class="small">
+		<!-- ko if: user().connectionStatus() == user().CONNECTION_STATUS_DISCONNECTED -->
+		<i class="glyphicon glyphicon-ban-circle text-danger" title="disconnected"></i>
+			<!-- /ko -->
+			<!-- ko if: user().connectionStatus() == user().CONNECTION_STATUS_CONNECTED -->
+		<i class="glyphicon glyphicon-transfer text-success" title="connected"></i>
+			<!-- ko if: user().loginStatus() == user().LOGIN_STATUS_LOGGED_OUT -->
+		<i class="glyphicon glyphicon-log-out text-danger" title="logged out"></i>
+			<!-- /ko -->
+			<!-- ko if: user().loginStatus() == user().LOGIN_STATUS_LOGGED_IN -->
+		<i class="glyphicon glyphicon-log-in text-success" title="logged in"></i>
+			<!-- /ko -->
+			<!-- /ko -->
+	</span>
+	</h1>
+	<div class="row" data-bind="visible: !user().isOnline()">
+		<div class="col-sm-4 col-sm-offset-4">
+			<div data-bind='component: {name: "flash-messages", params: { socket: socket, user: user }}'></div>
+			<div class="text-center">
+				<div data-bind='component: {name: "login", params: { socket: socket, user: user }}'></div>
+			</div>
 		</div>
 	</div>
-	<div class="row" data-bind="visible: user().isOnline">
-		<div class="col-sm-4">
+	<div class="row" data-bind="if: user().isOnline">
+		<div class="col-sm-3">
+			<div data-bind='component: {name: "profile", params: { socket: socket, user: user }}'></div>
+		</div>
+		<div class="col-sm-3">
 			<div data-bind='component: {name: "maps", params: { socket: socket, user: user }}'></div>
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-3">
+			<div data-bind='component: {name: "users-list", params: { socket: socket, user: user }}'></div>
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-3">
+			<div data-bind='component: {name: "flash-messages", params: { socket: socket, user: user }}'></div>
+			<div data-bind="visible: user().isOnline">
+				<div data-bind='component: {name: "chat", params: { socket: socket, user: user }}'></div>
+			</div>
 		</div>
 	</div>
 </div>

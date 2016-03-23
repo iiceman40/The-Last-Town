@@ -1,14 +1,14 @@
-define(['babylonjs'], function(bjs) {
+define(['babylonjs'], function (bjs) {
 	var instance = null;
 
-	var SceneFactory = function() {
+	var SceneFactory = function () {
 
 		this.canvas = document.getElementById("canvas");
 		this.engine = new BABYLON.Engine(this.canvas, true);
 
 	};
 
-	SceneFactory.prototype.createScene = function(){
+	SceneFactory.prototype.createScene = function () {
 		var scene = new BABYLON.Scene(this.engine);
 
 		var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 4, 50, BABYLON.Vector3.Zero(), scene);

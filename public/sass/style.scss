@@ -8,12 +8,19 @@ canvas {
 	left: 0;
 }
 
+a {
+	&:hover {
+		text-decoration: none;
+	}
+}
+
 .flash-message-text {
 	display: inline-block;
 	&::first-letter {
 		text-transform: capitalize;
 	}
 }
+
 .flash-message-icon {
 	margin-right: 5px;
 }
@@ -25,4 +32,18 @@ canvas {
 
 .semi-transparent {
 	opacity: 0.5;
+}
+
+.panel-title {
+	i.is-closed {
+		display: none;
+	}
+	.collapsed {
+		i.is-open {
+			display: none;
+		}
+		i.is-closed {
+			display: inline;
+		}
+	}
 }

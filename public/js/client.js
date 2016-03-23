@@ -5,6 +5,9 @@ require.config({
 	shim: {
 		'socketio': {
 			exports: 'io'
+		},
+		'bootstrap': {
+			deps: ['jquery']
 		}
 	},
 	paths: {
@@ -17,6 +20,7 @@ require.config({
 		'knockout':                 'modules/knockout/build/output/knockout-latest',
 		'knockout-postbox':         'modules/knockout-postbox/build/knockout-postbox.min',
 		'babylonjs':                'modules/babylonjs/babylon.max',
+		'bootstrap':                'modules/bootstrap/dist/js/bootstrap.min',
 		// VIEW MODELS
 		'MainViewModel':            'js/viewModels/MainViewModel',
 		'UserViewModel':            'js/viewModels/UserViewModel',
@@ -28,6 +32,7 @@ require.config({
 		'UsersListComponent':       'js/components/UsersListComponent',
 		'FlashMessagesComponent':   'js/components/FlashMessagesComponent',
 		'LoginComponent':           'js/components/LoginComponent',
+		'ProfileComponent':         'js/components/ProfileComponent',
 		'ChatComponent':            'js/components/ChatComponent',
 		'MapsComponent':            'js/components/MapsComponent',
 		'Map3dComponent':           'js/components/Map3dComponent'

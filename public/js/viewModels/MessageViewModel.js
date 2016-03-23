@@ -1,6 +1,6 @@
 'use strict';
 
-define(['knockout', 'moment'], function(ko, moment) {
+define(['knockout', 'moment'], function (ko, moment) {
 	// MessageViewModel
 	return function (data) {
 		var _this = this;

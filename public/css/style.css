@@ -9,27 +9,45 @@ canvas {
   left: 0;
 }
 
-/* line 11, ../sass/style.scss */
+/* line 12, ../sass/style.scss */
+a:hover {
+  text-decoration: none;
+}
+
+/* line 17, ../sass/style.scss */
 .flash-message-text {
   display: inline-block;
 }
-/* line 13, ../sass/style.scss */
+/* line 19, ../sass/style.scss */
 .flash-message-text::first-letter {
   text-transform: capitalize;
 }
 
-/* line 17, ../sass/style.scss */
+/* line 24, ../sass/style.scss */
 .flash-message-icon {
   margin-right: 5px;
 }
 
-/* line 21, ../sass/style.scss */
+/* line 28, ../sass/style.scss */
 .chat-messages {
   height: 300px;
   overflow-y: scroll;
 }
 
-/* line 26, ../sass/style.scss */
+/* line 33, ../sass/style.scss */
 .semi-transparent {
   opacity: 0.5;
+}
+
+/* line 38, ../sass/style.scss */
+.panel-title i.is-closed {
+  display: none;
+}
+/* line 42, ../sass/style.scss */
+.panel-title .collapsed i.is-open {
+  display: none;
+}
+/* line 45, ../sass/style.scss */
+.panel-title .collapsed i.is-closed {
+  display: inline;
 }

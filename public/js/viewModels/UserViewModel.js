@@ -1,8 +1,8 @@
 'use strict';
 
-define(['knockout'], function(ko) {
+define(['knockout'], function (ko) {
 	// UserViewModel model
-	return function(data){
+	return function (data) {
 		this.CONNECTION_STATUS_DISCONNECTED = 0;
 		this.CONNECTION_STATUS_CONNECTED = 1;
 		this.LOGIN_STATUS_LOGGED_OUT = 0;
@@ -16,7 +16,7 @@ define(['knockout'], function(ko) {
 		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
 
 		// computed observable
-		this.isOnline = ko.computed(function(){
+		this.isOnline = ko.computed(function () {
 			return this.connectionStatus() && this.loginStatus();
 		}, this);
 	};

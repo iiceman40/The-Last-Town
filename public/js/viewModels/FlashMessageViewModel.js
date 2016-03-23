@@ -1,6 +1,6 @@
 'use strict';
 
-define(['knockout', 'moment'], function(ko, moment) {
+define(['knockout', 'moment'], function (ko, moment) {
 	// FlashMessageViewModel
 	return function (data) {
 		this.MESSAGE_TYPE_DEFAULT = 'info';
@@ -13,8 +13,12 @@ define(['knockout', 'moment'], function(ko, moment) {
 
 		this.date = ko.observable(moment.isMoment(data.date) ? data.date : moment(data.date));
 
-		this.formattedDateTime = ko.computed(function () {
-			return _this.date() ? _this.date().format('YYYY-MM-DD - HH:mm') : '';
+		this.formattedDate = ko.computed(function () {
+			return _this.date() ? _this.date().format('YYYY-MM-DD') : '';
+		}, this);
+
+		this.formattedTime = ko.computed(function () {
+			return _this.date() ? _this.date().format('HH:mm') : '';
 		}, this);
 
 	};

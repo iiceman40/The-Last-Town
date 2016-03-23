@@ -1,10 +1,20 @@
 <h3>Users List</h3>
-<div data-bind="foreach: connectedUsersArray">
+<div class="panel-group" id="users-list" data-bind="foreach: connectedUsersArray">
 	<div class="panel panel-default">
-		<div class="panel-heading" data-bind="text: name"></div>
-		<div class="panel-body">
-			<div data-bind="text: email"></div>
-			<div data-bind="text: _id"></div>
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<span data-bind="text: name"></span>
+				<a href="#" class="pull-right collapsed" data-toggle="collapse" data-parent="#users-list" data-bind="attr: {href: '#user-' + $index()}">
+					<i class="is-closed glyphicon glyphicon-chevron-right"></i>
+					<i class="is-open glyphicon glyphicon-chevron-down"></i>
+				</a>
+			</h4>
+		</div>
+		<div class="panel-collapse collapse" data-bind="attr: {id: 'user-' + $index()}">
+			<div class="panel-body">
+				<div data-bind="text: email"></div>
+				<div data-bind="text: _id"></div>
+			</div>
 		</div>
 	</div>
 </div>
