@@ -9,9 +9,7 @@ canvas {
 }
 
 a {
-	&:hover {
-		text-decoration: none;
-	}
+	text-decoration: none !important;
 }
 
 .flash-message-text {

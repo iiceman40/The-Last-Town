@@ -56,6 +56,22 @@ define(['knockout', 'knockout-postbox', 'text!templates/flash-messages.html', 'm
 					flashMessage.isVisible(false);
 				};
 
+				_this.hideAll = function(){
+					_.each(_this.flashMessages(), function(flashMessage, index){
+						flashMessage.isVisible(false);
+					});
+				};
+
+				_this.showAll = function(){
+					_.each(_this.flashMessages(), function(flashMessage, index){
+						flashMessage.isVisible(true);
+					});
+				};
+
+				_this.removeAll = function(){
+					_this.flashMessages([]);
+				};
+
 				// subPub - subscriptions
 				ko.postbox.subscribe("flashMessages", function (flashMessage) {
 					_this.addFlashMessage(flashMessage);

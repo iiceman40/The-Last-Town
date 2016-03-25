@@ -4,7 +4,11 @@
 	<div>
 		<span class="semi-transparent" data-bind="text: formattedTime, attr: {title: formattedDate}"></span>
 		-
-		<span class="semi-transparent" data-bind="text: sender"></span>:
+		<span class="semi-transparent" data-bind="text: sender"></span>
+		<!-- ko if: recipient -->
+		to <span class="text-info" data-bind="text: recipient().name"></span>
+		<!-- /ko -->
+		:
 		<span data-bind="text: text"></span>
 	</div>
 </div>
@@ -16,4 +20,7 @@
 	<div class="col-sm-4">
 		<button class="btn btn-default btn-block" data-bind="click: onSubmit">Submit</button>
 	</div>
+</div>
+<div data-bind="if: selectedUser">
+	Talking to: <span data-bind="text: selectedUser().name"></span>
 </div>

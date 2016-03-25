@@ -6,7 +6,7 @@ define(['knockout', 'moment'], function (ko, moment) {
 		var _this = this;
 
 		this.sender = ko.observable(data.sender);
-		this.recepient = ko.observable(data.recepient);
+		this.recipient = ko.observable(data.recipient);
 		this.text = ko.observable(data.text || '');
 		this.date = ko.observable(moment.isMoment(data.date) ? data.date : moment(data.date));
 

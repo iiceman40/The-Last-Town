@@ -2,16 +2,13 @@
 
 define(['knockout'], function (ko) {
 	// UserViewModel model
-	return function (data) {
-		this.CONNECTION_STATUS_DISCONNECTED = 0;
-		this.CONNECTION_STATUS_CONNECTED = 1;
-		this.LOGIN_STATUS_LOGGED_OUT = 0;
-		this.LOGIN_STATUS_LOGGED_IN = 1;
+	var UserViewModel = function (data) {
+		if (!data) data = {};
 
-		this.name = ko.observable('');
-		this.email = ko.observable('');
-		this.password = ko.observable('');
-		this._id = ko.observable('');
+		this.name = ko.observable(data.name || '');
+		this.email = ko.observable(data.email || '');
+		this.password = ko.observable(data.password || '');
+		this._id = ko.observable(data._id || '');
 		this.connectionStatus = ko.observable(this.CONNECTION_STATUS_DISCONNECTED);
 		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
 
@@ -20,4 +17,11 @@ define(['knockout'], function (ko) {
 			return this.connectionStatus() && this.loginStatus();
 		}, this);
 	};
+
+	UserViewModel.prototype.CONNECTION_STATUS_DISCONNECTED = 0;
+	UserViewModel.prototype.CONNECTION_STATUS_CONNECTED = 1;
+	UserViewModel.prototype.LOGIN_STATUS_LOGGED_OUT = 0;
+	UserViewModel.prototype.LOGIN_STATUS_LOGGED_IN = 1;
+
+	return UserViewModel;
 });

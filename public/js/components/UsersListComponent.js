@@ -6,25 +6,52 @@ define(['knockout', 'text!templates/users-list.html', 'UserViewModel', 'undersco
 
 			var _this = this;
 			_this.socket = params.socket;
+			_this.user = params.user;
 
-			// TODO make user in list selectable and publish to post box -> chat can subscribe/sync
-
+			this.selectedUser = ko.observable().syncWith('selectedUser');
 			this.connectedUsers = ko.observableArray([]);
-			this.connectedUsersArray = ko.computed(function () {
-				var usersObject = this.connectedUsers();
-				return Object.keys(usersObject).map(function (key) {
-					return usersObject[key]
-				});
+
+			/**
+			 * maps the connectedUsers array to an object with the _id as index
+			 */
+			this.connectedUsersObject = ko.computed(function () {
+				console.log('computing users map object');
+				return _.object(_.map(_this.connectedUsers(), function(user) {
+					return [user._id(), user]
+				}));
 			}, this);
 
+			/**
+			 * updates the UserViewModel in connectedUsers observable Array with user data from the server
+			 * @param {Array} connectedUsersData
+			 */
 			_this.updateConnectedUsers = function (connectedUsersData) {
+				var connectedUsers = [];
 				_.each(connectedUsersData, function (userData, index) {
-					var userViewModel = _.findWhere(_this.connectedUsers(), {_id: userData._id});
-					if (userViewModel === undefined) {
-						_this.connectedUsers.push(new UserViewModel(userData));
-					}
+					connectedUsers.push(new UserViewModel(userData));
 				});
-				_this.connectedUsers(connectedUsersData);
+				_this.connectedUsers(connectedUsers);
+			};
+
+			/**
+			 * checks if the given UserViewModel has the same _id as the currently logged in user
+			 * @param {UserViewModel} user
+			 * @returns {boolean}
+			 */
+			_this.thisIsMe = function(user){
+				return user._id() === _this.user()._id();
+			};
+
+			/**
+			 * toggles the select attribute in a given userViewModel
+			 * @param {UserViewModel} user
+			 */
+			_this.toggleSelectUser = function(user){
+				if(user === _this.selectedUser()){
+					_this.selectedUser(undefined);
+				} else {
+					_this.selectedUser(user);
+				}
 			};
 
 			// events

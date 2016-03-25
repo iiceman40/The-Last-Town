@@ -1,6 +1,8 @@
 define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewModel', 'underscore', 'moment'],
 	function (ko, template, UserViewModel, MessageViewModel, _, moment) {
 
+		// TODO add real private messages
+
 		var ChatViewModel = function (params) {
 			if (!params) params = {};
 
@@ -9,6 +11,7 @@ define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewMod
 
 			// observables
 			_this.user = params.user;
+			_this.selectedUser = ko.observable().syncWith('selectedUser');
 			_this.newMessage = ko.observable(new MessageViewModel({}));
 			_this.messages = ko.observableArray([]);
 
@@ -18,6 +21,7 @@ define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewMod
 				// set date and sender
 				_this.newMessage().date(moment());
 				_this.newMessage().sender(_this.user().name());
+				_this.newMessage().recipient(_this.selectedUser());
 				// create static message data and notify server
 				var newMessageData = ko.toJS(_this.newMessage);
 				_this.messages.push(new MessageViewModel(newMessageData));
