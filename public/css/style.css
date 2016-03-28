@@ -1,53 +1,59 @@
 /* line 1, ../sass/style.scss */
+body {
+  padding-top: 70px;
+}
+
+/* line 5, ../sass/style.scss */
 canvas {
   width: 100%;
   height: 100%;
   padding: 0;
   margin: 0;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+  z-index: -10;
 }
 
-/* line 11, ../sass/style.scss */
+/* line 16, ../sass/style.scss */
 a {
   text-decoration: none !important;
 }
 
-/* line 15, ../sass/style.scss */
+/* line 20, ../sass/style.scss */
 .flash-message-text {
   display: inline-block;
 }
-/* line 17, ../sass/style.scss */
+/* line 22, ../sass/style.scss */
 .flash-message-text::first-letter {
   text-transform: capitalize;
 }
 
-/* line 22, ../sass/style.scss */
+/* line 27, ../sass/style.scss */
 .flash-message-icon {
   margin-right: 5px;
 }
 
-/* line 26, ../sass/style.scss */
+/* line 31, ../sass/style.scss */
 .chat-messages {
   height: 300px;
   overflow-y: scroll;
 }
 
-/* line 31, ../sass/style.scss */
+/* line 36, ../sass/style.scss */
 .semi-transparent {
   opacity: 0.5;
 }
 
-/* line 36, ../sass/style.scss */
+/* line 41, ../sass/style.scss */
 .panel-title i.is-closed {
   display: none;
 }
-/* line 40, ../sass/style.scss */
+/* line 45, ../sass/style.scss */
 .panel-title .collapsed i.is-open {
   display: none;
 }
-/* line 43, ../sass/style.scss */
+/* line 48, ../sass/style.scss */
 .panel-title .collapsed i.is-closed {
   display: inline;
 }

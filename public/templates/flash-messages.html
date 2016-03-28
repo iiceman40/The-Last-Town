@@ -1,31 +1,37 @@
 <!-- ko if: flashMessages().length -->
-	<h3>
-		Messages
-		<span class="badge" data-bind="text: flashMessages().length"></span>
-		<small>
-			<a class="glyphicon glyphicon-eye-open" href="#" data-bind="click: showAll" title="show all messages"></a>
-			<a class="glyphicon glyphicon-eye-close" href="#" data-bind="click: hideAll" title="hide all messages"></a>
-			<a class="glyphicon glyphicon-remove" href="#" data-bind="click: removeAll" title="remove all messages"></a>
-		</small>
-	</h3>
-<!-- /ko -->
+<div class="panel">
+	<div class="panel-heading">
+		<h3>
+			Messages
+			<span class="badge" data-bind="text: flashMessages().length"></span>
+			<small>
+				<a class="glyphicon glyphicon-eye-open" href="#" data-bind="click: showAll" title="show all messages"></a>
+				<a class="glyphicon glyphicon-eye-close" href="#" data-bind="click: hideAll" title="hide all messages"></a>
+				<a class="glyphicon glyphicon-remove" href="#" data-bind="click: removeAll" title="remove all messages"></a>
+			</small>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<!-- ko foreach: flashMessages -->
 
-<!-- ko foreach: flashMessages -->
+		<!-- ko if: isVisible-->
+		<div class="alert" data-bind="css: 'alert-' + type()">
+			<i class="glyphicon glyphicon-comment flash-message-icon"></i>
+			<span class="flash-message-text" data-bind="text: text"></span>
+			<span class="pull-right">
+				<span class="semi-transparent" data-bind="text: formattedTime, attr: {title: formattedDate}"></span>
+				<a href="#" data-bind="click: $parent.hideFlashMessage" title="hide message">
+					<i class="glyphicon glyphicon-eye-close" data-bind="css: 'text-' + type()"></i>
+				</a>
+				<a href="#" data-bind="click: $parent.removeFlashMessage" title="delete message">
+					<i class="glyphicon glyphicon-remove" data-bind="css: 'text-' + type()"></i>
+				</a>
+			</span>
+		</div>
+		<!-- /ko -->
 
-<!-- ko if: isVisible-->
-<div class="alert" data-bind="css: 'alert-' + type()">
-	<i class="glyphicon glyphicon-comment flash-message-icon"></i>
-	<span class="flash-message-text" data-bind="text: text"></span>
-	<span class="pull-right">
-		<span class="semi-transparent" data-bind="text: formattedTime, attr: {title: formattedDate}"></span>
-		<a href="#" data-bind="click: $parent.hideFlashMessage" title="hide message">
-			<i class="glyphicon glyphicon-eye-close" data-bind="css: 'text-' + type()"></i>
-		</a>
-		<a href="#" data-bind="click: $parent.removeFlashMessage" title="delete message">
-			<i class="glyphicon glyphicon-remove" data-bind="css: 'text-' + type()"></i>
-		</a>
-	</span>
+		<!-- /ko -->
+	</div>
+	<div class="panel-footer"></div>
 </div>
-<!-- /ko -->
-
 <!-- /ko -->

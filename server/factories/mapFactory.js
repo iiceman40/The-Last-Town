@@ -5,7 +5,7 @@ var instance = null;
 var MapFactory = function(){
 	console.log('initiated map factory');
 	this.PF = require('pathfinding');
-	this.terrainRepository = require('../repositories/TerrainRepository');
+	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	this.underscore = require('underscore');
 };
 
@@ -14,17 +14,16 @@ MapFactory.prototype.getTerrains = function(){
 };
 
 MapFactory.prototype.build = function(settings){
-	var mapData = {width: 10, height: 10, townPosition: {x: 5, y: 5}}
+	console.log(this.terrainRepository);
+	this.terrainRepository.setSeedValueForRNG('1'); // TODO dynamically set seed
+	var mapData = {width: 100, height: 100, townPosition: {x: 5, y: 5}};
 	mapData = this.createMapGrid(mapData);
-	mapData = this.connectNeighbors((mapData));
+	//mapData = this.connectNeighbors((mapData)); // deactivated because of recursion that will be created
 
 	// TODO mandatory: height, width, town position
 	// TODO optional: seed, limit terrain list, ...
 	// TODO us a seed to be able to regenerate a certain random map
 
-	var seedrandom = require('seedrandom');
-	var rng = seedrandom('hello.');
-	console.log('random with seed (always 0.9282578795792454): ', rng());
 	return mapData;
 };
 
@@ -40,7 +39,6 @@ MapFactory.prototype.createMapGrid = function (data) {
 	var matrix = data.matrix;
 	var enemyMatrix = data.enemyMatrix;
 
-	var terrainRepository = this.terrainRepository;
 	var PF = this.PF;
 
 	for (var y = 0; y < height; y++) {
@@ -63,7 +61,7 @@ MapFactory.prototype.createMapGrid = function (data) {
 			} else if (townPosition.x == x && townPosition.y == y) {
 				newTerrain = 'mainTownTile';
 			} else {
-				newTerrain = terrainRepository.createRandomType();
+				newTerrain = this.terrainRepository.createRandomType();
 			}
 
 			// node for player
@@ -105,7 +103,6 @@ MapFactory.prototype.connectNeighbors = function (data) {
 
 	// connect neighbours
 	for (var y = 0; y < height; y++) {
-
 		for (var x = 0; x < width; x++) {
 			var currentNode = matrix[y][x];
 			var currentEnemyNode = enemyMatrix[y][x];
@@ -131,21 +128,39 @@ MapFactory.prototype.connectNeighbors = function (data) {
 
 			// iterate over all the neighbors and decide if to add them to the current node or not
 			currentNode.visibleNeighbors = [];
-			var _ = this.underscore;
-			_.each(neighborPositions, function (key, pos) { // FIXME no neighbors added!!!!
-				if (pos.y >= 0 && pos.y < height && pos.x >= 0 && pos.x < width) {
-					if (currentNode.isWalkable && matrix[pos.y][pos.x].isWalkable) {
-						currentNode.neighbors.push(matrix[pos.y][pos.x]);
+
+			for(var i = 0; i < neighborPositions.length; i++){
+				var neighborPosition = neighborPositions[i];
+
+				// check if neighbor is still within map limits
+				if (neighborPosition.y >= 0 &&
+					neighborPosition.y < height &&
+					neighborPosition.x >= 0 &&
+					neighborPosition.x < width
+				) {
+
+					var neighborNode = matrix[neighborPosition.y][neighborPosition.x];
+					var neighborNodePosition = {x: neighborPosition.x, y: neighborPosition.y};
+
+					if (currentNode.isWalkable && neighborNode.isWalkable) {
+						//currentNode.neighbors.push(neighborNode);
+						currentNode.neighbors.push(neighborNodePosition);
 					}
-					currentNode.visibleNeighbors.push(matrix[pos.y][pos.x]);
+					//currentNode.visibleNeighbors.push(neighborNode);
+					currentNode.visibleNeighbors.push(neighborNodePosition);
+
 					if (currentEnemyNode.isWalkable) {
-						currentEnemyNode.neighbors.push(enemyMatrix[pos.y][pos.x]);
+						currentEnemyNode.neighbors.push(neighborNode);
+						currentEnemyNode.neighbors.push(neighborNodePosition);
 					}
+
 				}
-			});
+
+			}
 		}
 	}
 
+	console.log('returning data');
 	return data;
 };
 
