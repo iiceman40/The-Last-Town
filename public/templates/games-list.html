@@ -1,0 +1,19 @@
+<div class="panel">
+	<div class="panel-heading">
+		<h3>Available Games</h3>
+	</div>
+	<div class="panel-body">
+		<div data-bind="foreach: games">
+			<div class="row">
+				<div class="col-sm-12">
+					<span data-bind="text: _id"></span>
+					<span data-bind="text: map ? 'has map data' : 'has no map data'"></span>
+					<button class="btn btn-default" data-bind="click: $parent.joinGame">Join/Play</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer text-right">
+		<button class="btn btn-default" data-bind="click: createNewGame">New Game</button>
+	</div>
+</div>

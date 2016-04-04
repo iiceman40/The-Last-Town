@@ -33,7 +33,7 @@
 
 	<div class="row" data-bind="if: user().isOnline">
 		<div class="col-sm-4">
-			<div data-bind='component: {name: "maps", params: { socket: socket, user: user }}'></div>
+			<div data-bind='component: {name: "games-list", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 		</div>
 		<div class="col-sm-4">
 			<div data-bind='component: {name: "users-list", params: { socket: socket, user: user }}'></div>
@@ -46,7 +46,7 @@
 		</div>
 	</div>
 
-	<div data-bind='component: {name: "babylon", params: { socket: socket, user: user }}'></div>
+	<div data-bind='component: {name: "babylon", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 
 </div>
 </body>

@@ -11,26 +11,28 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 
 				var _this = this;
 				_this.socket = params.socket;
+				_this.scene = null;
 
 				// observables
 				_this.user = params.user;
+				_this.currentGame = params.currentGame;
 
 				// computed observables
 
 				// methods
-				_this.createNewMap = function () {
+				_this.createNewGame = function () {
 					console.log('telling server to create new map');
-					_this.socket.emit('createNewMap', {});
+					_this.socket.emit('createNewGame', {});
 				};
 
-				// events
-				//_this.socket.on('mapCreated', function (data) {
-				//	console.log('map has been created', data);
-				//});
-
 				var sceneFactory = SceneFactory.getInstance();
-				sceneFactory.createScene();
+				_this.scene = sceneFactory.createScene();
 
+				_this.currentGame.subscribe(function(){
+					console.log('game changed', _this.currentGame().map());
+
+					// TODO
+				});
 			};
 
 			if (!instance) {

@@ -26,6 +26,7 @@ require.config({
 		'UserViewModel':            'js/viewModels/UserViewModel',
 		'MessageViewModel':         'js/viewModels/MessageViewModel',
 		'FlashMessageViewModel':    'js/viewModels/FlashMessageViewModel',
+		'GameViewModel':            'js/viewModels/GameViewModel',
 		// FACTORIES
 		'SceneFactory':             'js/factories/SceneFactory',
 		// COMPONENTS
@@ -34,7 +35,7 @@ require.config({
 		'LoginComponent':           'js/components/LoginComponent',
 		'ProfileComponent':         'js/components/ProfileComponent',
 		'ChatComponent':            'js/components/ChatComponent',
-		'MapsComponent':            'js/components/MapsComponent',
+		'GamesListComponent':       'js/components/GamesListComponent',
 		'BabylonComponent':         'js/components/BabylonComponent',
 		'MenuBarComponent':         'js/components/MenuBarComponent'
 	}

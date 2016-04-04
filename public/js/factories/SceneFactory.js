@@ -9,6 +9,7 @@ define(['babylonjs'], function (bjs) {
 	};
 
 	SceneFactory.prototype.createScene = function () {
+		var _this = this;
 		var scene = new BABYLON.Scene(this.engine);
 
 		var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 4, 50, BABYLON.Vector3.Zero(), scene);
@@ -18,9 +19,15 @@ define(['babylonjs'], function (bjs) {
 
 		var box = BABYLON.MeshBuilder.CreateBox('box', {}, scene);
 
-		this.engine.runRenderLoop(function () {
+		_this.engine.runRenderLoop(function () {
 			scene.render();
 		});
+
+		_this.resize = function () {
+			_this.engine.resize();
+		};
+		window.removeEventListener("resize", _this.resize);
+		window.addEventListener("resize", _this.resize);
 
 		return scene;
 	};
