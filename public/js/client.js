@@ -29,6 +29,10 @@ require.config({
 		'GameViewModel':            'js/viewModels/GameViewModel',
 		// FACTORIES
 		'SceneFactory':             'js/factories/SceneFactory',
+		// SERVICES
+		'RenderService':            'js/services/RenderService',
+		'MaterialsService':         'js/services/MaterialsService',
+		'TerrainTilesService':      'js/services/TerrainTilesService',
 		// COMPONENTS
 		'UsersListComponent':       'js/components/UsersListComponent',
 		'FlashMessagesComponent':   'js/components/FlashMessagesComponent',

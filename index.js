@@ -7,8 +7,8 @@ var io = require('socket.io').listen(server);
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/the_last_town');
 var models = {
-	User: require('./server/models/User'),
-	Game: require('./server/models/Game')
+	User: require('./server/models/database/User'),
+	Game: require('./server/models/database/Game')
 };
 
 // Connection to DB

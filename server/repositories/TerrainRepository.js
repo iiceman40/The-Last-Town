@@ -14,8 +14,8 @@ var TerrainRepository = function () {
 	 *
 	 * @type {{name: string, description: string, probability: number, searchTime: number, searchCapacity: number}[]}
 	 */
-	this.terrainTypes = [
-		{
+	this.terrainTypes = {
+		dirt: {
 			name: 'dirt',
 			description: 'Nothing but dirt.',
 			probability: 20,
@@ -23,7 +23,7 @@ var TerrainRepository = function () {
 			searchCapacity: 0,
 			searchResources: []
 		},
-		{
+		grass: {
 			name: 'grass',
 			description: 'A plane covered with high grass.',
 			probability: 20,
@@ -31,7 +31,7 @@ var TerrainRepository = function () {
 			searchCapacity: 30,
 			searchResources: ['seed', 'wheat']
 		},
-		{
+		forest: {
 			name: 'forest',
 			description: 'A thick forest with trees everywhere.',
 			probability: 30,
@@ -39,7 +39,7 @@ var TerrainRepository = function () {
 			searchCapacity: 30,
 			searchResources: ['wood', 'apple']
 		},
-		{
+		water: {
 			name: 'water',
 			description: 'Hmm... water...',
 			probability: 2,
@@ -47,7 +47,7 @@ var TerrainRepository = function () {
 			searchCapacity: 0,
 			searchResources: []
 		},
-		{
+		mud: {
 			name: 'mud',
 			description: 'Caution mud...',
 			probability: 1,
@@ -55,7 +55,7 @@ var TerrainRepository = function () {
 			searchCapacity: 15,
 			searchResources: ['clay', 'acorus']
 		},
-		{
+		cave: {
 			name: 'cave',
 			description: 'Huh, an unexplored cave.',
 			probability: 5,
@@ -63,7 +63,7 @@ var TerrainRepository = function () {
 			searchCapacity: 60,
 			searchResources: ['stone', 'metal']
 		},
-		{
+		mountain: {
 			name: 'mountain',
 			description: 'Insurmountable',
 			probability: 1,
@@ -71,15 +71,17 @@ var TerrainRepository = function () {
 			searchCapacity: 0,
 			searchResources: []
 		}
-	];
+	};
 	this.terrainTypesByProbability = [];
 	this.seedrandom = require('seedrandom');
 	this.rng = this.seedrandom();
 
 	// fill terrainTypesByProbability
-	for (var i = 0; i < this.terrainTypes.length; i++) {
-		for (var n = 0; n < this.terrainTypes[i].probability; n++) {
-			this.terrainTypesByProbability.push(this.terrainTypes[i].name);
+	for (var i in this.terrainTypes) {
+		if(this.terrainTypes.hasOwnProperty(i)) {
+			for (var n = 0; n < this.terrainTypes[i].probability; n++) {
+				this.terrainTypesByProbability.push(this.terrainTypes[i].name);
+			}
 		}
 	}
 };

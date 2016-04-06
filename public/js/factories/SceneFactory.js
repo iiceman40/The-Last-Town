@@ -15,9 +15,11 @@ define(['babylonjs'], function (bjs) {
 		var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 2, Math.PI / 4, 50, BABYLON.Vector3.Zero(), scene);
 		camera.attachControl(canvas, false);
 
+		// setup light
 		var light = new BABYLON.DirectionalLight("Dir0", new BABYLON.Vector3(1, -1, 0), scene);
 
-		var box = BABYLON.MeshBuilder.CreateBox('box', {}, scene);
+		// TODO background animation for menu
+		//var box = BABYLON.MeshBuilder.CreateBox('box', {}, scene);
 
 		_this.engine.runRenderLoop(function () {
 			scene.render();

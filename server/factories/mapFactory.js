@@ -1,12 +1,13 @@
 'use strict';
 
+var Tile = require('../models/Tile');
+var PF = require('pathfinding');
+
 var instance = null;
 
 var MapFactory = function(){
 	console.log('initiated map factory');
-	this.PF = require('pathfinding');
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
-	this.underscore = require('underscore');
 };
 
 MapFactory.prototype.getTerrains = function(){
@@ -16,7 +17,7 @@ MapFactory.prototype.getTerrains = function(){
 MapFactory.prototype.build = function(settings){
 	console.log(this.terrainRepository);
 	this.terrainRepository.setSeedValueForRNG('1'); // TODO dynamically set seed
-	var mapData = {width: 100, height: 100, townPosition: {x: 5, y: 5}};
+	var mapData = {width: 64, height: 36, townPosition: {x: 32, y: 18}, seed: '1'};
 	mapData = this.createMapGrid(mapData);
 	//mapData = this.connectNeighbors((mapData)); // deactivated because of recursion that will be created
 
@@ -29,6 +30,7 @@ MapFactory.prototype.build = function(settings){
 
 
 MapFactory.prototype.createMapGrid = function (data) {
+	data.tiles = [];
 	data.matrix = [];
 	data.enemyMatrix = [];
 
@@ -38,8 +40,6 @@ MapFactory.prototype.createMapGrid = function (data) {
 
 	var matrix = data.matrix;
 	var enemyMatrix = data.enemyMatrix;
-
-	var PF = this.PF;
 
 	for (var y = 0; y < height; y++) {
 		var currentMapRow = [];
@@ -55,14 +55,21 @@ MapFactory.prototype.createMapGrid = function (data) {
 			var isMountainProbability = Math.min(distanceToBorderTop, distanceToBorderBottom, distanceToBorderLeft, distanceToBorderRight);
 			var random = Math.floor((Math.random() * 2) + 1);
 
-			var newTerrain;
-			if (isMountainProbability < random) {
-				newTerrain = 'mountain';
-			} else if (townPosition.x == x && townPosition.y == y) {
-				newTerrain = 'mainTownTile';
-			} else {
+			var newTerrain = 'mountain';
+			if (random < isMountainProbability) {
 				newTerrain = this.terrainRepository.createRandomType();
 			}
+
+			// TODO no terrain type for main town tile but an initial fixed improvement?
+			if (townPosition.x == x && townPosition.y == y) {
+				newTerrain = 'mainTownTile';
+			}
+
+			// tile
+			data.tiles.push(new Tile({
+				position: {x: x, y: y},
+				terrain: newTerrain
+			}));
 
 			// node for player
 			var node = new PF.Node(x, y, 0);

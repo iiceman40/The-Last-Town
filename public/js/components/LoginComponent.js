@@ -17,6 +17,7 @@ define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessa
 
 				// methods
 				_this.signIn = function () {
+					console.log('trying to sign in', _this.socket, ko.toJS(_this.user));
 					_this.socket.emit('signIn', ko.toJS(_this.user));
 					return true;
 				};
@@ -60,7 +61,8 @@ define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessa
 					console.log('trying to reconnect');
 				});
 
-				_this.socket.on('reconnect', function () {
+				_this.socket.on('reconnect', function (data) {
+					console.log('reconnecting', data);
 					var message = {text: 'reconnected to server', type: 'success'};
 					ko.postbox.publish('flashMessages', new FlashMessageViewModel(message));
 					_this.user().connectionStatus(_this.user().CONNECTION_STATUS_CONNECTED);
