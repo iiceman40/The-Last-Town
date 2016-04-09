@@ -15,12 +15,17 @@ define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewMod
 				_this.socket = params.socket;
 
 				// observables
+				_this.isActive = ko.observable(true).subscribeTo('chatIsActive');
 				_this.user = params.user;
 				_this.selectedUser = ko.observable().syncWith('selectedUser');
 				_this.newMessage = ko.observable(new MessageViewModel({}));
 				_this.messages = ko.observableArray([]);
 
 				// methods
+				_this.deactivateChat = function(){
+					ko.postbox.publish("chatIsActive", false);
+				};
+				
 				_this.sendChatMessage = function () {
 					console.log('sending chat message, test: ', _this);
 					// set date and sender

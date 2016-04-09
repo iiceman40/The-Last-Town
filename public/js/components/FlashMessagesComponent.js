@@ -17,12 +17,16 @@ define(['knockout', 'knockout-postbox', 'text!templates/flash-messages.html', 'm
 				};
 
 				// observables
+				_this.isActive = ko.observable(true).subscribeTo('flashMessagesIsActive');
 				_this.flashMessages = ko.observableArray();
 				_this.flashMessages.subscribe(function () {
 					console.log('flashMessages: ', _this.flashMessages());
 				});
 
 				// methods
+				_this.deactivateFlashMessages = function(){
+					ko.postbox.publish("flashMessagesIsActive", false);
+				};
 
 				/**
 				 * @param {FlashMessageViewModel} flashMessage

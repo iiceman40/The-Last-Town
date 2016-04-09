@@ -1,7 +1,12 @@
 <!-- ko if: isActive -->
-<div class="panel">
+<div class="panel panel-default">
 	<div class="panel-heading">
-		<h3>Profile</h3>
+		<h3 class="panel-title">
+			Profile
+			<small class="pull-right close-panel">
+				<a class="glyphicon glyphicon-remove" href="#" data-bind="click: deactivateProfile" title="close panel"></a>
+			</small>
+		</h3>
 	</div>
 	<div class="panel-body">
 		<div class="form-group">

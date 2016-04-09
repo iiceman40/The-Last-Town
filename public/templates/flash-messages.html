@@ -1,13 +1,17 @@
+<!-- ko if: isActive -->
 <!-- ko if: flashMessages().length -->
-<div class="panel">
+<div class="panel panel-default">
 	<div class="panel-heading">
-		<h3>
+		<h3 class="panel-title">
 			Messages
 			<span class="badge" data-bind="text: flashMessages().length"></span>
 			<small>
 				<a class="glyphicon glyphicon-eye-open" href="#" data-bind="click: showAll" title="show all messages"></a>
 				<a class="glyphicon glyphicon-eye-close" href="#" data-bind="click: hideAll" title="hide all messages"></a>
-				<a class="glyphicon glyphicon-remove" href="#" data-bind="click: removeAll" title="remove all messages"></a>
+				<a class="glyphicon glyphicon-trash" href="#" data-bind="click: removeAll" title="remove all messages"></a>
+			</small>
+			<small class="pull-right close-panel">
+				<a class="glyphicon glyphicon-remove" href="#" data-bind="click: deactivateFlashMessages" title="close panel"></a>
 			</small>
 		</h3>
 	</div>
@@ -32,6 +36,9 @@
 
 		<!-- /ko -->
 	</div>
-	<div class="panel-footer"></div>
+	<div class="panel-footer text-right">
+		<button class="btn btn-default" data-bind="click: deactivateFlashMessages">Close</button>
+	</div>
 </div>
+<!-- /ko -->
 <!-- /ko -->

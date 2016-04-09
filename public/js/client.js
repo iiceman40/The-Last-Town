@@ -39,7 +39,8 @@ require.config({
 		'LoginComponent':           'js/components/LoginComponent',
 		'ProfileComponent':         'js/components/ProfileComponent',
 		'ChatComponent':            'js/components/ChatComponent',
-		'GamesListComponent':       'js/components/GamesListComponent',
+		'ListGamesComponent':       'js/components/game/ListGamesComponent',
+		'NewGameComponent':         'js/components/game/NewGameComponent',
 		'BabylonComponent':         'js/components/BabylonComponent',
 		'MenuBarComponent':         'js/components/MenuBarComponent'
 	}

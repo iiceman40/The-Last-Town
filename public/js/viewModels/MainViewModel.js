@@ -2,10 +2,10 @@
 
 define([
 		'knockout', 'socket.io', 'UserViewModel', 'FlashMessagesComponent', 'UsersListComponent', 'LoginComponent',
-		'ProfileComponent', 'ChatComponent', 'GamesListComponent', 'BabylonComponent', 'MenuBarComponent'
+		'ProfileComponent', 'ChatComponent', 'ListGamesComponent', 'NewGameComponent', 'BabylonComponent', 'MenuBarComponent'
 	],
 	function (ko, io, UserViewModel, FlashMessagesComponent, UsersListComponent, LoginComponent,
-	          ProfileComponent, ChatComponent, GamesListComponent, BabylonComponent, MenuBarComponent) {
+	          ProfileComponent, ChatComponent, ListGamesComponent, NewGameComponent, BabylonComponent, MenuBarComponent) {
 
 		return function MainViewModel() {
 			var _this = this;
@@ -28,7 +28,8 @@ define([
 			ko.components.register('profile', ProfileComponent);
 			ko.components.register('login', LoginComponent);
 			ko.components.register('chat', ChatComponent);
-			ko.components.register('games-list', GamesListComponent);
+			ko.components.register('list-games', ListGamesComponent);
+			ko.components.register('new-game', NewGameComponent);
 			ko.components.register('babylon', BabylonComponent);
 			ko.components.register('menu-bar', MenuBarComponent);
 			// TODO create a component for the menu bar

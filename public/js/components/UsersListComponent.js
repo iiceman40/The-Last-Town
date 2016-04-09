@@ -13,18 +13,25 @@ define(['knockout', 'text!templates/users-list.html', 'UserViewModel', 'undersco
 				_this.socket = params.socket;
 				_this.user = params.user;
 
-				this.selectedUser = ko.observable().syncWith('selectedUser');
-				this.connectedUsers = ko.observableArray([]);
+				// observables
+				_this.isActive = ko.observable(true).subscribeTo('usersListIsActive');
+				_this.selectedUser = ko.observable().syncWith('selectedUser');
+				_this.connectedUsers = ko.observableArray([]);
+
+				// methods
+				_this.deactivateUsersList = function(){
+					ko.postbox.publish("usersListIsActive", false);
+				};
 
 				/**
 				 * maps the connectedUsers array to an object with the _id as index
 				 */
-				this.connectedUsersObject = ko.computed(function () {
+				_this.connectedUsersObject = ko.computed(function () {
 					console.log('computing users map object');
 					return _.object(_.map(_this.connectedUsers(), function (user) {
 						return [user._id(), user]
 					}));
-				}, this);
+				}, _this);
 
 				/**
 				 * updates the UserViewModel in connectedUsers observable Array with user data from the server

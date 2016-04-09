@@ -38,7 +38,7 @@ define(['babylonjs'], function (bjs) {
 		this.materials.dirt.specularPower = 128;
 
 		this.materials.water = new BABYLON.StandardMaterial('waterMaterial', scene);
-		this.materials.water.diffuseColor = new BABYLON.Color3(0.2, 0.2, 1);
+		this.materials.water.diffuseColor = new BABYLON.Color3(0.18, 0.18, 0.42);
 
 		return this.materials;
 	};

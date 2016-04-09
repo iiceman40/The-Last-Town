@@ -43,6 +43,10 @@ define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessa
 					_this.user().email(data.user.email);
 					_this.notifyServer = true;
 					_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_IN);
+					ko.postbox.publish("gamesListIsActive", true);
+					ko.postbox.publish("usersListIsActive", true);
+					ko.postbox.publish("flashMessagesIsActive", true);
+					ko.postbox.publish("chatIsActive", true);
 				});
 
 				_this.socket.on('signedOut', function (data) {

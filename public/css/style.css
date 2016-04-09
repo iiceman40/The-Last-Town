@@ -21,39 +21,75 @@ a {
 }
 
 /* line 20, ../sass/style.scss */
+.form-horizontal .control-label {
+  padding-top: 5px;
+  text-align: left;
+}
+
+/* line 25, ../sass/style.scss */
+.semi-transparent {
+  opacity: 0.5;
+}
+
+/* line 29, ../sass/style.scss */
+.clickable {
+  cursor: pointer;
+}
+
+/* line 33, ../sass/style.scss */
 .flash-message-text {
   display: inline-block;
 }
-/* line 22, ../sass/style.scss */
+/* line 35, ../sass/style.scss */
 .flash-message-text::first-letter {
   text-transform: capitalize;
 }
 
-/* line 27, ../sass/style.scss */
+/* line 40, ../sass/style.scss */
 .flash-message-icon {
   margin-right: 5px;
 }
 
-/* line 31, ../sass/style.scss */
+/* line 44, ../sass/style.scss */
 .chat-messages {
   height: 300px;
   overflow-y: scroll;
 }
 
-/* line 36, ../sass/style.scss */
-.semi-transparent {
-  opacity: 0.5;
+/* line 49, ../sass/style.scss */
+.label.label-as-badge {
+  display: inline-block;
 }
 
-/* line 41, ../sass/style.scss */
+/* line 54, ../sass/style.scss */
+.panel-heading h3.panel-title {
+  font-size: 20px;
+}
+/* line 57, ../sass/style.scss */
+.panel-heading .label.label-as-badge {
+  padding: .2em .6em .1em;
+}
+
+/* line 63, ../sass/style.scss */
 .panel-title i.is-closed {
   display: none;
 }
-/* line 45, ../sass/style.scss */
+/* line 67, ../sass/style.scss */
 .panel-title .collapsed i.is-open {
   display: none;
 }
-/* line 48, ../sass/style.scss */
+/* line 70, ../sass/style.scss */
 .panel-title .collapsed i.is-closed {
   display: inline;
+}
+
+/* line 76, ../sass/style.scss */
+.panel-body {
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+/* line 81, ../sass/style.scss */
+.close-panel {
+  padding-top: 5px;
 }

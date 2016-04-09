@@ -1,6 +1,12 @@
-<div class="panel">
+<!-- ko if: isActive -->
+<div class="panel panel-default">
 	<div class="panel-heading">
-		<h3>Chat</h3>
+		<h3 class="panel-title">
+			Chat
+			<small class="pull-right close-panel">
+				<a class="glyphicon glyphicon-remove" href="#" data-bind="click: deactivateChat" title="close panel"></a>
+			</small>
+		</h3>
 	</div>
 	<div class="panel-body">
 		<div class="well well-sm chat-messages" id="chat-messages" data-bind="foreach: messages">
@@ -19,14 +25,15 @@
 
 	<div class="panel-footer">
 		<div class="row">
-			<div class="col-sm-8">
+			<div class="col-sm-4">
 				<div data-bind="if: selectedUser">
 					Talking to: <span data-bind="text: selectedUser().name"></span>
 				</div>
 			</div>
-			<div class="col-sm-4">
-				<button class="btn btn-default btn-block" data-bind="click: onSubmit">Submit</button>
+			<div class="col-sm-8 text-right">
+				<button class="btn btn-primary" data-bind="click: onSubmit">Submit</button>
 			</div>
 		</div>
 	</div>
 </div>
+<!-- /ko -->
