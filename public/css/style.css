@@ -65,11 +65,11 @@ a {
 .panel-heading h3.panel-title {
   font-size: 20px;
 }
-/* line 57, ../sass/style.scss */
-.panel-heading .label.label-as-badge {
+
+/* line 60, ../sass/style.scss */
+.panel-title .label.label-as-badge {
   padding: .2em .6em .1em;
 }
-
 /* line 63, ../sass/style.scss */
 .panel-title i.is-closed {
   display: none;

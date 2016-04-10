@@ -54,12 +54,12 @@ a {
 	h3.panel-title {
 		font-size: 20px;
 	}
-	.label.label-as-badge {
-		padding: .2em .6em .1em;
-	}
 }
 
 .panel-title {
+	.label.label-as-badge {
+		padding: .2em .6em .1em;
+	}
 	i.is-closed {
 		display: none;
 	}

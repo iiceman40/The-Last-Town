@@ -29,3 +29,11 @@ db.once('open', function() {
 	});
 
 });
+
+io.on('connection', function (socket) {
+	console.log('connection established outside of database connection');
+});
+
+io.on('reconnect', function (socket) {
+	console.log('connection re-established outside of database connection');
+});

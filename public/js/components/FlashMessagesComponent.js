@@ -17,9 +17,14 @@ define(['knockout', 'knockout-postbox', 'text!templates/flash-messages.html', 'm
 				};
 
 				// observables
-				_this.isActive = ko.observable(true).subscribeTo('flashMessagesIsActive');
+				_this.isActive = ko.observable(false).subscribeTo('flashMessagesIsActive');
 				_this.flashMessages = ko.observableArray();
 				_this.flashMessages.subscribe(function () {
+					if(_this.flashMessages().length === 0){
+						_this.isActive(false);
+					} else {
+						_this.isActive(true);
+					}
 					console.log('flashMessages: ', _this.flashMessages());
 				});
 

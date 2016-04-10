@@ -47,18 +47,19 @@ GameManagement.prototype.handleIncomingEvents = function(socket){
 GameManagement.prototype.createNewGame = function(socket, data){
 	console.log('creating new game');
 	var _this = this;
-	var newMapData = this.mapFactory.build();
+	var newMapData = this.mapFactory.build(data.map);
 
 	// TODO use database model?
 	var player = {
 		name: socket.user.name,
+		userId: socket.user._id,
 		level: 0,
 		inventory: [],
 		skills: []
 	};
 
 	var newGame = new _this.GameModel({
-		name:           'New-Game-' + Math.floor(Math.random() * 1000000000000000),
+		name:           data.name || 'New-Game-' + Math.floor(Math.random() * 1000000000000000),
 		status:         1, // TODO use constants 1 - new game
 		players:        [player], // [new Player(socket.user)] // TODO add the user that created the map as a player
 		map:            newMapData

@@ -55,7 +55,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				};
 
 				_this.currentGame.subscribe(function(){
-					// clear previous map
+					// clear previous map - TODO find more efficient way like disposing the whole scene?
 					for(var i = 0; i < _this.mapTilesMeshes.length; i++){
 						_this.mapTilesMeshes[i].dispose();
 					}

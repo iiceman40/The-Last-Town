@@ -72,9 +72,8 @@ var TerrainRepository = function () {
 			searchResources: []
 		}
 	};
+
 	this.terrainTypesByProbability = [];
-	this.seedrandom = require('seedrandom');
-	this.rng = this.seedrandom();
 
 	// fill terrainTypesByProbability
 	for (var i in this.terrainTypes) {
@@ -86,19 +85,12 @@ var TerrainRepository = function () {
 	}
 };
 
-/**
- * set s new seed for the rng
- * @param seed
- */
-TerrainRepository.prototype.setSeedValueForRNG = function(seed){
-	this.rng = this.seedrandom(seed);
-};
-
 /*
  * returns string random type
  */
-TerrainRepository.prototype.createRandomType = function () {
-	return this.terrainTypesByProbability[Math.floor(this.rng() * this.terrainTypesByProbability.length)];
+TerrainRepository.prototype.createRandomType = function (rng) {
+	var randomValue = rng ? rng() : Math.random;
+	return this.terrainTypesByProbability[Math.floor(randomValue * this.terrainTypesByProbability.length)];
 };
 
 var getInstance = function(){
