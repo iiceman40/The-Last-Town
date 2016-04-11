@@ -8,26 +8,32 @@ var instance = null;
 var MapFactory = function(){
 	console.log('initiated map factory');
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
-};
-
-MapFactory.prototype.getTerrains = function(){
-	// TODO get the different terrains from the database
+	this.seedrandom = require('seedrandom');
+	this.rng = this.seedrandom();
 };
 
 MapFactory.prototype.build = function(settings){
-	console.log(this.terrainRepository);
-	this.terrainRepository.setSeedValueForRNG('1'); // TODO dynamically set seed
-	var mapData = {width: 64, height: 36, townPosition: {x: 32, y: 18}, seed: '1'};
+	console.log('building new map with settings: ', settings);
+	var mapData = {
+		width: settings.width,
+		height: settings.height,
+		townPosition: {
+			x: Math.floor(settings.width/2),
+			y: Math.floor(settings.height/2)
+		},
+		seed: settings.seed
+	};
+
+	this.rng = this.seedrandom(mapData.seed);
 	mapData = this.createMapGrid(mapData);
+
 	//mapData = this.connectNeighbors((mapData)); // deactivated because of recursion that will be created
 
 	// TODO mandatory: height, width, town position
 	// TODO optional: seed, limit terrain list, ...
-	// TODO us a seed to be able to regenerate a certain random map
 
 	return mapData;
 };
-
 
 MapFactory.prototype.createMapGrid = function (data) {
 	data.tiles = [];
@@ -53,11 +59,12 @@ MapFactory.prototype.createMapGrid = function (data) {
 			var distanceToBorderLeft = x;
 			var distanceToBorderRight = width - 1 - x;
 			var isMountainProbability = Math.min(distanceToBorderTop, distanceToBorderBottom, distanceToBorderLeft, distanceToBorderRight);
-			var random = Math.floor((Math.random() * 2) + 1);
+			
+			var random = Math.floor((this.rng() * 2) + 1);
 
 			var newTerrain = 'mountain';
 			if (random < isMountainProbability) {
-				newTerrain = this.terrainRepository.createRandomType();
+				newTerrain = this.terrainRepository.createRandomType(this.rng);
 			}
 
 			// TODO no terrain type for main town tile but an initial fixed improvement?

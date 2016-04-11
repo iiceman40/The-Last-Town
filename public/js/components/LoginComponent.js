@@ -38,11 +38,14 @@ define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessa
 
 				_this.socket.on('signedIn', function (data) {
 					ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
+					// init data
 					_this.notifyServer = false;
 					_this.user()._id(data.user._id);
 					_this.user().email(data.user.email);
 					_this.notifyServer = true;
+					// set login stauts
 					_this.user().loginStatus(_this.user().LOGIN_STATUS_LOGGED_IN);
+					// show panels
 					ko.postbox.publish("gamesListIsActive", true);
 					ko.postbox.publish("usersListIsActive", true);
 					ko.postbox.publish("flashMessagesIsActive", true);

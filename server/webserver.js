@@ -31,7 +31,8 @@ function start() {
 		'knockout',
 		'knockout-postbox',
 		'babylonjs',
-		'bootstrap'
+		'bootstrap',
+		'font-awesome'
 	];
 	for (var i = 0; i < modulesForClient.length; i++) {
 		app.use('/modules/' + modulesForClient[i] + '/', express.static(path.resolve('node_modules/' + modulesForClient[i])));
