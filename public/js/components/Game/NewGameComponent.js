@@ -21,11 +21,22 @@ define(['knockout', 'text!templates/game/new.html', 'GameViewModel', 'FlashMessa
 				_this.currentGame = params.currentGame;
 				_this.connectedUsers = params.connectedUsers;
 
+				_this.sizes = ko.observableArray([
+					{x: 50, y: 30, label: 'small'},
+					{x: 60, y: 40, label: 'medium'},
+					{x: 80, y: 50, label: 'large'}
+				]);
+				_this.size = ko.observable(_this.sizes()[0]);
+
 				_this.settings = {
 					name: ko.observable(''),
 					map: {
-						width: ko.observable(12),
-						height: ko.observable(10),
+						width: ko.computed(function(){
+							return _this.size().x;
+						}, _this),
+						height: ko.computed(function(){
+							return _this.size().y;
+						}, _this),
 						seed: ko.observable('')
 					}
 				};

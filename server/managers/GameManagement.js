@@ -49,7 +49,11 @@ GameManagement.prototype.createNewGame = function(socket, data){
 	var _this = this;
 	var newMapData = this.mapFactory.build(data.map);
 
-	// TODO use database model?
+	if(newMapData === null || !data.name){
+		return null;
+	}
+
+	// TODO use database model for players?
 	var player = {
 		name: socket.user.name,
 		userId: socket.user._id,
@@ -60,8 +64,8 @@ GameManagement.prototype.createNewGame = function(socket, data){
 
 	var newGame = new _this.GameModel({
 		name:           data.name || 'New-Game-' + Math.floor(Math.random() * 1000000000000000),
-		status:         1, // TODO use constants 1 - new game
-		players:        [player], // [new Player(socket.user)] // TODO add the user that created the map as a player
+		status:         1,          // TODO use constants 1 - new game
+		players:        [player],   // [new Player(socket.user)]
 		map:            newMapData
 	});
 
