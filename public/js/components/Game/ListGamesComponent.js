@@ -17,6 +17,7 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 
 				// observables
 				_this.isActive = ko.observable(true).subscribeTo('listGamesIsActive');
+				_this.isListInitiated = ko.observable(false);
 				_this.configNewGameIsActive = ko.observable(false);
 				_this.user = params.user;
 				_this.currentGame = params.currentGame;
@@ -62,6 +63,7 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 
 				_this.socket.on('gamesList', function (data) {
 					_this.games(data.games);
+					_this.isListInitiated(true);
 					ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
 					console.log('games list updated', data);
 				});

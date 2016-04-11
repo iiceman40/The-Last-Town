@@ -12,26 +12,21 @@
 		<form class="form-horizontal">
 			<div class="form-group">
 				<label for="game-name" class="col-xs-4 col-sm-3 control-label">
-					Game Name *
+					Game Name
 				</label>
 				<div class="col-xs-8 col-sm-9">
 					<input id="game-name" data-bind="value: settings.name" class="form-control input-sm" />
 				</div>
 			</div>
 			<div class="form-group">
-				<label for="map-width" class="col-xs-4 col-sm-3 control-label">
-					Map Width *
+				<label for="map-size" class="col-xs-4 col-sm-3 control-label">
+					Map Size
 				</label>
-				<div class="col-xs-8 col-sm-9">
-					<input id="map-width" type="number" data-bind="value: settings.map.width" class="form-control input-sm" />
+				<div class="col-xs-4 col-sm-5">
+					<select id="map-size" data-bind="options: sizes, value: size, optionsText: 'label'" class="form-control input-sm"></select>
 				</div>
-			</div>
-			<div class="form-group">
-				<label for="map-height" class="col-xs-4 col-sm-3 control-label">
-					Map Height *
-				</label>
-				<div class="col-xs-8 col-sm-9">
-					<input id="map-height" type="number" data-bind="value: settings.map.height" class="form-control input-sm" />
+				<div class="col-xs-4 col-sm-4">
+					<input data-bind="value: settings.map.width() + ' x ' + settings.map.height()" readonly class="form-control input-sm disabled text-center" />
 				</div>
 			</div>
 			<div class="form-group">
