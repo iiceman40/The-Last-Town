@@ -33,6 +33,10 @@ GameManagement.prototype.handleIncomingEvents = function(socket){
 		_this.createNewGame(socket, data);
 	});
 
+	socket.on('getGame', function(data){
+		_this.updateGame(socket, data);
+	});
+
 	socket.on('getGamesList', function(data){
 		_this.updateGamesList(socket, data);
 	});
@@ -85,14 +89,54 @@ GameManagement.prototype.createNewGame = function(socket, data){
  * 
  * @param socket
  * @param data
+ */
+GameManagement.prototype.updateGame = function(socket, data){
+	var _this = this;
+	var query  = _this.GameModel.where({_id: data.game._id});
+	query.findOne(function (err, game) {
+		if (err) return console.error(err);
+		if (game) {
+			_this.comService.emit(socket, 'updateGame', {
+				message: {text:'game has been loaded', type: 'success'},
+				game: game
+			}, socket.id);
+		}
+	});
+};
+
+/**
+ * 
+ * @param socket
+ * @param data
  * @param {boolean} all
  */
 GameManagement.prototype.updateGamesList = function(socket, data, all){
 	var _this = this;
-	_this.comService.emit(socket, 'gamesList', {
-		message: {text:'games list has been updated', type: 'success'},
-		games: _this.games
-	}, all ? 'all' : socket.id);
+	var gamesList = [];
+
+	_this.GameModel.find({}, function(err, games) {
+		if (!err){
+			for(var i = 0; i < games.length; i++){
+				var game = games[i];
+				gamesList.push({
+					_id: game._id,
+					name: game.name,
+					players: game.players,
+					status:game.status,
+					map: {
+						height: game.map.height,
+						width: game.map.width,
+						seed: game.map.seed
+					}
+				})
+			}
+
+			_this.comService.emit(socket, 'updateGamesList', {
+				message: {text:'games list has been updated', type: 'success'},
+				games: gamesList
+			}, all ? 'all' : socket.id);
+		} else {throw err;}
+	});
 };
 
 var getInstance = function(io, models){

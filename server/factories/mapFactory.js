@@ -7,13 +7,27 @@ var instance = null;
 
 var MapFactory = function(){
 	console.log('initiated map factory');
+	this.maxMapWith = 80;
+	this.maxMapHeight = 60;
+
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	this.seedrandom = require('seedrandom');
 	this.rng = this.seedrandom();
 };
 
+/**
+ *
+ * @param settings
+ * @returns {{}}
+ */
 MapFactory.prototype.build = function(settings){
 	console.log('building new map with settings: ', settings);
+	
+	if(settings.width > this.maxMapWith || settings.height > this.maxMapWith){
+		console.log('ERROR - requested map size ist bigger than the max values');
+		return null;
+	}
+	
 	var mapData = {
 		width: settings.width,
 		height: settings.height,
@@ -35,6 +49,11 @@ MapFactory.prototype.build = function(settings){
 	return mapData;
 };
 
+/**
+ * 
+ * @param data
+ * @returns {*}
+ */
 MapFactory.prototype.createMapGrid = function (data) {
 	data.tiles = [];
 	data.matrix = [];

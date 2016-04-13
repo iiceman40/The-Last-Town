@@ -17,7 +17,7 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 
 				// observables
 				_this.isActive = ko.observable(true).subscribeTo('listGamesIsActive');
-				_this.isListInitiated = ko.observable(false);
+				_this.loading = ko.observable(true);
 				_this.configNewGameIsActive = ko.observable(false);
 				_this.user = params.user;
 				_this.currentGame = params.currentGame;
@@ -36,12 +36,14 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 				};
 
 				_this.joinGame = function(game){
-					_this.currentGame(new GameViewModel(game));
-					// hide all panels
-					ko.postbox.publish("gamesListIsActive", false);
+					// get complete game data
+					_this.socket.emit('getGame', {game: game});
+					// hide all other panels
 					ko.postbox.publish("usersListIsActive", false);
 					ko.postbox.publish("flashMessagesIsActive", false);
 					ko.postbox.publish("chatIsActive", false);
+					// show loading screen
+					_this.loading(true);
 				};
 
 				_this.refreshGamesList = function () {
@@ -61,9 +63,17 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 					console.log('a new game has been created', data);
 				});
 
-				_this.socket.on('gamesList', function (data) {
+				_this.socket.on('updateGame', function (data) {
+					_this.currentGame(new GameViewModel(data.game));
+					// hide loading screen
+					_this.loading(false);
+					ko.postbox.publish("listGamesIsActive", false);
+					console.log('a game as been loaded', data);
+				});
+
+				_this.socket.on('updateGamesList', function (data) {
 					_this.games(data.games);
-					_this.isListInitiated(true);
+					_this.loading(false);
 					ko.postbox.publish('flashMessages', new FlashMessageViewModel(data.message));
 					console.log('games list updated', data);
 				});

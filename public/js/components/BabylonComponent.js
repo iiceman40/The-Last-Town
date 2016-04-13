@@ -14,7 +14,8 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.scene = null;
 
 				// TODO find a good way to get terrain types from server
-				_this.terrainTypes = ['grass', 'forest', 'mountain', 'cave', 'dirt', 'mud', 'water'];
+				// TODO don't use mainTownTile, create a tile improvement instead
+				_this.terrainTypes = ['grass', 'forest', 'mountain', 'cave', 'dirt', 'mud', 'water', 'mainTownTile'];
 				_this.terrainTiles = [];
 				_this.materials = [];
 
@@ -71,27 +72,31 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.materialsService.initMaterials();
 				// init terrainTiles
 				_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes);
-				console.log(_this.terrainTiles);
+
+				//_this.scene.activeCamera.setPosition(new BABYLON.Vector3(34, 23, 9));
 
 				// init background map for menu
-				var width = 100;
-				var height = 100;
-				var hexagonSize = _this.settings.hexagonSize;
-				var startPosX = -width * hexagonSize / 2;
-				var startPosZ = height * hexagonSize / 2;
-				for(var y = 0; y < height; y++){
-					for(var x = 0; x < width; x++) {
-						var terrainTypeIndex = _this.terrainTypes[Math.floor(Math.random() * _this.terrainTypes.length)];
-						var terrainTileInstance = _this.terrainTiles[terrainTypeIndex].createInstance(terrainTypeIndex + '-' + x + '-' + y);
-
-						var offset = (y%2 === 0) ? hexagonSize/2 : 0; // every second row with offset
-
-						terrainTileInstance.position.x = (startPosX + x * hexagonSize + offset) * 0.9;
-						terrainTileInstance.position.z = (startPosZ - y * hexagonSize) * 0.8;
-
-						_this.mapTilesMeshes.push(terrainTileInstance);
+				var placeholderTerrainTypes = [
+					'grass', 'grass', 'grass', 'grass',
+					'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest','forest',
+					'mountain', 'mountain', 'mountain',
+					'cave', 'cave', 'cave',
+					'dirt', 'dirt', 'dirt', 'dirt', 'dirt',
+					'mud', 'mud',
+					'water'];
+				var map = {};
+				map.width = 80;
+				map.height = 80;
+				map.matrix = [];
+				for(var y = 0; y < map.height; y++){
+					map.matrix[y] = [];
+					for(var x = 0; x < map.width; x++) {
+						map.matrix[y][x] = {};
+						map.matrix[y][x].terrain = placeholderTerrainTypes[Math.floor(Math.random() * placeholderTerrainTypes.length)];
 					}
 				}
+
+				_this.renderService.initMap(map, _this);
 
 			};
 

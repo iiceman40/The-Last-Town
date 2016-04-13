@@ -54,8 +54,9 @@ define(['babylonjs'], function (bjs) {
 			tileHeight = 0.01;
 		}
 
+		var name = 'base-tile-' + terrainType;
 		var terrainTile = BABYLON.Mesh.CreateCylinder(
-			"base-tile-blueprint",  // name
+			name,                   // name
 			tileHeight,             // height
 			diameterTop,            // diameter top
 			diameterBottom,         // diameter bottom
@@ -68,6 +69,8 @@ define(['babylonjs'], function (bjs) {
 		terrainTile.position.y = tileHeight/2;
 		terrainTile.convertToFlatShadedMesh();
 		terrainTile.layerMask = 0;
+
+		//terrainTile.addLODLevel(130, null);
 
 		if(this.materials[terrainType] instanceof BABYLON.StandardMaterial) {
 			terrainTile.material = this.materials[terrainType];

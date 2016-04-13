@@ -13,8 +13,8 @@ define(['babylonjs'], function (bjs) {
 		var scene = this.scene;
 
 		this.materials.grass = new BABYLON.StandardMaterial('grassMaterial', scene);
-		this.materials.grass.diffuseColor = new BABYLON.Color3(0.27, 0.40, 0.20);
-		this.materials.grass.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+		this.materials.grass.diffuseColor = new BABYLON.Color3(0.25, 0.35, 0.15);
+		this.materials.grass.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
 		this.materials.grass.specularPower = 128;
 
 		this.materials.forest = this.materials.grass;
@@ -28,8 +28,8 @@ define(['babylonjs'], function (bjs) {
 		this.materials.cave = this.materials.stone;
 
 		this.materials.mud = new BABYLON.StandardMaterial('mudMaterial', scene);
-		this.materials.mud.diffuseColor = new BABYLON.Color3(0.25, 0.11, 0.05);
-		this.materials.mud.specularColor = new BABYLON.Color3(0.01, 0.01, 0.01);
+		this.materials.mud.diffuseColor = new BABYLON.Color3(0.2, 0.07, 0.0);
+		this.materials.mud.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
 		this.materials.mud.specularPower = 128;
 
 		this.materials.dirt = new BABYLON.StandardMaterial('mudMaterial', scene);
@@ -39,6 +39,10 @@ define(['babylonjs'], function (bjs) {
 
 		this.materials.water = new BABYLON.StandardMaterial('waterMaterial', scene);
 		this.materials.water.diffuseColor = new BABYLON.Color3(0.18, 0.18, 0.42);
+
+		this.materials.mainTownTile = new BABYLON.StandardMaterial('mainTownTileMaterial', scene);
+		this.materials.mainTownTile.diffuseColor = new BABYLON.Color3(0.5, 0, 0);
+		this.materials.mainTownTile.emissiveColor = new BABYLON.Color3(0.2, 0, 0);
 
 		return this.materials;
 	};
