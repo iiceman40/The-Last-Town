@@ -61,7 +61,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 						_this.mapTilesMeshes[i].dispose();
 					}
 
-					// TODO init game map
+					// init game map
 					_this.renderService.initMap(_this.currentGame().map(), _this);
 
 					// TODO init players
@@ -86,7 +86,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					'water'];
 				var map = {};
 				map.width = 80;
-				map.height = 80;
+				map.height = 50;
 				map.matrix = [];
 				for(var y = 0; y < map.height; y++){
 					map.matrix[y] = [];

@@ -16,12 +16,6 @@ define([
 			_this.currentGame = ko.observable();
 			_this.connectedUsers = ko.observableArray([]);
 
-			// TODO use a game Singleton Object to handle game states
-			// TODO menu for creating and selecting maps before a game started
-			// TODO menu for profile
-			// TODO render map in Map3d Object
-			// TODO use Player Objects
-
 			// register components
 			ko.components.register('flash-messages', FlashMessagesComponent);
 			ko.components.register('users-list', UsersListComponent);
@@ -32,7 +26,6 @@ define([
 			ko.components.register('new-game', NewGameComponent);
 			ko.components.register('babylon', BabylonComponent);
 			ko.components.register('menu-bar', MenuBarComponent);
-			// TODO create a component for the menu bar
 		};
 	}
 );

@@ -1,5 +1,5 @@
 {"autoClear":true,"clearColor":[0,0,0],"ambientColor":[0,0,0],"gravity":[0,-9.81,0],
-"materials":[{"name":"trees.brown","id":"trees.brown","ambient":[0,0,0],"diffuse":[0.2134,0.0588,0.0285],"specular":[0,0,0],"emissive":[0,0,0],"specularPower":50,"alpha":1,"backFaceCulling":true},{"name":"trees.green","id":"trees.green","ambient":[0,0,0],"diffuse":[0.05,0.25,0],"specular":[0,0,0],"emissive":[0,0,0],"specularPower":1,"alpha":1,"backFaceCulling":true}],
+"materials":[{"name":"trees.brown","id":"trees.brown","ambient":[0,0,0],"diffuse":[0.2134,0.0588,0.0285],"specular":[0,0,0],"emissive":[0,0,0],"specularPower":50,"alpha":1,"backFaceCulling":true},{"name":"trees.green","id":"trees.green","ambient":[0,0,0],"diffuse":[0.05,0.25,0],"specular":[0.1,0.1,0.1],"emissive":[0,0,0],"specularPower":10,"alpha":1,"backFaceCulling":true}],
 "multiMaterials":[{"name":"trees.Multimaterial#0","id":"trees.Multimaterial#0","materials":["trees.brown","trees.green"]}],
 "skeletons":[],
 "meshes":[{"name":"trees","id":"trees","materialId":"trees.Multimaterial#0","billboardMode":0,"position":[0.4469,0.0013,0.258],"rotation":[0,-0.6711,0],"scaling":[0.2181,0.2181,0.2181],"isVisible":true,"isEnabled":true,"useFlatShading":true,"checkCollisions":false,"receiveShadows":false
@@ -9,6 +9,6 @@
 ,"subMeshes":[{"materialIndex":0,"verticesStart":0,"verticesCount":75,"indexStart":0,"indexCount":360},{"materialIndex":1,"verticesStart":75,"verticesCount":171,"indexStart":360,"indexCount":936}]
 ,"instances":[]}
 ],
-"cameras":[{"name":"Camera","id":"Camera","position":[7.4811,5.3437,-6.5076],"rotation":[0.4615,-0.8149,0.0108],"fov":0.8576,"minZ":0.1,"maxZ":100,"speed":1,"inertia":0.9,"checkCollisions":false,"applyGravity":false,"ellipsoid":[0.2,0.9,0.2],"type":"FreeCamera"}],"activeCamera":"Camera",
-"lights":[{"name":"Lamp","id":"Lamp","type":0,"position":[4.0762,5.9039,1.0055],"intensity":1,"diffuse":[1,1,1],"specular":[1,1,1]}],
+"cameras":[],
+"lights":[],
 "shadowGenerators":[]}

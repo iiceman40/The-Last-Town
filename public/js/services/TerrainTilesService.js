@@ -26,8 +26,6 @@ define(['babylonjs'], function (bjs) {
 		return this.terrainTiles;
 	};
 
-	// TODO add prototype to create terrain decorations
-
 	/**
 	 *
 	 * @param {string} terrainType

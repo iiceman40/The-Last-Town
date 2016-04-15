@@ -68,7 +68,7 @@ GameManagement.prototype.createNewGame = function(socket, data){
 
 	var newGame = new _this.GameModel({
 		name:           data.name || 'New-Game-' + Math.floor(Math.random() * 1000000000000000),
-		status:         1,          // TODO use constants 1 - new game
+		status:         GAME_STATE_ACTIVE,
 		players:        [player],   // [new Player(socket.user)]
 		map:            newMapData
 	});
