@@ -21,10 +21,12 @@
     "mongodb": "^2.1.7",
     "mongoose": "^4.4.7",
     "pathfinding": "git://github.com/schteppe/PathFinding3D.js.git#master",
+    "pepjs": "^0.4.1",
     "requirejs": "^2.1.22",
     "seedrandom": "^2.4.2",
     "socket.io": "^1.4.5",
-    "text": "github:requirejs/text"
+    "text": "github:requirejs/text",
+    "underscore": "^1.8.3"
   },
   "repository": {
     "type": "git",

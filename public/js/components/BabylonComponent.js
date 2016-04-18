@@ -56,24 +56,29 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				};
 
 				_this.currentGame.subscribe(function(){
-					// clear previous map - TODO find more efficient way like disposing the whole scene?
+					// clear previous map
 					for(var i = 0; i < _this.mapTilesMeshes.length; i++){
 						_this.mapTilesMeshes[i].dispose();
 					}
 
+					// re-init terrainTiles
+					_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, _this);
 					// init game map
 					_this.renderService.initMap(_this.currentGame().map(), _this);
-
 					// TODO init players
-					_this.renderService.initPlayers(_this.currentGame().players(), _this);
+					//_this.renderService.initPlayers(_this.currentGame().players(), _this);
 				});
 
 				// init materials
 				_this.materialsService.initMaterials();
-				// init terrainTiles
-				_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes);
 
-				//_this.scene.activeCamera.setPosition(new BABYLON.Vector3(34, 23, 9));
+				// init terrainTiles
+				_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, this);
+
+				_this.terrainTilesFactory.initSelectDisc();
+				_this.terrainTilesFactory.initHoverDisc();
+
+				_this.scene.activeCamera.setPosition(new BABYLON.Vector3(20, 12, 6));
 
 				// init background map for menu
 				var placeholderTerrainTypes = [

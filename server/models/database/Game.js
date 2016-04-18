@@ -1,7 +1,6 @@
 'use strict';
 
 var mongoose = require('mongoose');
-const GAME_STATE_ACTIVE = 1;
 
 // Schema
 var GameSchema = mongoose.Schema({

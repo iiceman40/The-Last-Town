@@ -46,6 +46,18 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 					_this.loading(true);
 				};
 
+				_this.editMap = function(game){
+					// get complete game data
+					_this.socket.emit('getGame', {game: game});
+					// hide all other panels
+					ko.postbox.publish("usersListIsActive", false);
+					ko.postbox.publish("flashMessagesIsActive", false);
+					ko.postbox.publish("chatIsActive", false);
+					ko.postbox.publish("editMapIsActive", true);
+					// show loading screen
+					_this.loading(true);
+				};
+
 				_this.refreshGamesList = function () {
 					_this.socket.emit('getGamesList', {});
 				};

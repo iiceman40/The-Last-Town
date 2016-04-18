@@ -12,6 +12,8 @@ define(['knockout', 'text!templates/game/new.html', 'GameViewModel', 'FlashMessa
 				var _this = this;
 				_this.socket = params.socket;
 
+				// TODO give the user the opportunity to select available terrain types for a map
+
 				// observable array
 
 				// observables

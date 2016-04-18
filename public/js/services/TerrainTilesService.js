@@ -1,26 +1,57 @@
 define(['babylonjs'], function (bjs) {
 	var instance = null;
+	// TODO rename to factory
 
 	var TerrainTilesService = function (params) {
 
 		this.scene = params.scene;
 		this.materials = params.materials;
 		this.terrainTiles = {};
+		this.selectDisc = null;
+		this.hoverDisc = null;
 
 		this.hexagonSize = params.hexagonSize;
 
 	};
 
+	TerrainTilesService.prototype.getSelectDisc = function(){
+		return this.selectDisc;
+	};
+
+	TerrainTilesService.prototype.getHoverDisc = function(){
+		return this.hoverDisc;
+	};
+
+	TerrainTilesService.prototype.initSelectDisc = function() {
+		this.selectDisc = new BABYLON.Mesh.CreateDisc('select', this.hexagonSize/2 * 1.6, 6, this.scene);
+		this.selectDisc.rotation.x = Math.PI/2;
+		this.selectDisc.rotation.y = Math.PI/2;
+		this.selectDisc.material = this.materials.select;
+		this.selectDisc.isVisible = false;
+		return this.selectDisc;
+	};
+
+	TerrainTilesService.prototype.initHoverDisc = function() {
+		this.hoverDisc = new BABYLON.Mesh.CreateDisc('hover', this.hexagonSize/2 * 1.11, 6, this.scene);
+		this.hoverDisc.rotation.x = Math.PI/2;
+		this.hoverDisc.rotation.y = Math.PI/2;
+		this.hoverDisc.material = this.materials.hover;
+		this.hoverDisc.isVisible = false;
+		return this.hoverDisc;
+	};
+
 	/**
 	 *
 	 * @param {Array} terrainTypes
+	 * @param {{mapTilesMeshes: Array}} babylonViewModel
 	 * @returns {{}}
 	 */
-	TerrainTilesService.prototype.initTerrainTiles = function (terrainTypes) {
+	TerrainTilesService.prototype.initTerrainTiles = function (terrainTypes, babylonViewModel) {
 		var _this = this;
 
 		for(var i = 0; i < terrainTypes.length; i++) {
 			_this.terrainTiles[terrainTypes[i]] = _this.createTerrainTileBlueprint(terrainTypes[i]);
+			babylonViewModel.mapTilesMeshes.push(_this.terrainTiles[terrainTypes[i]]);
 		}
 
 		return this.terrainTiles;
@@ -73,6 +104,8 @@ define(['babylonjs'], function (bjs) {
 		if(this.materials[terrainType] instanceof BABYLON.StandardMaterial) {
 			terrainTile.material = this.materials[terrainType];
 		}
+
+		terrainTile.freezeWorldMatrix();
 
 		return terrainTile;
 	};

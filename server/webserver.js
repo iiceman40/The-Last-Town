@@ -31,6 +31,7 @@ function start() {
 		'knockout',
 		'knockout-postbox',
 		'babylonjs',
+		'pepjs',
 		'bootstrap',
 		'font-awesome'
 	];

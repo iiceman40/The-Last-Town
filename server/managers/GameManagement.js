@@ -1,6 +1,7 @@
 'use strict';
 
 var instance = null;
+const GAME_STATE_ACTIVE = 1;
 
 var GameManagement = function (io, models) {
 	var _this = this;

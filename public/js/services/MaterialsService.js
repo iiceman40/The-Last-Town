@@ -1,5 +1,6 @@
 define(['babylonjs'], function (bjs) {
 	var instance = null;
+	// TODO rename to factory
 
 	var MaterialsService = function (params) {
 
@@ -41,8 +42,16 @@ define(['babylonjs'], function (bjs) {
 		this.materials.water.diffuseColor = new BABYLON.Color3(0.18, 0.18, 0.42);
 
 		this.materials.mainTownTile = new BABYLON.StandardMaterial('mainTownTileMaterial', scene);
-		this.materials.mainTownTile.diffuseColor = new BABYLON.Color3(0.5, 0, 0);
-		this.materials.mainTownTile.emissiveColor = new BABYLON.Color3(0.2, 0, 0);
+		this.materials.mainTownTile.diffuseColor = new BABYLON.Color3(0.5, 0, 0.5);
+		this.materials.mainTownTile.emissiveColor = new BABYLON.Color3(0.2, 0, 0.5);
+
+		this.materials.select  = new BABYLON.StandardMaterial('brightRedMaterial', scene);
+		this.materials.select .diffuseColor = new BABYLON.Color3(0.5, 0, 0);
+		this.materials.select .emissiveColor = new BABYLON.Color3(0.2, 0, 0);
+
+		this.materials.hover = new BABYLON.StandardMaterial('brightGreenMaterial', scene);
+		this.materials.hover.diffuseColor = new BABYLON.Color3(0, 0.5, 0);
+		this.materials.hover.emissiveColor = new BABYLON.Color3(0, 0.2, 0);
 
 		return this.materials;
 	};

@@ -43,28 +43,25 @@ MapFactory.prototype.build = function(settings){
 
 	//mapData = this.connectNeighbors((mapData)); // deactivated because of recursion that will be created
 
-	// TODO mandatory: height, width, town position
-	// TODO optional: seed, limit terrain list, ...
-
 	return mapData;
 };
 
 /**
  * 
- * @param data
+ * @param mapData
  * @returns {*}
  */
-MapFactory.prototype.createMapGrid = function (data) {
-	data.tiles = [];
-	data.matrix = [];
-	data.enemyMatrix = [];
+MapFactory.prototype.createMapGrid = function (mapData) {
+	mapData.tiles = [];
+	mapData.matrix = [];
+	mapData.enemyMatrix = [];
 
-	var width = data.width;
-	var height = data.height;
-	var townPosition = data.townPosition;
+	var width = mapData.width;
+	var height = mapData.height;
+	var townPosition = mapData.townPosition;
 
-	var matrix = data.matrix;
-	var enemyMatrix = data.enemyMatrix;
+	var matrix = mapData.matrix;
+	var enemyMatrix = mapData.enemyMatrix;
 
 	for (var y = 0; y < height; y++) {
 		var currentMapRow = [];
@@ -83,7 +80,7 @@ MapFactory.prototype.createMapGrid = function (data) {
 
 			var newTerrain = 'mountain';
 			if (random < isMountainProbability) {
-				newTerrain = this.terrainRepository.createRandomType(this.rng);
+				newTerrain = this.terrainRepository.createRandomType(this.rng, ['lake']);
 			}
 
 			// TODO no terrain type for main town tile but an initial fixed improvement?
@@ -92,7 +89,7 @@ MapFactory.prototype.createMapGrid = function (data) {
 			}
 
 			// tile
-			data.tiles.push(new Tile({
+			mapData.tiles.push(new Tile({
 				position: {x: x, y: y},
 				terrain: newTerrain
 			}));
@@ -114,25 +111,103 @@ MapFactory.prototype.createMapGrid = function (data) {
 		enemyMatrix.push(currentEnemyMapRow);
 
 	}
+	// TODO maybe use a "LakeFactory"... maybe a general biom factory?
+	this.placeLakes(mapData, {
+		lakeSize: 20,
+		numberOfLakes: 5
+	});
 
-	data.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
-	data.townPosition = townPosition;
+	mapData.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
+	mapData.townPosition = townPosition;
 
-	return data;
+	return mapData;
+};
+
+/**
+ *
+ * @param mapData
+ * @param settings
+ * @returns {{}}
+ */
+MapFactory.prototype.placeLakes = function(mapData, settings){
+	var numberOfLakes = settings.numberOfLakes || 3;
+
+	for(var i = 0; i < numberOfLakes; i++){
+		this.createLake(mapData, settings)
+	}
+	return mapData
+};
+
+MapFactory.prototype.createLake = function(mapData, settings){
+	var lakeSize = settings.lakeSize || 20;
+
+	var lakeCenterPosition = {
+		x: Math.floor(this.rng() * mapData.width),
+		y: Math.floor(this.rng() * mapData.height)
+	};
+	var lakeCenterNode = mapData.matrix[lakeCenterPosition.y][lakeCenterPosition.x];
+	lakeCenterNode.terrain = 'water';
+	lakeSize--;
+
+	settings.randomizeEdge = true;
+
+	// TODO use size and iterate multiple times
+	var neighborPositions = this.transformNeighborsToTargetType(mapData, lakeCenterNode, settings);
+	lakeSize -= neighborPositions.length;
+
+	while (lakeSize > 0) {
+		var newNeighborPositions = [];
+		for (var i = 0; i < neighborPositions.length; i++) {
+			newNeighborPositions = this.transformNeighborsToTargetType(mapData, neighborPositions[i], settings);
+			lakeSize -= newNeighborPositions.length;
+		}
+		neighborPositions.push(newNeighborPositions);
+	}
+};
+
+/**
+ * finds all neighbors of a position and transforms them into the target terrain type
+ * @param mapData
+ * @param originPosition
+ * @param settings
+ * @returns {[{x: Number, y: Number}]}
+ */
+MapFactory.prototype.transformNeighborsToTargetType = function(mapData, originPosition, settings){
+	var targetType = 'water';
+	var neighborPositions = this.getTileNeighborPositions(originPosition);
+	var indicesToUnset = [];
+
+	for(var i = 0; i < neighborPositions.length; i++) {
+		var neighborPosition = neighborPositions[i];
+		if(settings.randomizeEdge && this.rng() > 0.7){
+			indicesToUnset.push(i);
+		} else {
+			// check if neighbor is still within map limits
+			if (this.tileIsInMapBoundaries(neighborPosition, mapData)) {
+				mapData.matrix[neighborPosition.y][neighborPosition.x].terrain = targetType;
+			}
+		}
+	}
+
+	for(var j = 0; j < indicesToUnset.length; j++) {
+		neighborPositions.splice(indicesToUnset[j],1);
+	}
+
+	return neighborPositions;
 };
 
 /**
  * connects the nodes in a basic map grid to complete it
  * and to make it walkable for players and enemies
- * @param data
+ * @param mapData
  * @returns {*} data (final)
  */
-MapFactory.prototype.connectNeighbors = function (data) {
-	var height = data.height;
-	var width = data.width;
+MapFactory.prototype.connectNeighbors = function (mapData) {
+	var height = mapData.height;
+	var width = mapData.width;
 
-	var matrix = data.matrix;
-	var enemyMatrix = data.enemyMatrix;
+	var matrix = mapData.matrix;
+	var enemyMatrix = mapData.enemyMatrix;
 
 	// connect neighbours
 	for (var y = 0; y < height; y++) {
@@ -141,23 +216,7 @@ MapFactory.prototype.connectNeighbors = function (data) {
 			var currentEnemyNode = enemyMatrix[y][x];
 
 			// construct an array of neighbor positions
-			var neighborPositions = [
-				{x: x + 1, y: y}, // right
-				{x: x - 1, y: y} // left
-			];
-			if (y % 2 == 0) {
-				// even row
-				neighborPositions.push({x: x, y: y - 1}); // top left
-				neighborPositions.push({x: x + 1, y: y - 1}); // top right
-				neighborPositions.push({x: x, y: y + 1}); // bottom left
-				neighborPositions.push({x: x + 1, y: y + 1}); // bottom right
-			} else {
-				// odd row
-				neighborPositions.push({x: x - 1, y: y - 1}); // top left
-				neighborPositions.push({x: x, y: y - 1}); // top right
-				neighborPositions.push({x: x - 1, y: y + 1}); // bottom left
-				neighborPositions.push({x: x, y: y + 1}); // bottom right
-			}
+			var neighborPositions = this.getTileNeighborPositions({x: x, y: y});
 
 			// iterate over all the neighbors and decide if to add them to the current node or not
 			currentNode.visibleNeighbors = [];
@@ -166,11 +225,7 @@ MapFactory.prototype.connectNeighbors = function (data) {
 				var neighborPosition = neighborPositions[i];
 
 				// check if neighbor is still within map limits
-				if (neighborPosition.y >= 0 &&
-					neighborPosition.y < height &&
-					neighborPosition.x >= 0 &&
-					neighborPosition.x < width
-				) {
+				if (this.tileIsInMapBoundaries(neighborPosition, mapData)) {
 
 					var neighborNode = matrix[neighborPosition.y][neighborPosition.x];
 					var neighborNodePosition = {x: neighborPosition.x, y: neighborPosition.y};
@@ -194,7 +249,39 @@ MapFactory.prototype.connectNeighbors = function (data) {
 	}
 
 	console.log('returning data');
-	return data;
+	return mapData;
+};
+
+MapFactory.prototype.getTileNeighborPositions = function(tilePosition){
+	var x = tilePosition.x;
+	var y = tilePosition.y;
+	var neighborPositions = [
+		{x: x + 1, y: y}, // right
+		{x: x - 1, y: y} // left
+	];
+	if (y % 2 == 0) {
+		// even row
+		neighborPositions.push({x: x, y: y - 1}); // top left
+		neighborPositions.push({x: x + 1, y: y - 1}); // top right
+		neighborPositions.push({x: x, y: y + 1}); // bottom left
+		neighborPositions.push({x: x + 1, y: y + 1}); // bottom right
+	} else {
+		// odd row
+		neighborPositions.push({x: x - 1, y: y - 1}); // top left
+		neighborPositions.push({x: x, y: y - 1}); // top right
+		neighborPositions.push({x: x - 1, y: y + 1}); // bottom left
+		neighborPositions.push({x: x, y: y + 1}); // bottom right
+	}
+	return neighborPositions;
+};
+
+MapFactory.prototype.tileIsInMapBoundaries = function(tilePosition, mapData){
+	return (
+		tilePosition.y >= 0 &&
+		tilePosition.y < mapData.height &&
+		tilePosition.x >= 0 &&
+		tilePosition.x < mapData.width
+	)
 };
 
 var getInstance = function(){

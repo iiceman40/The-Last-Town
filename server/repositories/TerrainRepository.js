@@ -47,6 +47,14 @@ var TerrainRepository = function () {
 			searchCapacity: 0,
 			searchResources: []
 		},
+		lake: {
+			name: 'lake',
+			description: 'Hmm... water...',
+			probability: 2,
+			searchTime: 80,
+			searchCapacity: 0,
+			searchResources: []
+		},
 		mud: {
 			name: 'mud',
 			description: 'Caution mud...',
@@ -88,9 +96,13 @@ var TerrainRepository = function () {
 /*
  * returns string random type
  */
-TerrainRepository.prototype.createRandomType = function (rng) {
-	var randomValue = rng ? rng() : Math.random;
-	return this.terrainTypesByProbability[Math.floor(randomValue * this.terrainTypesByProbability.length)];
+TerrainRepository.prototype.createRandomType = function (rng, blacklist) {
+	var type = '';
+	do {
+		var randomValue = rng ? rng() : Math.random;
+		type = this.terrainTypesByProbability[Math.floor(randomValue * this.terrainTypesByProbability.length)]
+	} while(blacklist.indexOf(type) != -1);
+	return type;
 };
 
 var getInstance = function(){

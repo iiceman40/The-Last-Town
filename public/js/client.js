@@ -20,6 +20,7 @@ require.config({
 		'knockout':                 'modules/knockout/build/output/knockout-latest',
 		'knockout-postbox':         'modules/knockout-postbox/build/knockout-postbox.min',
 		'babylonjs':                'modules/babylonjs/babylon.max',
+		'pepjs':                    'modules/pepjs/dist/pep.min',
 		'bootstrap':                'modules/bootstrap/dist/js/bootstrap.min',
 		// VIEW MODELS
 		'MainViewModel':            'js/viewModels/MainViewModel',
@@ -27,6 +28,7 @@ require.config({
 		'MessageViewModel':         'js/viewModels/MessageViewModel',
 		'FlashMessageViewModel':    'js/viewModels/FlashMessageViewModel',
 		'GameViewModel':            'js/viewModels/GameViewModel',
+		'SelectedNodeViewModel':    'js/viewModels/SelectedNodeViewModel',
 		// FACTORIES
 		'SceneFactory':             'js/factories/SceneFactory',
 		// SERVICES
@@ -41,6 +43,7 @@ require.config({
 		'ChatComponent':            'js/components/ChatComponent',
 		'ListGamesComponent':       'js/components/game/ListGamesComponent',
 		'NewGameComponent':         'js/components/game/NewGameComponent',
+		'EditMapComponent':         'js/components/game/EditMapComponent',
 		'BabylonComponent':         'js/components/BabylonComponent',
 		'MenuBarComponent':         'js/components/MenuBarComponent'
 	}
