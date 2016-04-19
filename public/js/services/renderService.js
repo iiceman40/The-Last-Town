@@ -9,13 +9,10 @@ define(['babylonjs'], function (bjs) {
 		var _this = this;
 		var scene = babylonViewModel.scene;
 		var terrainTiles = babylonViewModel.terrainTiles;
-		var terrainTypes = babylonViewModel.terrainTypes;
 
 		console.log('rendering map', map, babylonViewModel);
 
 		// TODO use asset manager for textures and models
-		// TODO use instances for terrains
-
 
 		var width = map.width;
 		var height = map.height;
@@ -28,6 +25,7 @@ define(['babylonjs'], function (bjs) {
 			_this.models.trees = newMeshes[0];
 			_this.models.trees.scaling = new BABYLON.Vector3(0.16, 0.16, 0.16);
 			_this.models.trees.layerMask = 0;
+			_this.models.trees.freezeWorldMatrix();
 
 			/* no difference since trees are probably not complex enough
 			var lowDetailModel = BABYLON.Mesh.CreateCylinder(
@@ -47,7 +45,7 @@ define(['babylonjs'], function (bjs) {
 			_this.models.trees.addLODLevel(70, lowDetailModel);
 			*/
 
-			//_this.models.trees.addLODLevel(115, null);
+			//_this.models.trees.addLODLevel(50, null);
 
 			babylonViewModel.mapTilesMeshes.push(_this.models.trees);
 
@@ -62,21 +60,19 @@ define(['babylonjs'], function (bjs) {
 						terrainTileInstance.position.x = (startPosX + x * hexagonSize + offset) * 0.9;
 						terrainTileInstance.position.z = (startPosZ - y * hexagonSize) * 0.8;
 
+						terrainTileInstance.mapNode = map.matrix[y][x];
+
 						if(terrainTypeIndex === 'forest'){
 							_this.createForestTerrainTileDecoration(terrainTileInstance);
 						}
 
-						babylonViewModel.mapTilesMeshes.push(terrainTileInstance);
 					} else {
 						console.log('terrain type not found: ', terrainTypeIndex);
 					}
 				}
 			}
 
-			// TODO save actree in variable in babylon component for later use
-			var octree = scene.createOrUpdateSelectionOctree();
-			
-			// TODO bind camera angle to zoom distance and add min and max zoom distance
+			babylonViewModel.octree = scene.createOrUpdateSelectionOctree();
 		});
 	};
 
@@ -84,6 +80,9 @@ define(['babylonjs'], function (bjs) {
 		var treesInstance = this.models.trees.createInstance('trees');
 		treesInstance.rotation.y = 0.7 * Math.random() - 0.5;
 		treesInstance.position = terrainTileInstance.position.add(new BABYLON.Vector3(0, 0, 0));
+		treesInstance.mapNode = terrainTileInstance.mapNode;
+		treesInstance.isPickable = false;
+		terrainTileInstance.tileDecoration = treesInstance;
 	};
 
 	RenderService.prototype.initPlayers = function(players, babylonViewModel){

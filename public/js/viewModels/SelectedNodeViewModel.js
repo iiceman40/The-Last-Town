@@ -14,6 +14,8 @@ define(['knockout', 'RenderService'], function (ko, RenderService) {
 		this.scene = editMapViewModel.scene;
 		this.renderService = RenderService.getInstance();
 
+		// TODO edit improvements
+
 		this.terrain.subscribe(function () {
 			var position = _this.terrainTileInstance.position.clone();
 
@@ -36,6 +38,8 @@ define(['knockout', 'RenderService'], function (ko, RenderService) {
 			}
 
 			_this.babylonViewModel.octree = _this.scene.createOrUpdateSelectionOctree();
+
+			// TODO send tile update information to server
 		})
 	};
 
