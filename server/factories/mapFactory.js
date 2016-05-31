@@ -55,12 +55,14 @@ MapFactory.prototype.createMapGrid = function (mapData) {
 	mapData.tiles = [];
 	mapData.matrix = [];
 	mapData.enemyMatrix = [];
+	mapData.indexedTiles = {};
 
 	var width = mapData.width;
 	var height = mapData.height;
 	var townPosition = mapData.townPosition;
 
 	var matrix = mapData.matrix;
+	var indexedTiles = mapData.indexedTiles;
 	var enemyMatrix = mapData.enemyMatrix;
 
 	for (var y = 0; y < height; y++) {
@@ -78,32 +80,33 @@ MapFactory.prototype.createMapGrid = function (mapData) {
 			
 			var random = Math.floor((this.rng() * 2) + 1);
 
-			var newTerrain = 'mountain';
+			var newTerrainType = 'mountain';
 			if (random < isMountainProbability) {
-				newTerrain = this.terrainRepository.createRandomType(this.rng, ['lake']);
+				newTerrainType = this.terrainRepository.createRandomType(this.rng, ['lake']);
 			}
 
 			// TODO no terrain type for main town tile but an initial fixed improvement?
 			if (townPosition.x == x && townPosition.y == y) {
-				newTerrain = 'mainTownTile';
+				newTerrainType = 'mainTownTile';
 			}
 
 			// tile
-			mapData.tiles.push(new Tile({
+			var newTile = new Tile({
 				position: {x: x, y: y},
-				terrain: newTerrain
-			}));
+				terrain: newTerrainType
+			});
+			mapData.tiles.push(newTile);
 
 			// node for player
 			var node = new PF.Node(x, y, 0);
-			node.isWalkable = (newTerrain != 'water' && newTerrain != 'mountain');
-			node.terrain = newTerrain;
+			node.isWalkable = (newTerrainType != 'water' && newTerrainType != 'mountain');
+			node.terrain = newTerrainType;
 			node.enemies = [];
 			currentMapRow.push(node);
 
 			// node for enemies
 			var enemyNode = new PF.Node(x, y, 0);
-			enemyNode.isWalkable = (newTerrain != 'water');
+			enemyNode.isWalkable = (newTerrainType != 'water');
 			currentEnemyMapRow.push(enemyNode);
 
 		}
@@ -116,6 +119,16 @@ MapFactory.prototype.createMapGrid = function (mapData) {
 		lakeSize: 20,
 		numberOfLakes: 5
 	});
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			var terrainType = mapData.matrix[y][x].terrain;
+			if(!indexedTiles.hasOwnProperty(terrainType)) {
+				indexedTiles[terrainType] = [];
+			}
+			indexedTiles[terrainType].push(mapData.matrix[y][x]);
+		}
+	}
 
 	mapData.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
 	mapData.townPosition = townPosition;

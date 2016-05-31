@@ -17,6 +17,7 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
 
 	var chatService = require('./server/services/ChatService').getInstance(io, models.User);
+	var sharedDataService = require('./server/services/SharedDataService').getInstance(io);
 	var userManagement = require('./server/managers/UserManagement').getInstance(io, models.User);
 	var gameManagement = require('./server/managers/GameManagement').getInstance(io, models);
 
@@ -26,6 +27,7 @@ db.once('open', function() {
 		userManagement.handleIncomingEvents(socket);
 		chatService.handleIncomingEvents(socket);
 		gameManagement.handleIncomingEvents(socket)
+		sharedDataService.handleIncomingEvents(socket)
 	});
 
 });

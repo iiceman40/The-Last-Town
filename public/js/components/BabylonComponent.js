@@ -13,9 +13,9 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.socket = params.socket;
 				_this.scene = null;
 
-				// TODO find a good way to get terrain types from server
 				// TODO don't use mainTownTile, create a tile improvement instead
-				_this.terrainTypes = ['grass', 'forest', 'mountain', 'cave', 'dirt', 'mud', 'water', 'mainTownTile'];
+
+				_this.terrainTypes = [];
 				_this.terrainTiles = [];
 				_this.materials = [];
 
@@ -25,14 +25,56 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					hexagonSize: 3
 				};
 
+				// init terrain types
+				_this.socket.emit('getTerrainTypes', {});
+				_this.socket.on('updateTerrainTypes', function (data) {
+					_this.terrainTypes = Object.keys(data.terrainTypes);
+					console.log(_this.terrainTypes);
+					// init terrainTiles
+					_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, _this);
+					// TODO move to separate function that gets called on first time change of _this.terrainTypes/Tiles
+					// init background map for menu
+					// TODO get placeholder terrain types from server or terrain types
+					var placeholderTerrainTypes = [
+						'grass', 'grass', 'grass', 'grass',
+						'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest','forest',
+						'mountain', 'mountain', 'mountain',
+						'cave', 'cave', 'cave',
+						'dirt', 'dirt', 'dirt', 'dirt', 'dirt',
+						'mud', 'mud',
+						'water'];
+					var mapData = {};
+					mapData.width = 100;
+					mapData.height = 100;
+					mapData.matrix = [];
+					mapData.indexedTiles = {};
+					var indexedTiles = mapData.indexedTiles;
+					for(var y = 0; y < mapData.height; y++){
+						mapData.matrix[y] = [];
+						for(var x = 0; x < mapData.width; x++) {
+							var newTerrainType = placeholderTerrainTypes[Math.floor(Math.random() * placeholderTerrainTypes.length)];
+							mapData.matrix[y][x] = {};
+							mapData.matrix[y][x].terrain = newTerrainType;
+							mapData.matrix[y][x].x = x;
+							mapData.matrix[y][x].y = y;
+
+							var terrainType = mapData.matrix[y][x].terrain;
+							if(!indexedTiles.hasOwnProperty(terrainType)) {
+								indexedTiles[terrainType] = [];
+							}
+							indexedTiles[terrainType].push(mapData.matrix[y][x]);
+						}
+					}
+
+					_this.renderService.initMap(mapData, _this);
+				});
+
 				// factories
 				_this.sceneFactory = SceneFactory.getInstance();
 				// init scene
 				_this.scene = this.sceneFactory.createScene();
 
 				// services
-				_this.renderService = RenderService.getInstance();
-
 				_this.materialsService = MaterialsService.getInstance({
 					scene: _this.scene
 				});
@@ -42,6 +84,8 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					materials: _this.materialsService.materials,
 					hexagonSize: _this.settings.hexagonSize
 				});
+
+				_this.renderService = RenderService.getInstance();
 
 				// observables
 				_this.user = params.user;
@@ -72,36 +116,10 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				// init materials
 				_this.materialsService.initMaterials();
 
-				// init terrainTiles
-				_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, this);
-
 				_this.terrainTilesFactory.initSelectDisc();
 				_this.terrainTilesFactory.initHoverDisc();
 
-				_this.scene.activeCamera.setPosition(new BABYLON.Vector3(20, 12, 6));
-
-				// init background map for menu
-				var placeholderTerrainTypes = [
-					'grass', 'grass', 'grass', 'grass',
-					'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest','forest',
-					'mountain', 'mountain', 'mountain',
-					'cave', 'cave', 'cave',
-					'dirt', 'dirt', 'dirt', 'dirt', 'dirt',
-					'mud', 'mud',
-					'water'];
-				var map = {};
-				map.width = 80;
-				map.height = 50;
-				map.matrix = [];
-				for(var y = 0; y < map.height; y++){
-					map.matrix[y] = [];
-					for(var x = 0; x < map.width; x++) {
-						map.matrix[y][x] = {};
-						map.matrix[y][x].terrain = placeholderTerrainTypes[Math.floor(Math.random() * placeholderTerrainTypes.length)];
-					}
-				}
-
-				_this.renderService.initMap(map, _this);
+				//_this.scene.activeCamera.setPosition(new BABYLON.Vector3(20, 12, 6));
 
 			};
 

@@ -2,6 +2,10 @@
 
 var instance = null;
 
+/**
+ * 
+ * @constructor
+ */
 var TerrainRepository = function () {
 	/**
 	 * terrainTypes describes the different tile terrains at the map

@@ -1,6 +1,6 @@
 define(['babylonjs'], function (bjs) {
 	var instance = null;
-	// TODO rename to factory
+	// TODO separate factory class form service
 
 	var TerrainTilesService = function (params) {
 
@@ -11,6 +11,7 @@ define(['babylonjs'], function (bjs) {
 		this.hoverDisc = null;
 
 		this.hexagonSize = params.hexagonSize;
+		this.baseTileHeight = 1;
 
 	};
 
@@ -65,7 +66,7 @@ define(['babylonjs'], function (bjs) {
 	TerrainTilesService.prototype.createTerrainTileBlueprint = function(terrainType){
 		var scene = this.scene;
 
-		var tileHeight = 0.1;
+		var tileHeight = this.baseTileHeight;
 		var diameterTop = this.hexagonSize;
 		var diameterBottom = this.hexagonSize;
 
@@ -96,6 +97,8 @@ define(['babylonjs'], function (bjs) {
 		);
 		terrainTile.rotation.y = Math.PI/2;
 		terrainTile.position.y = tileHeight/2;
+		//terrainTile.rotation.y = Math.PI / 2;
+		//terrainTile.bakeCurrentTransformIntoVertices();
 		terrainTile.convertToFlatShadedMesh();
 		terrainTile.layerMask = 0;
 
@@ -106,6 +109,48 @@ define(['babylonjs'], function (bjs) {
 		}
 
 		terrainTile.freezeWorldMatrix();
+
+		return terrainTile;
+	};
+
+	/**
+	 * @returns BABYLON.Mesh
+	 */
+	TerrainTilesService.prototype.createBaseTile = function(){
+		var terrainTile = BABYLON.Mesh.CreateCylinder(
+			name,                   // name
+			this.baseTileHeight,    // height
+			this.hexagonSize,       // diameter top
+			this.hexagonSize,       // diameter bottom
+			6,                      // tessellation
+			1,                      // subdivisions
+			this.scene,             // scene
+			false                   // updateable
+		);
+		terrainTile.convertToFlatShadedMesh();
+		terrainTile.rotation.y = Math.PI / 2;
+		terrainTile.bakeCurrentTransformIntoVertices();
+		
+		return terrainTile;
+	};
+
+	/**
+	 * @returns BABYLON.Mesh
+	 */
+	TerrainTilesService.prototype.createMountainTile = function(){
+		var terrainTile = BABYLON.Mesh.CreateCylinder(
+			name,                   // name
+			this.baseTileHeight,    // height
+			0,                      // diameter top
+			this.hexagonSize,       // diameter bottom
+			6,                      // tessellation
+			1,                      // subdivisions
+			this.scene,             // scene
+			false                   // updateable
+		);
+		terrainTile.convertToFlatShadedMesh();
+		terrainTile.rotation.y = Math.PI / 2;
+		terrainTile.bakeCurrentTransformIntoVertices();
 
 		return terrainTile;
 	};

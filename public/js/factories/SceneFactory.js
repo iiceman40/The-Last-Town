@@ -30,6 +30,7 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 	SceneFactory.prototype.setupCamera = function(scene){
 		var camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 4, 50, BABYLON.Vector3.Zero(), scene);
 
+		/*
 		camera.lowerRadiusLimit = 7;
 		camera.upperRadiusLimit = 80;
 		camera.panningSensibility = 100;
@@ -38,6 +39,7 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 			camera.upperBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40));
 			camera.lowerBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40));
 		});
+		*/
 
 		camera.keysUp = [];
 		camera.keysDown = [];
@@ -92,11 +94,13 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 			var pickResult = scene.pick(scene.pointerX, scene.pointerY),
 				terrainTilesService = TerrainTilesService.getInstance(),
 				selectDisc = terrainTilesService.getSelectDisc();
-			selectDisc.isVisible = true;
-			if(pickResult.hit && pickResult.pickedMesh && selectDisc) {
-				ko.postbox.publish("selectedMesh", pickResult.pickedMesh.uniqueId);
-				selectDisc.position = pickResult.pickedMesh.position.clone();
-				selectDisc.position.y = 0.005;
+			if(selectDisc) {
+				selectDisc.isVisible = true;
+				if (pickResult.hit && pickResult.pickedMesh && selectDisc) {
+					ko.postbox.publish("selectedMesh", pickResult.pickedMesh.uniqueId);
+					selectDisc.position = pickResult.pickedMesh.position.clone();
+					selectDisc.position.y = 0.005;
+				}
 			}
 		});
 
@@ -105,13 +109,15 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 			if(step === 0) {
 				var pickResult = scene.pick(scene.pointerX, scene.pointerY, function(){
 					return true;
-				}, true),
-					terrainTilesService = TerrainTilesService.getInstance(),
+				}, true);
+				var terrainTilesService = TerrainTilesService.getInstance(),
 					hoverDisc = terrainTilesService.getHoverDisc();
-				hoverDisc.isVisible = true;
-				if (pickResult.hit && pickResult.pickedMesh && hoverDisc) {
-					hoverDisc.position = pickResult.pickedMesh.position.clone();
-					hoverDisc.position.y = 0.006;
+				if(hoverDisc) {
+					hoverDisc.isVisible = true;
+					if (pickResult.hit && pickResult.pickedMesh && hoverDisc) {
+						hoverDisc.position = pickResult.pickedMesh.position.clone();
+						hoverDisc.position.y = 0.006;
+					}
 				}
 			}
 			step = (step + 1) % 3;
