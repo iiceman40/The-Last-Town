@@ -87,10 +87,12 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 		//scene.fogEnd = 60.0;
 	};
 
+	// TODO move events to another class??
 	SceneFactory.prototype.registerEvents = function(scene){
 		var _this = this;
 
 		this.canvas.addEventListener("pointerup", function () {
+			// FIXME use SPS picking for selecting a tile
 			var pickResult = scene.pick(scene.pointerX, scene.pointerY),
 				terrainTilesService = TerrainTilesService.getInstance(),
 				selectDisc = terrainTilesService.getSelectDisc();
@@ -106,6 +108,7 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 
 		var step = 0;
 		this.canvas.addEventListener("pointermove", function () {
+			// FIXME use SPS picking for hovering over a tile
 			if(step === 0) {
 				var pickResult = scene.pick(scene.pointerX, scene.pointerY, function(){
 					return true;

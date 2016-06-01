@@ -32,7 +32,7 @@ require.config({
 		// FACTORIES
 		'SceneFactory':                 'js/factories/SceneFactory',
 		// SERVICES
-		'RenderService':                'js/services/RenderService',
+		'RenderingService':             'js/services/RenderingService',
 		'TilesRenderService':           'js/services/renderService/TilesRenderService',
 		'TileDecorationsRenderService': 'js/services/renderService/TileDecorationsRenderService',
 		'MaterialsService':             'js/services/MaterialsService',

@@ -1,6 +1,6 @@
 'use strict';
 
-define(['knockout', 'RenderService'], function (ko, RenderService) {
+define(['knockout', 'RenderingService'], function (ko, RenderingService) {
 	var SelectedNodeViewModel = function (data, terrainTileInstance, editMapViewModel) {
 		var _this = this;
 
@@ -12,7 +12,7 @@ define(['knockout', 'RenderService'], function (ko, RenderService) {
 		this.terrainTileInstance = terrainTileInstance;
 		this.babylonViewModel = editMapViewModel.babylonViewModel;
 		this.scene = editMapViewModel.scene;
-		this.renderService = RenderService.getInstance();
+		this.renderingService = RenderingService.getInstance();
 
 		// TODO edit improvements
 
@@ -34,7 +34,7 @@ define(['knockout', 'RenderService'], function (ko, RenderService) {
 			_this.terrainTileInstance.mapNode = data;
 
 			if (terrainTypeIndex === 'forest') {
-				_this.renderService.createForestTerrainTileDecoration(_this.terrainTileInstance);
+				_this.renderingService.createForestTerrainTileDecoration(_this.terrainTileInstance);
 			}
 
 			_this.babylonViewModel.octree = _this.scene.createOrUpdateSelectionOctree();

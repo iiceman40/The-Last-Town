@@ -1,5 +1,5 @@
-define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory', 'MaterialsService', 'TerrainTilesService', 'RenderService'],
-	function (ko, template, underscore, moment, SceneFactory, MaterialsService, TerrainTilesService, RenderService) {
+define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory', 'MaterialsService', 'TerrainTilesService', 'RenderingService'],
+	function (ko, template, underscore, moment, SceneFactory, MaterialsService, TerrainTilesService, RenderingService) {
 
 		var instance = null;
 
@@ -65,8 +65,9 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 							indexedTiles[terrainType].push(mapData.matrix[y][x]);
 						}
 					}
+					_this.map = mapData;
 
-					_this.renderService.initMap(mapData, _this);
+					_this.renderingService.initMap(_this);
 				});
 
 				// factories
@@ -85,7 +86,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					hexagonSize: _this.settings.hexagonSize
 				});
 
-				_this.renderService = RenderService.getInstance();
+				_this.renderingService = RenderingService.getInstance();
 
 				// observables
 				_this.user = params.user;
@@ -108,9 +109,9 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					// re-init terrainTiles
 					_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, _this);
 					// init game map
-					_this.renderService.initMap(_this.currentGame().map(), _this);
+					_this.renderingService.initMap(_this.currentGame().map(), _this);
 					// TODO init players
-					//_this.renderService.initPlayers(_this.currentGame().players(), _this);
+					//_this.renderingService.initPlayers(_this.currentGame().players(), _this);
 				});
 
 				// init materials

@@ -9,11 +9,11 @@ define(['TerrainTilesService', 'babylonjs'], function (TerrainTilesService, bjs)
 
 	/**
 	 *
-	 * @param map
 	 * @param babylonViewModel
 	 */
-	TilesRenderService.prototype.renderTiles = function(map, babylonViewModel) {
-		var _this = this;
+	TilesRenderService.prototype.renderTiles = function(babylonViewModel) {
+		var _this = this,
+			map = babylonViewModel.map;
 		_this.babylonViewModel = babylonViewModel;
 		_this.scene = babylonViewModel.scene;
 
