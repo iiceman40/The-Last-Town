@@ -8,6 +8,9 @@ require.config({
 		},
 		'bootstrap': {
 			deps: ['jquery']
+		},
+		'babylonjs': {
+			deps: ['pepjs']
 		}
 	},
 	paths: {
@@ -53,6 +56,8 @@ require.config({
 });
 
 // MAIN SCRIPT
+var mainViewModel;
 require(['knockout', 'MainViewModel'], function(ko, MainViewModel) {
-	ko.applyBindings(new MainViewModel());
+	mainViewModel = new MainViewModel();
+	ko.applyBindings(mainViewModel);
 });

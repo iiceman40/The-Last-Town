@@ -27,11 +27,8 @@ define(['knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'Flash
 				_this.terrainTypes = ko.observableArray(_this.babylonViewModel.terrainTypes);
 				_this.selectedNode = ko.observable();
 
-				ko.postbox.subscribe("selectedMesh", function(meshUniqueId) {
-					var mesh = _this.scene.getMeshByUniqueID(meshUniqueId);
-					if(mesh instanceof BABYLON.InstancedMesh && mesh.mapNode) {
-						_this.selectedNode(new SelectedNodeViewModel(mesh.mapNode, mesh, _this));
-					}
+				ko.postbox.subscribe("selectTile", function(p) {
+					_this.selectedNode(new SelectedNodeViewModel(p.tile, p, _this));
 				}, this);
 
 			};

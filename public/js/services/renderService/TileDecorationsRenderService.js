@@ -1,9 +1,10 @@
-define(['TerrainTilesService', 'babylonjs'], function (TerrainTilesService, bjs) {
+define(['TerrainTilesService', 'MaterialsService', 'babylonjs'], function (TerrainTilesService, MaterialsService, bjs) {
 	var instance = null;
 
 	var TileDecorationsRenderService = function () {
 		this.babylonViewModel = null;
 		this.terrainTilesService = TerrainTilesService.getInstance();
+		this.materialsService = MaterialsService.getInstance();
 	};
 
 	/**
@@ -11,33 +12,68 @@ define(['TerrainTilesService', 'babylonjs'], function (TerrainTilesService, bjs)
 	 * TODO iterate over all tile sets in indexed tiles that need decorations (like forest)
 	 * TODO iterate over all improvements on the map and draw them (like the main town tile)
 	 */
-	TileDecorationsRenderService.prototype.renderTileDecorations = function(babylonViewModel) {
-		var _this = this;
-		//_this.models.trees.scaling = new BABYLON.Vector3(0.16, 0.16, 0.16);
-		//_this.models.trees.layerMask = 0;
-		//_this.models.trees.freezeWorldMatrix();
+	TileDecorationsRenderService.prototype.renderTileDecorationsForTerrainType = function(terrainType, map, options, babylonViewModel) {
+		var _this = this,
+			numberOfTreesPerTile = 3,
+			SPS = new BABYLON.SolidParticleSystem('SPS', babylonViewModel.scene);
 
-		/* no difference since trees are probably not complex enough
-		 var lowDetailModel = BABYLON.Mesh.CreateCylinder(
-		 'lod-tree',             // name
-		 11,                     // height
-		 0,                      // diameter top
-		 7,                      // diameter bottom
-		 6,                      // tessellation
-		 1,                      // subdivisions
-		 scene,                  // scene
-		 false                   // updateable
-		 );
-		 lowDetailModel.position.y = 6;
-		 lowDetailModel.bakeCurrentTransformIntoVertices();
-		 lowDetailModel.convertToFlatShadedMesh();
-		 lowDetailModel.material = _this.models.trees.material.subMaterials[1];
-		 _this.models.trees.addLODLevel(70, lowDetailModel);
-		 */
+		if(terrainType === 'forest') {
+			SPS.addShape(babylonViewModel.models.tree, map.indexedTiles[terrainType].length * numberOfTreesPerTile);
+			//babylonViewModel.models.tree.dispose();
 
-		//_this.models.trees.addLODLevel(50, null);
+			var mesh = SPS.buildMesh();
 
-		//_this.babylonViewModel.mapTilesMeshes.push(_this.models.trees);
+			SPS.isAlwaysVisible = true;
+			mesh.material = _this.materialsService.materials.tree;
+			mesh.material.freeze();
+			mesh.position = new BABYLON.Vector3(options.startingPosition.x, 0, options.startingPosition.z);
+			mesh.freezeWorldMatrix();
+			mesh.freezeNormals();
+
+			SPS.initParticles = function () {
+				for(var i = 0; i < map.indexedTiles[terrainType].length; i++){
+					var tile             = map.indexedTiles[terrainType][i],
+						x                = tile.x,
+						y                = tile.y,
+						offset           = (y%2 === 0) ? options.hexagonSize/2 : 0, // every second row with offset
+						yPosition        = -0.7;
+
+					// tree 1
+					this.particles[i*numberOfTreesPerTile].position.x = (x * options.hexagonSize + offset) * 0.9 - 0.1;
+					this.particles[i*numberOfTreesPerTile].position.z = (y * options.hexagonSize) * 0.8 + 0.1;
+					this.particles[i*numberOfTreesPerTile].position.y = yPosition;
+					// tree 2
+					this.particles[i*numberOfTreesPerTile + 1].position.x = (x * options.hexagonSize + offset) * 0.9;
+					this.particles[i*numberOfTreesPerTile + 1].position.z = (y * options.hexagonSize) * 0.8 + 1;
+					this.particles[i*numberOfTreesPerTile + 1].position.y = yPosition;
+					this.particles[i*numberOfTreesPerTile + 1].scale.y  = 0.8 + 0.2;
+					// tree 3
+					this.particles[i*numberOfTreesPerTile + 2].position.x = (x * options.hexagonSize + offset) * 0.9 - 1;
+					this.particles[i*numberOfTreesPerTile + 2].position.z = (y * options.hexagonSize) * 0.8;
+					this.particles[i*numberOfTreesPerTile + 2].position.y = yPosition + 0.1;
+					this.particles[i*numberOfTreesPerTile + 2].scale.y  = 0.9;
+					this.particles[i*numberOfTreesPerTile + 2].rotation.x = 1.5;
+				}
+			};
+
+			// first call to setParticles() settings
+			SPS.initParticles();
+			SPS.billboard = false;
+			SPS.computeParticleTexture = false;
+			SPS.computeParticleRotation = false;
+			SPS.computeBoundingBox = true;
+			SPS.setParticles();
+
+			// settings for next calls
+			SPS.computeBoundingBox = false;
+
+			babylonViewModel.mapTilesMeshes.push(mesh);
+			babylonViewModel.mapTilesMeshes.push(SPS);
+
+			babylonViewModel.forestSPS = SPS;
+			babylonViewModel.forestMesh = mesh;
+		}
+
 	};
 
 	TileDecorationsRenderService.prototype.handleImprovementDecorations = function(terrainTypeIndex, terrainTileInstance){

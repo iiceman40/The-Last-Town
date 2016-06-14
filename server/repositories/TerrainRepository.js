@@ -19,6 +19,7 @@ var TerrainRepository = function () {
 	 * @type {{name: string, description: string, probability: number, searchTime: number, searchCapacity: number}[]}
 	 */
 	this.terrainTypes = {
+		none: {},
 		dirt: {
 			name: 'dirt',
 			description: 'Nothing but dirt.',

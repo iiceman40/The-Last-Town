@@ -1,5 +1,5 @@
-define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory', 'MaterialsService', 'TerrainTilesService', 'RenderingService'],
-	function (ko, template, underscore, moment, SceneFactory, MaterialsService, TerrainTilesService, RenderingService) {
+define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory', 'MaterialsService', 'TerrainTilesService', 'RenderingService', 'pepjs'],
+	function (ko, template, underscore, moment, SceneFactory, MaterialsService, TerrainTilesService, RenderingService, pepjs) {
 
 		var instance = null;
 
@@ -25,13 +25,56 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					hexagonSize: 3
 				};
 
+				// factories
+				_this.sceneFactory = SceneFactory.getInstance();
+				// init scene
+				_this.scene = this.sceneFactory.createScene();
+
+				// services
+				_this.materialsService = MaterialsService.getInstance({
+					scene: _this.scene
+				});
+				// init materials
+				_this.materialsService.initMaterials();
+
+				_this.terrainTilesFactory = TerrainTilesService.getInstance({
+					scene: _this.scene,
+					materials: _this.materialsService.materials,
+					hexagonSize: _this.settings.hexagonSize
+				});
+
+				_this.renderingService = RenderingService.getInstance();
+
+				// observables
+				_this.user = params.user;
+				_this.currentGame = params.currentGame;
+
+				// computed observables
+
+				// methods
+				_this.createNewGame = function () {
+					_this.socket.emit('createNewGame', {});
+				};
+
+				_this.currentGame.subscribe(function(currentGame){
+					_this.map = currentGame.map();
+					// clear previous map
+					for(var i = 0; i < _this.mapTilesMeshes.length; i++){
+						_this.mapTilesMeshes[i].dispose();
+					}
+
+					// init game map
+					_this.renderingService.initMap(_this);
+
+					// TODO init players
+					//_this.renderingService.initPlayers(_this.currentGame().players(), _this);
+
+				});
+
 				// init terrain types
 				_this.socket.emit('getTerrainTypes', {});
 				_this.socket.on('updateTerrainTypes', function (data) {
 					_this.terrainTypes = Object.keys(data.terrainTypes);
-					console.log(_this.terrainTypes);
-					// init terrainTiles
-					_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, _this);
 					// TODO move to separate function that gets called on first time change of _this.terrainTypes/Tiles
 					// init background map for menu
 					// TODO get placeholder terrain types from server or terrain types
@@ -44,8 +87,8 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 						'mud', 'mud',
 						'water'];
 					var mapData = {};
-					mapData.width = 100;
-					mapData.height = 100;
+					mapData.width = 10;
+					mapData.height = 10;
 					mapData.matrix = [];
 					mapData.indexedTiles = {};
 					var indexedTiles = mapData.indexedTiles;
@@ -68,55 +111,10 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					_this.map = mapData;
 
 					_this.renderingService.initMap(_this);
+
 				});
 
-				// factories
-				_this.sceneFactory = SceneFactory.getInstance();
-				// init scene
-				_this.scene = this.sceneFactory.createScene();
-
-				// services
-				_this.materialsService = MaterialsService.getInstance({
-					scene: _this.scene
-				});
-
-				_this.terrainTilesFactory = TerrainTilesService.getInstance({
-					scene: _this.scene,
-					materials: _this.materialsService.materials,
-					hexagonSize: _this.settings.hexagonSize
-				});
-
-				_this.renderingService = RenderingService.getInstance();
-
-				// observables
-				_this.user = params.user;
-				_this.currentGame = params.currentGame;
-
-				// computed observables
-
-				// methods
-				_this.createNewGame = function () {
-					console.log('telling server to create new map');
-					_this.socket.emit('createNewGame', {});
-				};
-
-				_this.currentGame.subscribe(function(){
-					// clear previous map
-					for(var i = 0; i < _this.mapTilesMeshes.length; i++){
-						_this.mapTilesMeshes[i].dispose();
-					}
-
-					// re-init terrainTiles
-					_this.terrainTiles = _this.terrainTilesFactory.initTerrainTiles(_this.terrainTypes, _this);
-					// init game map
-					_this.renderingService.initMap(_this.currentGame().map(), _this);
-					// TODO init players
-					//_this.renderingService.initPlayers(_this.currentGame().players(), _this);
-				});
-
-				// init materials
-				_this.materialsService.initMaterials();
-
+				// init interactions highlighting
 				_this.terrainTilesFactory.initSelectDisc();
 				_this.terrainTilesFactory.initHoverDisc();
 

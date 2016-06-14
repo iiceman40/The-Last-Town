@@ -18,7 +18,10 @@ define(['babylonjs'], function (bjs) {
 		this.materials.grass.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
 		this.materials.grass.specularPower = 128;
 
-		this.materials.forest = this.materials.grass;
+		this.materials.forest = new BABYLON.StandardMaterial('forestMaterial', scene);
+		this.materials.forest.diffuseColor = new BABYLON.Color3(0.2, 0.3, 0.1);
+		this.materials.forest.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+		this.materials.forest.specularPower = 128;
 
 		this.materials.stone = new BABYLON.StandardMaterial('stoneMaterial', scene);
 		this.materials.stone.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2);
@@ -41,17 +44,25 @@ define(['babylonjs'], function (bjs) {
 		this.materials.water = new BABYLON.StandardMaterial('waterMaterial', scene);
 		this.materials.water.diffuseColor = new BABYLON.Color3(0.18, 0.18, 0.42);
 
+		this.materials.lake = this.materials.water;
+
 		this.materials.mainTownTile = new BABYLON.StandardMaterial('mainTownTileMaterial', scene);
 		this.materials.mainTownTile.diffuseColor = new BABYLON.Color3(0.5, 0, 0.5);
 		this.materials.mainTownTile.emissiveColor = new BABYLON.Color3(0.2, 0, 0.5);
 
 		this.materials.select  = new BABYLON.StandardMaterial('brightRedMaterial', scene);
 		this.materials.select .diffuseColor = new BABYLON.Color3(0.5, 0, 0);
-		this.materials.select .emissiveColor = new BABYLON.Color3(0.2, 0, 0);
+		this.materials.select .specularColor = new BABYLON.Color3(0, 0, 0);
+		this.materials.select .emissiveColor = new BABYLON.Color3(1, 0, 0);
 
 		this.materials.hover = new BABYLON.StandardMaterial('brightGreenMaterial', scene);
 		this.materials.hover.diffuseColor = new BABYLON.Color3(0, 0.5, 0);
 		this.materials.hover.emissiveColor = new BABYLON.Color3(0, 0.2, 0);
+
+		this.materials.tree = new BABYLON.StandardMaterial('treeMaterial', scene);
+		this.materials.tree.diffuseColor = new BABYLON.Color3(0.10, 0.20, 0.05);
+		this.materials.tree.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
+		this.materials.tree.specularPower = 32;
 
 		return this.materials;
 	};

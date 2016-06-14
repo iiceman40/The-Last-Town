@@ -42,83 +42,11 @@ define(['babylonjs'], function (bjs) {
 	};
 
 	/**
-	 *
-	 * @param {Array} terrainTypes
-	 * @param {{mapTilesMeshes: Array}} babylonViewModel
-	 * @returns {{}}
-	 */
-	TerrainTilesService.prototype.initTerrainTiles = function (terrainTypes, babylonViewModel) {
-		var _this = this;
-
-		for(var i = 0; i < terrainTypes.length; i++) {
-			_this.terrainTiles[terrainTypes[i]] = _this.createTerrainTileBlueprint(terrainTypes[i]);
-			babylonViewModel.mapTilesMeshes.push(_this.terrainTiles[terrainTypes[i]]);
-		}
-
-		return this.terrainTiles;
-	};
-
-	/**
-	 *
-	 * @param {string} terrainType
-	 * @returns {BABYLON.Mesh}
-	 */
-	TerrainTilesService.prototype.createTerrainTileBlueprint = function(terrainType){
-		var scene = this.scene;
-
-		var tileHeight = this.baseTileHeight;
-		var diameterTop = this.hexagonSize;
-		var diameterBottom = this.hexagonSize;
-
-		if(terrainType == 'mountain'){
-			diameterTop = 0;
-			tileHeight = 3;
-		}
-
-		if(terrainType == 'cave'){
-			diameterTop = 2;
-			tileHeight = 1;
-		}
-
-		if(terrainType == 'water'){
-			tileHeight = 0.01;
-		}
-
-		var name = 'base-tile-' + terrainType;
-		var terrainTile = BABYLON.Mesh.CreateCylinder(
-			name,                   // name
-			tileHeight,             // height
-			diameterTop,            // diameter top
-			diameterBottom,         // diameter bottom
-			6,                      // tessellation
-			1,                      // subdivisions
-			scene,                  // scene
-			false                   // updateable
-		);
-		terrainTile.rotation.y = Math.PI/2;
-		terrainTile.position.y = tileHeight/2;
-		//terrainTile.rotation.y = Math.PI / 2;
-		//terrainTile.bakeCurrentTransformIntoVertices();
-		terrainTile.convertToFlatShadedMesh();
-		terrainTile.layerMask = 0;
-
-		//terrainTile.addLODLevel(130, null);
-
-		if(this.materials[terrainType] instanceof BABYLON.StandardMaterial) {
-			terrainTile.material = this.materials[terrainType];
-		}
-
-		terrainTile.freezeWorldMatrix();
-
-		return terrainTile;
-	};
-
-	/**
 	 * @returns BABYLON.Mesh
 	 */
 	TerrainTilesService.prototype.createBaseTile = function(){
 		var terrainTile = BABYLON.Mesh.CreateCylinder(
-			name,                   // name
+			'baseTile',             // name
 			this.baseTileHeight,    // height
 			this.hexagonSize,       // diameter top
 			this.hexagonSize,       // diameter bottom
@@ -130,7 +58,27 @@ define(['babylonjs'], function (bjs) {
 		terrainTile.convertToFlatShadedMesh();
 		terrainTile.rotation.y = Math.PI / 2;
 		terrainTile.bakeCurrentTransformIntoVertices();
-		
+		terrainTile.layerMask = 0;
+		terrainTile.isPickable = false;
+		return terrainTile;
+	};
+
+	/**
+	 * @returns BABYLON.Mesh
+	 */
+	TerrainTilesService.prototype.createWaterTile = function(){
+		var terrainTile = BABYLON.Mesh.CreateDisc(
+			'waterTile',            // name
+			this.hexagonSize/2,     // radius
+			6,                      // tessellation
+			this.scene,             // scene
+			false                   // updateable
+		);
+		terrainTile.rotation.x = Math.PI / 2;
+		terrainTile.rotation.y = Math.PI / 2;
+		terrainTile.bakeCurrentTransformIntoVertices();
+		terrainTile.layerMask = 0;
+		terrainTile.isPickable = false;
 		return terrainTile;
 	};
 
@@ -139,7 +87,7 @@ define(['babylonjs'], function (bjs) {
 	 */
 	TerrainTilesService.prototype.createMountainTile = function(){
 		var terrainTile = BABYLON.Mesh.CreateCylinder(
-			name,                   // name
+			'mountainTile',         // name
 			this.baseTileHeight,    // height
 			0,                      // diameter top
 			this.hexagonSize,       // diameter bottom
@@ -151,7 +99,30 @@ define(['babylonjs'], function (bjs) {
 		terrainTile.convertToFlatShadedMesh();
 		terrainTile.rotation.y = Math.PI / 2;
 		terrainTile.bakeCurrentTransformIntoVertices();
+		terrainTile.layerMask = 0;
+		terrainTile.isPickable = false;
+		return terrainTile;
+	};
 
+	/**
+	 * @returns BABYLON.Mesh
+	 */
+	TerrainTilesService.prototype.createCaveTile = function(){
+		var terrainTile = BABYLON.Mesh.CreateCylinder(
+			'caveTile',             // name
+			this.baseTileHeight,    // height
+			this.hexagonSize/3*2,   // diameter top
+			this.hexagonSize,       // diameter bottom
+			6,                      // tessellation
+			1,                      // subdivisions
+			this.scene,             // scene
+			false                   // updateable
+		);
+		terrainTile.convertToFlatShadedMesh();
+		terrainTile.rotation.y = Math.PI / 2;
+		terrainTile.bakeCurrentTransformIntoVertices();
+		terrainTile.layerMask = 0;
+		terrainTile.isPickable = false;
 		return terrainTile;
 	};
 

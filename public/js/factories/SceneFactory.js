@@ -1,4 +1,4 @@
-define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs, pepjs, ko, TerrainTilesService) {
+define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderService'], function (bjs, pepjs, ko, TerrainTilesService, TilesRenderService) {
 	var instance = null;
 
 	var SceneFactory = function () {
@@ -73,12 +73,12 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 	SceneFactory.prototype.setupEnvironment = function(scene){
 		// setup light
 		var light = new BABYLON.DirectionalLight('Dir0', new BABYLON.Vector3(1, -1, 0), scene);
-		light.intensity = 0.8;
+		light.intensity = 1;
 		//light.diffuse = new BABYLON.Color3(0.6,0.4,0);
 		//light.specular = new BABYLON.Color3(1,0.6,0);
 
 		var ambientLight = new BABYLON.HemisphericLight('HemiLight', new BABYLON.Vector3(1, -1, 0), scene);
-		ambientLight.intensity = 0.8;
+		ambientLight.intensity = 1;
 		//ambientLight.diffuse = new BABYLON.Color3(0.6,0.4,0);
 		//ambientLight.specular = new BABYLON.Color3(1,0.6,0);
 
@@ -89,42 +89,70 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService'], function (bjs,
 
 	// TODO move events to another class??
 	SceneFactory.prototype.registerEvents = function(scene){
-		var _this = this;
+		var _this = this,
+			pointerPosition = {};
 
+		this.canvas.addEventListener("pointerdown", function () {
+			pointerPosition = {x: scene.pointerX, y: scene.pointerY};
+		});
 		this.canvas.addEventListener("pointerup", function () {
-			// FIXME use SPS picking for selecting a tile
 			var pickResult = scene.pick(scene.pointerX, scene.pointerY),
 				terrainTilesService = TerrainTilesService.getInstance(),
-				selectDisc = terrainTilesService.getSelectDisc();
-			if(selectDisc) {
+				tilesRenderService = TilesRenderService.getInstance(),
+				selectDisc = terrainTilesService.getSelectDisc(),
+				clickIntended = Math.abs(scene.pointerX - pointerPosition.x) + Math.abs(scene.pointerY - pointerPosition.y) < 10;
+
+			if (pickResult.hit && pickResult.pickedMesh && selectDisc && clickIntended) {
 				selectDisc.isVisible = true;
-				if (pickResult.hit && pickResult.pickedMesh && selectDisc) {
-					ko.postbox.publish("selectedMesh", pickResult.pickedMesh.uniqueId);
-					selectDisc.position = pickResult.pickedMesh.position.clone();
-					selectDisc.position.y = 0.005;
+
+				var SPS = tilesRenderService.solidParticleSystemsByMeshName[pickResult.pickedMesh.name];
+
+				var meshFaceId = pickResult.faceId;
+
+				if(SPS === undefined && pickResult.pickedMesh){
+					// FIXME check what gets hit if SPS is undefined
+					console.log('SPS undefined', pickResult.pickedMesh.name)
 				}
+
+				if (meshFaceId == -1 || SPS === undefined) { return; }
+				var idx = SPS.pickedParticles[meshFaceId].idx;
+				var p = SPS.particles[idx];
+
+				ko.postbox.publish("selectTile", p);
+				selectDisc.position = p.position.clone().add(pickResult.pickedMesh.position);
+				selectDisc.position.y = 0.005;
 			}
 		});
 
+		/*
 		var step = 0;
 		this.canvas.addEventListener("pointermove", function () {
-			// FIXME use SPS picking for hovering over a tile
-			if(step === 0) {
-				var pickResult = scene.pick(scene.pointerX, scene.pointerY, function(){
-					return true;
-				}, true);
-				var terrainTilesService = TerrainTilesService.getInstance(),
+			if(step ===0) {
+				var pickResult = scene.pick(scene.pointerX, scene.pointerY),
+					terrainTilesService = TerrainTilesService.getInstance(),
+					tilesRenderService = TilesRenderService.getInstance(),
 					hoverDisc = terrainTilesService.getHoverDisc();
-				if(hoverDisc) {
+
+				if (pickResult.hit && pickResult.pickedMesh && hoverDisc) {
 					hoverDisc.isVisible = true;
-					if (pickResult.hit && pickResult.pickedMesh && hoverDisc) {
-						hoverDisc.position = pickResult.pickedMesh.position.clone();
-						hoverDisc.position.y = 0.006;
+
+					var SPS = tilesRenderService.solidParticleSystemsByMeshName[pickResult.pickedMesh.name];
+
+					var meshFaceId = pickResult.faceId;
+					if (meshFaceId === -1 || SPS === undefined) {
+						return;
 					}
+					var idx = SPS.pickedParticles[meshFaceId].idx;
+					var p = SPS.particles[idx];
+
+					//ko.postbox.publish("selectedMesh", pickResult.pickedMesh.uniqueId);
+					hoverDisc.position = p.position.clone().add(pickResult.pickedMesh.position);
+					hoverDisc.position.y = 0.01;
 				}
 			}
 			step = (step + 1) % 3;
 		});
+		*/
 
 		window.addEventListener("resize", function () {
 			_this.engine.resize();
