@@ -34,6 +34,13 @@ define(['knockout', 'knockout-postbox', 'text!templates/login.html', 'FlashMessa
 				_this.socket.on('connect', function () {
 					console.log('this client connected to server');
 					_this.user().connectionStatus(_this.user().CONNECTION_STATUS_CONNECTED);
+
+					// TODO save "rememberMe" and user information in cookie and avoid time out
+					setTimeout(function(){
+						if(_this.user().rememberMe()){
+							_this.signIn();
+						}
+					}, 100);
 				});
 
 				_this.socket.on('signedIn', function (data) {

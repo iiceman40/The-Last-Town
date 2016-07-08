@@ -12,6 +12,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				var _this = this;
 				_this.socket = params.socket;
 				_this.scene = null;
+				_this.debug = ko.observable(false).syncWith("debug");
 
 				// TODO don't use mainTownTile, create a tile improvement instead
 
@@ -24,6 +25,14 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.settings = {
 					hexagonSize: 3
 				};
+
+				_this.debug.subscribe(function(newValue){
+					if(newValue){
+						_this.scene.debugLayer.show();
+					} else {
+						_this.scene.debugLayer.hide();
+					}
+				});
 
 				// factories
 				_this.sceneFactory = SceneFactory.getInstance();

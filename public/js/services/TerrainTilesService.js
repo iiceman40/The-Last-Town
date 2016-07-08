@@ -24,7 +24,7 @@ define(['babylonjs'], function (bjs) {
 	};
 
 	TerrainTilesService.prototype.initSelectDisc = function() {
-		this.selectDisc = new BABYLON.Mesh.CreateDisc('select', this.hexagonSize/2 * 1.6, 6, this.scene);
+		this.selectDisc = new BABYLON.Mesh.CreateDisc('select', this.hexagonSize/2 * 1.07, 6, this.scene);
 		this.selectDisc.rotation.x = Math.PI/2;
 		this.selectDisc.rotation.y = Math.PI/2;
 		this.selectDisc.material = this.materials.select;
@@ -33,7 +33,7 @@ define(['babylonjs'], function (bjs) {
 	};
 
 	TerrainTilesService.prototype.initHoverDisc = function() {
-		this.hoverDisc = new BABYLON.Mesh.CreateDisc('hover', this.hexagonSize/2 * 1.11, 6, this.scene);
+		this.hoverDisc = new BABYLON.Mesh.CreateDisc('hover', this.hexagonSize/2 * 1.07, 6, this.scene);
 		this.hoverDisc.rotation.x = Math.PI/2;
 		this.hoverDisc.rotation.y = Math.PI/2;
 		this.hoverDisc.material = this.materials.hover;

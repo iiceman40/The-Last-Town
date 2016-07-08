@@ -36,6 +36,7 @@ require.config({
 		'SceneFactory':                 'js/factories/SceneFactory',
 		// SERVICES
 		'RenderingService':             'js/services/RenderingService',
+		'DataHelperService':            'js/services/DataHelperService',
 		'TilesRenderService':           'js/services/renderService/TilesRenderService',
 		'TileDecorationsRenderService': 'js/services/renderService/TileDecorationsRenderService',
 		'MaterialsService':             'js/services/MaterialsService',

@@ -8,6 +8,7 @@ define(['knockout'], function (ko) {
 		this.name = ko.observable(data.name || '');
 		this.email = ko.observable(data.email || '');
 		this.password = ko.observable(data.password || '');
+		this.rememberMe = ko.observable(data.rememberMe || true);
 		this._id = ko.observable(data._id || '');
 		this.connectionStatus = ko.observable(this.CONNECTION_STATUS_DISCONNECTED);
 		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);

@@ -28,7 +28,7 @@ define(['knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'Flash
 				_this.selectedNode = ko.observable();
 
 				ko.postbox.subscribe("selectTile", function(p) {
-					_this.selectedNode(new SelectedNodeViewModel(p.tile, p, _this));
+					_this.selectedNode(new SelectedNodeViewModel(p.tile, p, _this.babylonViewModel));
 				}, this);
 
 			};

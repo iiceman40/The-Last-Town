@@ -14,6 +14,7 @@ define(['knockout', 'knockout-postbox', 'text!templates/menu-bar.html'],
 
 				_this.listGames = ko.observable(true).syncWith('listGamesIsActive');
 				_this.newGame = ko.observable(false).syncWith('newGameIsActive');
+				_this.debug = ko.observable(false).syncWith("debug", true);
 
 				_this.mainMenuStructure = {
 					'Panels': {
@@ -63,6 +64,11 @@ define(['knockout', 'knockout-postbox', 'text!templates/menu-bar.html'],
 							}
 						}
 					}
+				};
+				
+				_this.toggleDebug = function(){
+					_this.debug(!_this.debug());
+					console.log('toggle debug', _this.debug());
 				}
 
 			};
