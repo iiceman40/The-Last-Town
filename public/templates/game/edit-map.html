@@ -9,6 +9,7 @@
 		<div>
 			<label>Terrain: </label>
 			<span data-bind="text: selectedNode().terrain"></span>
+			<span data-bind="text: selectedNode().chunkIndex"></span>
 			<select data-bind="options: terrainTypes, value: selectedNode().terrain" class="form-control input-sm"></select>
 		</div>
 		<div>

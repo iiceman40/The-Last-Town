@@ -13,6 +13,8 @@ define([
 		this.y = ko.observable(data.y);
 		this.z = ko.observable(data.z);
 
+		this.chunkIndex = ko.observable(data.chunkIndex);
+
 		this.babylonViewModel = babylonViewModel;
 		this.scene = babylonViewModel.scene;
 		this.renderingService = RenderingService.getInstance();
@@ -38,65 +40,33 @@ define([
 
 		// determine the chunk the tile is in
 		var oldChunkIndex = _this.tile.chunkIndex,
-			oldChunk = _this.tilesRenderService.indexChunks[oldTerrainType][oldChunkIndex];
-
-		console.log('old chunk', oldChunk, oldChunkIndex);
+			oldChunk = _this.tilesRenderService.indexedChunks[oldTerrainType][oldChunkIndex];
 
 		// remove the tile from that chunk
 		oldChunk.splice(oldChunk.indexOf(_this.tile), 1);
 
-		// TODO move to separate method??
-		// find enw chunk
-		var newChunkIndex = -1;
-		var newChunk = null;
-		if(_this.tilesRenderService.indexChunks.hasOwnProperty(newTerrainType)) {
-			var chunks = _this.tilesRenderService.indexChunks[newTerrainType];
-			for (var chunkIndex in chunks) {
-				if(chunks.hasOwnProperty(chunkIndex)) {
-					var chunk = chunks[chunkIndex];
-					if(chunk.length < _this.tilesRenderService.maxChunkSize){
-						newChunkIndex = chunkIndex;
-						newChunk = chunk;
-						break;
-					}
-				}
-			}
-		} else {
-			_this.tilesRenderService.indexChunks[newTerrainType] = {};
-			newChunkIndex = 0;
-			newChunk = [];
-			_this.tilesRenderService.indexChunks[newTerrainType][newChunkIndex] = newChunk;
-		}
-
 		// add the tile to the new chunk
+		var newChunkIndex = _this.findNewChunkIndex(newTerrainType),
+			newChunk = _this.tilesRenderService.indexedChunks[newTerrainType][newChunkIndex];
 		newChunk.push(_this.tile);
+		_this.chunkIndex(newChunkIndex);
 
 		// init terrain type if it doesn't exist yet
 		if(!_this.babylonViewModel.map.indexedTiles.hasOwnProperty(newTerrainType)){
 			_this.babylonViewModel.map.indexedTiles[newTerrainType] = [];
 		}
 
-		var oldIndexTiles = _this.babylonViewModel.map.indexedTiles[_this.oldTerrainType],
-			tileIndexInOldIndexTiles = oldIndexTiles.indexOf(_this.tile);
-
-		oldIndexTiles.splice(tileIndexInOldIndexTiles, 1);
-
-		var newIndexTiles = _this.babylonViewModel.map.indexedTiles[newTerrainType];
-
 		// update the terrain in the the with the enw type
 		_this.tile.terrain = newTerrainType;
-		newIndexTiles.push(_this.tile);
 
 		// now that the terrain type has been changed set the new type as the old type
 		_this.tile.chunkIndex = newChunkIndex;
 
-		// TODO get the SPS of the old chunk that previously contained the tile and dispose and re-render it
+		// get the SPS of the old chunk that previously contained the tile and dispose and re-render it
 		this.reRenderSolidParticleSystem(oldTerrainType, oldChunkIndex);
 
-		// TODO get the SPS of the new chunk that now contains the tile and dispose and re-render it
+		// get the SPS of the new chunk that now contains the tile and dispose and re-render it
 		this.reRenderSolidParticleSystem(newTerrainType, newChunkIndex);
-
-		//_this.handleTileDecorations(oldTerrainType, newTerrainType); // FIXME update tile decorations doesn't work properly
 
 		_this.oldTerrainType = newTerrainType;
 	};
@@ -116,39 +86,65 @@ define([
 		if(terrainSPS) terrainSPS.dispose();
 		// rebuild SPS
 		_this.tilesRenderService.buildSpsForChunk(terrainType, chunkIndex);
+
+		// FIXME SOME TILES GET LOST WHEN CHANGING TERRAINS - TRY WITH ONE OF THE BIG LAKES
+
+		// TODO check if also a decoration SPS needs to be re-build
+		_this.handleTileDecorations(terrainType, chunkIndex);
 	};
 
 	/**
-	 * TODO move to TileDecorationService?
-	 * @param oldTerrainType
-	 * @param newTerrainType
+	 *
+	 * @param {string} newTerrainType
+	 * @returns {number}
 	 */
-	SelectedNodeViewModel.prototype.handleTileDecorations = function(oldTerrainType, newTerrainType){
-		var _this = this;
-
-		// FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		// TODO improve decorations - too slow and not clean - try chunks and refactor tileDecorationsService
-		// FIXME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		if(oldTerrainType === 'forest' || newTerrainType === 'forest'){
-
-			// TODO get the right chunk to dispose and re-render
-			_this.babylonViewModel.forestSPS.dispose();
-			_this.babylonViewModel.forestMesh.dispose();
-
-			// TODO if old one was forest, remove it from the chunk
-
-			// TODO if new one is forest
-			// TODO decide where to add the new decoration
-			// TODO check if a chunk with less items than max chunk size is available
-			// TODO if all chunks are full, create a new chunk
-			// TODO set the decoration chunk index
-
-			_this.tileDecorationsRenderService.renderTileDecorationsForChunk(
-				_this.tile.decorationChunkIndex, // FIXME this only works if the tile already was in a chunk
-				_this.tilesRenderService.options,
-				_this.babylonViewModel
-			);
+	SelectedNodeViewModel.prototype.findNewChunkIndex = function(newTerrainType){
+		var _this = this,
+			newChunkIndex = -1,
+			newChunk = null;
+		if(_this.tilesRenderService.indexedChunks.hasOwnProperty(newTerrainType)) {
+			var chunks = _this.tilesRenderService.indexedChunks[newTerrainType];
+			for (var chunkIndex in chunks) {
+				if(chunks.hasOwnProperty(chunkIndex)) {
+					var chunk = chunks[chunkIndex];
+					if(chunk.length < _this.tilesRenderService.maxChunkSize){
+						newChunkIndex = chunkIndex;
+						newChunk = chunk;
+						break;
+					}
+				}
+			}
+		} else {
+			_this.tilesRenderService.indexedChunks[newTerrainType] = {};
+			newChunkIndex = 0;
+			newChunk = [];
+			_this.tilesRenderService.indexedChunks[newTerrainType][newChunkIndex] = newChunk;
 		}
+
+		return newChunkIndex
+	};
+
+	/**
+	 * @param terrainType
+	 * @param chunkIndex
+	 */
+	SelectedNodeViewModel.prototype.handleTileDecorations = function(terrainType, chunkIndex){
+		var _this = this,
+			decorationsMeshName = 'SPS_' + terrainType + '_' + chunkIndex + '_decorations',
+			decorationsSPS = _this.tileDecorationsRenderService.solidParticleSystemsByMeshName[decorationsMeshName],
+			decorationsMesh = _this.scene.getMeshByName(decorationsSPS);
+
+		if(decorationsSPS) decorationsSPS.dispose();
+		if(decorationsMesh) decorationsMesh.dispose();
+
+		_this.tileDecorationsRenderService.buildDecorationSpsForChunk(
+			terrainType,
+			chunkIndex,
+			_this.tilesRenderService.indexedChunks,
+			_this.tilesRenderService.babylonViewModel,
+			_this.tilesRenderService.options
+		);
+
 	};
 
 	return SelectedNodeViewModel;

@@ -10,8 +10,8 @@ define([
 
 		this.options = {};
 		this.solidParticleSystemsByMeshName = {};
-		this.indexChunks = {};
-		this.maxChunkSize = 256;
+		this.indexedChunks = {};
+		this.maxChunkSize = 128;
 
 		this.terrainTilesService = TerrainTilesService.getInstance();
 		this.materialsService = MaterialsService.getInstance();
@@ -67,11 +67,8 @@ define([
 		for(terrainType in map.indexedTiles) {
 			if (map.indexedTiles.hasOwnProperty(terrainType)) {
 				_this.buildSpsForTerrainType(terrainType, map);
-				// render tile decorations
-				this.tileDecorationsRenderService.renderTileDecorationsForTerrainType(terrainType, map, this.options, _this.babylonViewModel);
 			}
 		}
-		console.log('finished building chunks for all terrain types', _this.indexChunks);
 	};
 
 	/**
@@ -88,22 +85,25 @@ define([
 
 			var chunks = _this.dataHelperService.chunkify(tiles, numberOfChunks, true);
 
-			/*
-			console.log({
-				terrainType: terrainType,
-				numberOfTiles: numberOfTiles,
-				numberOfChunks: numberOfChunks,
-				chunks: chunks
-			});
-			*/
-
 			for(var i = 0; i < chunks.length; i++) {
 				var chunkIndex = 'chunk' + i;
-				if(!this.indexChunks.hasOwnProperty(terrainType)){
-					this.indexChunks[terrainType] = {};
+				if(!this.indexedChunks.hasOwnProperty(terrainType)){
+					this.indexedChunks[terrainType] = {};
 				}
-				this.indexChunks[terrainType][chunkIndex] = chunks[i];
+
+				this.indexedChunks[terrainType][chunkIndex] = chunks[i];
+
+				// build chunk
 				_this.buildSpsForChunk(terrainType, chunkIndex);
+
+				// build decoration chunk
+				_this.tileDecorationsRenderService.buildDecorationSpsForChunk(
+					terrainType,
+					chunkIndex,
+					_this.indexedChunks,
+					_this.babylonViewModel,
+					_this.options
+				);
 			}
 		}
 	};
@@ -115,7 +115,7 @@ define([
 	 */
 	TilesRenderService.prototype.buildSpsForChunk = function(terrainType, chunkIndex){
 		var _this = this,
-			tiles = _this.indexChunks[terrainType][chunkIndex],
+			tiles = _this.indexedChunks[terrainType][chunkIndex],
 			numberOfTiles = tiles.length,
 			options = _this.options,
 			tileHeight = _this.terrainTilesService.baseTileHeight * 0.1,
