@@ -36,15 +36,18 @@ define(['babylonjs'], function (bjs) {
 		this.materials.mud.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
 		this.materials.mud.specularPower = 128;
 
-		this.materials.dirt = new BABYLON.StandardMaterial('mudMaterial', scene);
+		this.materials.dirt = new BABYLON.StandardMaterial('dirtMaterial', scene);
 		this.materials.dirt.diffuseColor = new BABYLON.Color3(0.55, 0.31, 0.15);
 		this.materials.dirt.specularColor = new BABYLON.Color3(0.01, 0.01, 0.01);
 		this.materials.dirt.specularPower = 128;
 
+		this.materials.desert = new BABYLON.StandardMaterial('desertMaterial', scene);
+		this.materials.desert.diffuseColor = new BABYLON.Color3(0.9, 0.8, 0.5);
+		this.materials.desert.specularColor = new BABYLON.Color3(0.01, 0.01, 0.01);
+		this.materials.desert.specularPower = 128;
+
 		this.materials.water = new BABYLON.StandardMaterial('waterMaterial', scene);
 		this.materials.water.diffuseColor = new BABYLON.Color3(0.18, 0.18, 0.42);
-
-		this.materials.lake = this.materials.water;
 
 		this.materials.mainTownTile = new BABYLON.StandardMaterial('mainTownTileMaterial', scene);
 		this.materials.mainTownTile.diffuseColor = new BABYLON.Color3(0.5, 0, 0.5);

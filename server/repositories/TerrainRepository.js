@@ -24,6 +24,8 @@ var TerrainRepository = function () {
 			name: 'dirt',
 			description: 'Nothing but dirt.',
 			probability: 20,
+			minSize: 0,
+			maxSize: 2,
 			searchTime: 5,
 			searchCapacity: 0,
 			searchResources: []
@@ -31,7 +33,9 @@ var TerrainRepository = function () {
 		grass: {
 			name: 'grass',
 			description: 'A plane covered with high grass.',
-			probability: 20,
+			probability: 15,
+			minSize: 1,
+			maxSize: 3,
 			searchTime: 5,
 			searchCapacity: 30,
 			searchResources: ['seed', 'wheat']
@@ -39,7 +43,9 @@ var TerrainRepository = function () {
 		forest: {
 			name: 'forest',
 			description: 'A thick forest with trees everywhere.',
-			probability: 30,
+			probability: 35,
+			minSize: 0,
+			maxSize: 5,
 			searchTime: 20,
 			searchCapacity: 30,
 			searchResources: ['wood', 'apple']
@@ -48,14 +54,8 @@ var TerrainRepository = function () {
 			name: 'water',
 			description: 'Hmm... water...',
 			probability: 2,
-			searchTime: 80,
-			searchCapacity: 0,
-			searchResources: []
-		},
-		lake: {
-			name: 'lake',
-			description: 'Hmm... water...',
-			probability: 2,
+			minSize: 1,
+			maxSize: 3,
 			searchTime: 80,
 			searchCapacity: 0,
 			searchResources: []
@@ -63,7 +63,9 @@ var TerrainRepository = function () {
 		mud: {
 			name: 'mud',
 			description: 'Caution mud...',
-			probability: 1,
+			probability: 3,
+			minSize: 0,
+			maxSize: 3,
 			searchTime: 160,
 			searchCapacity: 15,
 			searchResources: ['clay', 'acorus']
@@ -72,6 +74,8 @@ var TerrainRepository = function () {
 			name: 'cave',
 			description: 'Huh, an unexplored cave.',
 			probability: 5,
+			minSize: 0,
+			maxSize: 1,
 			searchTime: 320,
 			searchCapacity: 60,
 			searchResources: ['stone', 'metal']
@@ -79,7 +83,19 @@ var TerrainRepository = function () {
 		mountain: {
 			name: 'mountain',
 			description: 'Insurmountable',
+			probability: 3,
+			minSize: 0,
+			maxSize: 2,
+			searchTime: 0,
+			searchCapacity: 0,
+			searchResources: []
+		},
+		desert: {
+			name: 'desert',
+			description: 'Burning hot sand as far as the eye can see.',
 			probability: 1,
+			minSize: 2,
+			maxSize: 4,
 			searchTime: 0,
 			searchCapacity: 0,
 			searchResources: []
@@ -87,19 +103,35 @@ var TerrainRepository = function () {
 	};
 
 	this.terrainTypesByProbability = [];
+	this.terrainsByProbability = [];
 
 	// fill terrainTypesByProbability
 	for (var i in this.terrainTypes) {
 		if(this.terrainTypes.hasOwnProperty(i)) {
 			for (var n = 0; n < this.terrainTypes[i].probability; n++) {
 				this.terrainTypesByProbability.push(this.terrainTypes[i].name);
+				this.terrainsByProbability.push(this.terrainTypes[i]);
 			}
 		}
 	}
 };
 
 /*
- * returns string random type
+ * returns string random terrain
+ */
+TerrainRepository.prototype.createRandom = function (rng, blacklist) {
+	blacklist = blacklist || [];
+
+	var terrain = '';
+	do {
+		var randomValue = rng ? rng() : Math.random();
+		terrain = this.terrainsByProbability[Math.floor(randomValue * this.terrainsByProbability.length)]
+	} while(blacklist.indexOf(terrain.name) != -1);
+	return terrain;
+};
+
+/*
+ * returns string random terrain type
  */
 TerrainRepository.prototype.createRandomType = function (rng, blacklist) {
 	var type = '';

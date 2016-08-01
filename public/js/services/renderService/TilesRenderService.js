@@ -128,7 +128,6 @@ define([
 				tileHeight = 3;
 				break;
 			case 'water':
-			case 'lake':
 				SPS.addShape(options.tileTypes.waterTerrainTile, numberOfTiles);
 				tileHeight = 0.1;
 				break;

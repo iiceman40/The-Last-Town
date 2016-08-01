@@ -24,10 +24,10 @@ define(['knockout', 'text!templates/game/new.html', 'GameViewModel', 'FlashMessa
 				_this.connectedUsers = params.connectedUsers;
 
 				_this.sizes = ko.observableArray([
-					{x: 3, y: 3, label: 'tiny'},
 					{x: 50, y: 30, label: 'small'},
 					{x: 60, y: 40, label: 'medium'},
-					{x: 80, y: 50, label: 'large'}
+					{x: 80, y: 50, label: 'large'},
+					{x: 120, y: 90, label: 'huge'}
 				]);
 				_this.size = ko.observable(_this.sizes()[0]);
 
