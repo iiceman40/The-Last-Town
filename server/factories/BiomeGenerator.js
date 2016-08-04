@@ -1,6 +1,7 @@
 "use strict";
 
-var _ = require('underscore');
+var _          = require('underscore');
+var seedrandom = require('seedrandom');
 
 var instance = null;
 
@@ -8,11 +9,12 @@ var instance = null;
  *
  * @constructor
  */
-var BiomeGenerator = function (rng) {
+var BiomeGenerator = function () {
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
-	this.rng = rng || Math.random;
+	this.rng = null;
 	this.terrainTypes = [];
 	this.filledTiles = 0;
+	this.debugString = '';
 };
 
 /**
@@ -23,10 +25,16 @@ var BiomeGenerator = function (rng) {
 BiomeGenerator.prototype.fillMap = function(mapData, settings){
 	var _this = this;
 
+	this.rng = seedrandom(mapData.seed);
+	console.log('seed', mapData.seed, 'first random number', this.rng());
+	this.filledTiles = 0;
+
 	while(this.filledTiles < mapData.height * mapData.width * 0.9){
 		_this.createRandomComplexBiome(mapData, settings);
 	}
+
 	_this.finalizeMap(mapData, settings);
+	//console.log(this.debugString);
 };
 
 /**
@@ -91,6 +99,11 @@ BiomeGenerator.prototype.createRandomComplexBiomeAtPosition = function(mapData, 
 	_this.appendBiome(mapData, settings);
 };
 
+/**
+ *
+ * @param mapData
+ * @param settings
+ */
 BiomeGenerator.prototype.appendBiome = function(mapData, settings){
 	settings = _.extend({}, settings);
 
@@ -105,13 +118,19 @@ BiomeGenerator.prototype.appendBiome = function(mapData, settings){
 	this.createBiomeFromSettings(mapData, settings);
 };
 
+/**
+ *
+ * @param min
+ * @param max
+ * @returns {*}
+ */
 BiomeGenerator.prototype.randomInt = function(min, max){
-	min = Math.floor(min);
-	max = Math.floor(max);
-
 	var _this = this;
 
-	return min + Math.floor(_this.rng() * (max - min));
+	var random = _this.rng();
+	var randomInteger = min + Math.floor(random * (max - min));
+	this.debugString += ' ' + random;
+	return randomInteger;
 };
 
 /**
@@ -282,9 +301,9 @@ BiomeGenerator.prototype.tileIsInMapBoundaries = function (tilePosition, mapData
 	)
 };
 
-var getInstance = function(rng){
+var getInstance = function(){
 	if(!instance){
-		instance = new BiomeGenerator(rng);
+		instance = new BiomeGenerator();
 	}
 	return instance;
 };

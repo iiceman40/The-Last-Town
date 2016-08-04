@@ -1,20 +1,17 @@
 'use strict';
 
-var Tile = require('../models/Tile');
-var PF = require('pathfinding');
+var Tile        = require('../models/Tile'),
+	PathFinding = require('pathfinding');
 
 var instance = null;
 
 var MapFactory = function(){
-	console.log('initiated map factory');
+	console.log('initializing map factory');
 	this.maxMapWith = 120;
 	this.maxMapHeight = 90;
 
-	this.seedrandom = require('seedrandom');
-	this.rng = this.seedrandom();
-
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
-	this.mapCreationService = require('../services/MapCreationService').getInstance(this.rng);
+	this.mapCreationService = require('../services/MapCreationService').getInstance();
 };
 
 /**
@@ -24,12 +21,12 @@ var MapFactory = function(){
  */
 MapFactory.prototype.build = function(settings){
 	console.log('building new map with settings: ', settings);
-	
+
 	if(settings.width > this.maxMapWith || settings.height > this.maxMapHeight){
-		console.log('ERROR - requested map size ist bigger than the max values');
+		console.log('ERROR - requested map size exceeds the maximum values');
 		return null;
 	}
-	
+
 	var mapData = {
 		width: settings.width,
 		height: settings.height,
@@ -39,8 +36,6 @@ MapFactory.prototype.build = function(settings){
 		},
 		seed: settings.seed
 	};
-
-	this.rng = this.seedrandom(mapData.seed);
 
 	//mapData = this.createMapGrid(mapData);
 	mapData = this.createMapGridByBioms(mapData);
@@ -101,14 +96,14 @@ MapFactory.prototype.createMapGrid = function (mapData) {
 			mapData.tiles.push(newTile);
 
 			// node for player
-			var node = new PF.Node(x, y, 0);
+			var node = new PathFinding.Node(x, y, 0);
 			node.isWalkable = (newTerrainType != 'water' && newTerrainType != 'mountain');
 			node.terrain = newTerrainType;
 			node.enemies = [];
 			currentMapRow.push(node);
 
 			// node for enemies
-			var enemyNode = new PF.Node(x, y, 0);
+			var enemyNode = new PathFinding.Node(x, y, 0);
 			enemyNode.isWalkable = (newTerrainType != 'water');
 			currentEnemyMapRow.push(enemyNode);
 
@@ -134,7 +129,6 @@ MapFactory.prototype.createMapGridByBioms = function (mapData) {
 	mapData = this.mapCreationService.createMap(mapData);
 
 	mapData.indexedTiles = this.indexTilesByType(mapData);
-
 	mapData.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
 
 	return mapData;

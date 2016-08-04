@@ -1,21 +1,18 @@
 'use strict';
 
-var Tile = require('../models/Tile');
-var PF = require('pathfinding');
-
 var instance = null;
 
-var MapCreationService = function (rng) {
+var MapCreationService = function () {
 	var _this = this;
 
 	_this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	_this.improvementRepository = require('../repositories/ImprovementRepository').getInstance();
-	_this.biomeGenerator = require('../factories/BiomeGenerator').getInstance(rng);
+	_this.biomeGenerator = require('../factories/BiomeGenerator').getInstance();
 
 	return _this;
 };
 
-MapCreationService.prototype.createMap = function(mapData, rng){
+MapCreationService.prototype.createMap = function(mapData){
 	var self = this,
 		settings = {
 			randomizeEdge: true,
@@ -34,9 +31,9 @@ MapCreationService.prototype.createMap = function(mapData, rng){
 	return mapData;
 };
 
-var getInstance = function(rng){
+var getInstance = function(){
 	if(!instance){
-		instance = new MapCreationService(rng);
+		instance = new MapCreationService();
 	}
 	return instance;
 };

@@ -4,7 +4,7 @@ var instance = null;
 
 var CommunicationService = function(io){
 	this.io = io;
-	this.logAllEvents = true;
+	this.logAllEvents = false;
 
 	return this;
 };
