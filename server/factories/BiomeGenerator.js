@@ -1,7 +1,12 @@
 "use strict";
 
-var _          = require('underscore');
-var seedrandom = require('seedrandom');
+var _          = require('underscore'),
+	seedrandom = require('seedrandom');
+
+// logging
+var dateFormat = require('dateformat'),
+	fs = require('fs'),
+	logFile = __dirname + '/debug.log';
 
 var instance = null;
 
@@ -14,7 +19,6 @@ var BiomeGenerator = function () {
 	this.rng = null;
 	this.terrainTypes = [];
 	this.filledTiles = 0;
-	this.debugString = '';
 };
 
 /**
@@ -25,16 +29,23 @@ var BiomeGenerator = function () {
 BiomeGenerator.prototype.fillMap = function(mapData, settings){
 	var _this = this;
 
-	this.rng = seedrandom(mapData.seed);
-	console.log('seed', mapData.seed, 'first random number', this.rng());
-	this.filledTiles = 0;
+	_this.rng = seedrandom(mapData.seed);
+	_this.filledTiles = 0;
 
+	this.log(mapData.name, 'start filling tiles');
 	while(this.filledTiles < mapData.height * mapData.width * 0.9){
 		_this.createRandomComplexBiome(mapData, settings);
 	}
 
 	_this.finalizeMap(mapData, settings);
-	//console.log(this.debugString);
+};
+
+/**
+ *
+ * @param data
+ */
+BiomeGenerator.prototype.log = function(data) {
+	fs.appendFileSync(logFile, dateFormat(new Date(), "dd-mm-yyyy, H:MM:ss") + ' ---- ' + data + '\n');
 };
 
 /**
@@ -76,7 +87,7 @@ BiomeGenerator.prototype.finalizeMap = function(mapData){
 BiomeGenerator.prototype.createRandomComplexBiome = function(mapData, settings){
 	var _this = this;
 
-	settings.centerPosition = {x: Math.floor(_this.rng() * mapData.width), y: Math.floor(_this.rng() * mapData.height)};
+	settings.centerPosition = {x: Math.floor(_this.random() * mapData.width), y: Math.floor(_this.random() * mapData.height)};
 
 	this.createRandomComplexBiomeAtPosition(mapData, settings);
 };
@@ -88,7 +99,7 @@ BiomeGenerator.prototype.createRandomComplexBiome = function(mapData, settings){
  */
 BiomeGenerator.prototype.createRandomComplexBiomeAtPosition = function(mapData, settings){
 	var _this = this,
-		terrainObject = this.terrainRepository.createRandom();
+		terrainObject = this.terrainRepository.createRandom(_this.rng);
 
 	settings.size = this.randomInt(terrainObject.minSize, terrainObject.maxSize);
 	settings.terrainType = terrainObject.name;
@@ -119,18 +130,21 @@ BiomeGenerator.prototype.appendBiome = function(mapData, settings){
 };
 
 /**
- *
- * @param min
- * @param max
- * @returns {*}
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
  */
 BiomeGenerator.prototype.randomInt = function(min, max){
 	var _this = this;
+	return min + Math.floor(_this.random() * (max - min));
+};
 
-	var random = _this.rng();
-	var randomInteger = min + Math.floor(random * (max - min));
-	this.debugString += ' ' + random;
-	return randomInteger;
+/**
+ * wrapper for possible logging when generating a random number
+ * @returns {number}
+ */
+BiomeGenerator.prototype.random = function() {
+	return this.rng();
 };
 
 /**
@@ -140,9 +154,10 @@ BiomeGenerator.prototype.randomInt = function(min, max){
  */
 BiomeGenerator.prototype.createRandomBiome = function (mapData, settings) {
 	var _this = this;
-
-	settings.centerPosition = {x: Math.floor(_this.rng() * mapData.width), y: Math.floor(_this.rng() * mapData.height)};
-
+	settings.centerPosition = {
+		x: _this.randomInt(0, mapData.width),
+		y: _this.randomInt(0, mapData.height)
+	};
 	this.createRandomBiomeAtPosition(mapData, settings);
 };
 
@@ -153,7 +168,7 @@ BiomeGenerator.prototype.createRandomBiome = function (mapData, settings) {
  */
 BiomeGenerator.prototype.createRandomBiomeAtPosition = function (mapData, settings) {
 	var _this = this,
-		terrainObject = this.terrainRepository.createRandom();
+		terrainObject = this.terrainRepository.createRandom(_this.rng);
 	settings.size = this.randomInt(terrainObject.minSize, terrainObject.maxSize);
 	settings.terrainType = terrainObject.type;
 
@@ -237,7 +252,7 @@ BiomeGenerator.prototype.transformNeighborsToTargetType = function (mapData, pos
 
 	for (var i = 0; i < neighborPositions.length; i++) {
 		var neighborPosition = neighborPositions[i];
-		if (settings.randomizeEdge && _this.rng() > 0.7) {
+		if (settings.randomizeEdge && _this.random() > 0.7) {
 			indicesToUnset.push(i);
 		} else {
 			// check if neighbor is still within map limits
