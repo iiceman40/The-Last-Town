@@ -13,6 +13,9 @@ define(['babylonjs'], function (bjs) {
 		var _this = this;
 		var scene = this.scene;
 
+		this.materials.snow = new BABYLON.StandardMaterial('snowMaterial', scene);
+		this.materials.snow.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.85);
+
 		this.materials.grass = new BABYLON.StandardMaterial('grassMaterial', scene);
 		this.materials.grass.diffuseColor = new BABYLON.Color3(0.25, 0.35, 0.15);
 		this.materials.grass.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);

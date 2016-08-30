@@ -28,6 +28,7 @@ MapFactory.prototype.build = function(settings){
 	}
 
 	var mapData = {
+		title: settings.title,
 		width: settings.width,
 		height: settings.height,
 		townPosition: {

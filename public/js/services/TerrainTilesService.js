@@ -107,6 +107,28 @@ define(['babylonjs'], function (bjs) {
 	/**
 	 * @returns BABYLON.Mesh
 	 */
+	TerrainTilesService.prototype.createMountainTileDecoration = function(){
+		var terrainTileDecoration = BABYLON.Mesh.CreateCylinder(
+			'mountainTileDecoration',         // name
+			this.baseTileHeight,    // height
+			0,                      // diameter top
+			this.hexagonSize/2,     // diameter bottom
+			6,                      // tessellation
+			1,                      // subdivisions
+			this.scene,             // scene
+			false                   // updateable
+		);
+		terrainTileDecoration.convertToFlatShadedMesh();
+		terrainTileDecoration.rotation.y = Math.PI / 2;
+		terrainTileDecoration.bakeCurrentTransformIntoVertices();
+		terrainTileDecoration.layerMask = 0;
+		terrainTileDecoration.isPickable = false;
+		return terrainTileDecoration;
+	};
+
+	/**
+	 * @returns BABYLON.Mesh
+	 */
 	TerrainTilesService.prototype.createCaveTile = function(){
 		var terrainTile = BABYLON.Mesh.CreateCylinder(
 			'caveTile',             // name
