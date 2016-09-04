@@ -26,7 +26,8 @@
     "seedrandom": "^2.4.2",
     "socket.io": "^1.4.5",
     "text": "github:requirejs/text",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "dateformat": "latest"
   },
   "repository": {
     "type": "git",

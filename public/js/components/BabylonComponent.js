@@ -109,6 +109,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 							mapData.matrix[y][x].terrain = newTerrainType;
 							mapData.matrix[y][x].x = x;
 							mapData.matrix[y][x].y = y;
+							mapData.matrix[y][x].altitude = (newTerrainType === 'water') ? 0 : Math.floor(Math.random() * 10);
 
 							var terrainType = mapData.matrix[y][x].terrain;
 							if(!indexedTiles.hasOwnProperty(terrainType)) {

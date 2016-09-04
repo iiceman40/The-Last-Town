@@ -7,6 +7,8 @@ var instance = null;
  * @constructor
  */
 var TerrainRepository = function () {
+	this.rngService = require('../services/RngService').getInstance();
+
 	/**
 	 * terrainTypes describes the different tile terrains at the map
 	 *
@@ -119,26 +121,32 @@ var TerrainRepository = function () {
 /*
  * returns string random terrain
  */
-TerrainRepository.prototype.createRandom = function (rng, blacklist) {
+TerrainRepository.prototype.createRandom = function (blacklist) {
 	blacklist = blacklist || [];
 
-	var terrain = '';
+	var _this = this,
+		terrain = '';
+
 	do {
-		var randomValue = rng ? rng() : Math.random();
-		terrain = this.terrainsByProbability[Math.floor(randomValue * this.terrainsByProbability.length)]
+		var randomIndex = _this.rngService.randomInt(0, this.terrainsByProbability.length);
+		terrain = this.terrainsByProbability[randomIndex]
 	} while(blacklist.indexOf(terrain.name) != -1);
+
 	return terrain;
 };
 
 /*
  * returns string random terrain type
  */
-TerrainRepository.prototype.createRandomType = function (rng, blacklist) {
-	var type = '';
+TerrainRepository.prototype.createRandomType = function (blacklist) {
+	var _this = this,
+		type = '';
+
 	do {
-		var randomValue = rng ? rng() : Math.random;
-		type = this.terrainTypesByProbability[Math.floor(randomValue * this.terrainTypesByProbability.length)]
+		var randomIndex = _this.rngService.randomInt(0, this.terrainTypesByProbability.length);
+		type = this.terrainTypesByProbability[randomIndex]
 	} while(blacklist.indexOf(type) != -1);
+
 	return type;
 };
 

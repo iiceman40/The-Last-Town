@@ -156,16 +156,22 @@ define([
 		SPS.initParticles = function () {
 			for (var i = 0; i < numberOfTiles; i++) {
 				var tile = tiles[i],
-					x = tile.x,
-					y = tile.y,
-					offset = (y % 2 === 0) ? options.hexagonSize / 2 : 0; // every second row with offset
+					x         = tile.x,
+					y         = tile.y,
+					yPosition = tileHeight / 2 + tile.altitude * 0.05,
+					height    = yPosition * 2,
+					offset    = (y % 2 === 0) ? options.hexagonSize / 2 : 0; // every second row with offset
+
+				if(tile.terrain === 'mountain') {
+					yPosition += tile.altitude * 0.03;
+				}
 
 				tile.chunkIndex = chunkIndex;
 
 				this.particles[i].position.x = (x * options.hexagonSize + offset) * 0.9;
 				this.particles[i].position.z = (y * options.hexagonSize) * 0.8;
-				this.particles[i].position.y = tileHeight / 2;
-				this.particles[i].scale.y = tileHeight;
+				this.particles[i].position.y = yPosition;
+				this.particles[i].scale.y = height;
 				this.particles[i].tile = tile;
 			}
 		};

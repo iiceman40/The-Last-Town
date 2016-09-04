@@ -30,7 +30,7 @@ define([
 					x = tile.x,
 					y = tile.y,
 					offset = (y % 2 === 0) ? options.hexagonSize / 2 : 0, // every second row with offset
-					yPosition = -0.7;
+					yPosition = -0.7 + tile.altitude * 0.1;
 
 				tile.decorationChunkIndex = chunkIndex;
 				console.log(i * numberOfDecorationsPerTile);
@@ -80,9 +80,10 @@ define([
 				if (numberOfDecorationsPerTile > 0) {
 					this.particles[i].position.x = (x * options.hexagonSize + offset) * 0.9;
 					this.particles[i].position.z = (y * options.hexagonSize) * 0.8;
-					this.particles[i].position.y = 3 * 0.835;
-					this.particles[i].scale.x = 0.68;
-					this.particles[i].scale.z = 0.68;
+					this.particles[i].position.y = 3 * 0.835 + tile.altitude * 0.13;
+					this.particles[i].scale.x = 0.68 + tile.altitude * -0.01;
+					this.particles[i].scale.z = 0.68 + tile.altitude * -0.01;
+					this.particles[i].scale.y = 1 + tile.altitude * 0.05;
 				}
 			}
 		}

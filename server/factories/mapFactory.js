@@ -12,6 +12,7 @@ var MapFactory = function(){
 
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	this.mapCreationService = require('../services/MapCreationService').getInstance();
+	this.rngService = require('../services/RngService').getInstance();
 };
 
 /**
@@ -20,6 +21,7 @@ var MapFactory = function(){
  * @returns {{}}
  */
 MapFactory.prototype.build = function(settings){
+	var _this = this;
 	console.log('building new map with settings: ', settings);
 
 	if(settings.width > this.maxMapWith || settings.height > this.maxMapHeight){
@@ -38,8 +40,8 @@ MapFactory.prototype.build = function(settings){
 		seed: settings.seed
 	};
 
-	//mapData = this.createMapGrid(mapData);
-	mapData = this.createMapGridByBioms(mapData);
+	_this.rngService.init(mapData.seed);
+	mapData = this.createMapGrid(mapData);
 
 	//mapData = this.connectNeighbors((mapData)); // deactivated because of recursion that will be created
 
@@ -47,82 +49,11 @@ MapFactory.prototype.build = function(settings){
 };
 
 /**
- * 
+ *
  * @param mapData
  * @returns {*}
  */
 MapFactory.prototype.createMapGrid = function (mapData) {
-	mapData.tiles = [];
-	mapData.matrix = [];
-	mapData.enemyMatrix = [];
-	mapData.indexedTiles = {};
-
-	var width = mapData.width;
-	var height = mapData.height;
-	var townPosition = mapData.townPosition;
-
-	var matrix = mapData.matrix;
-	var enemyMatrix = mapData.enemyMatrix;
-
-	for (var y = 0; y < height; y++) {
-		var currentMapRow = [];
-		var currentEnemyMapRow = [];
-
-		for (var x = 0; x < width; x++) {
-
-			// place mountains near border
-			var distanceToBorderTop = y;
-			var distanceToBorderBottom = height - 1 - y;
-			var distanceToBorderLeft = x;
-			var distanceToBorderRight = width - 1 - x;
-			var isMountainProbability = Math.min(distanceToBorderTop, distanceToBorderBottom, distanceToBorderLeft, distanceToBorderRight);
-			
-			var random = Math.floor((this.rng() * 2) + 1);
-
-			var newTerrainType = 'mountain';
-			if (random < isMountainProbability) {
-				newTerrainType = this.terrainRepository.createRandomType(this.rng, []);
-			}
-
-			// TODO no terrain type for main town tile but an initial fixed improvement?
-			if (townPosition.x == x && townPosition.y == y) {
-				newTerrainType = 'mainTownTile';
-			}
-
-			// tile
-			var newTile = new Tile({
-				position: {x: x, y: y},
-				terrain: newTerrainType
-			});
-			mapData.tiles.push(newTile);
-
-			// node for player
-			var node = new PathFinding.Node(x, y, 0);
-			node.isWalkable = (newTerrainType != 'water' && newTerrainType != 'mountain');
-			node.terrain = newTerrainType;
-			node.enemies = [];
-			currentMapRow.push(node);
-
-			// node for enemies
-			var enemyNode = new PathFinding.Node(x, y, 0);
-			enemyNode.isWalkable = (newTerrainType != 'water');
-			currentEnemyMapRow.push(enemyNode);
-
-		}
-		matrix.push(currentMapRow);
-		enemyMatrix.push(currentEnemyMapRow);
-
-	}
-
-	mapData.indexedTiles = mapData.indexedTiles = this.indexTilesByType();
-
-	mapData.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
-	mapData.townPosition = townPosition;
-
-	return mapData;
-};
-
-MapFactory.prototype.createMapGridByBioms = function (mapData) {
 	mapData.tiles = [];
 	mapData.matrix = [];
 	mapData.enemyMatrix = [];

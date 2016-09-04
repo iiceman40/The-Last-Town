@@ -1,22 +1,16 @@
 "use strict";
 
-var _          = require('underscore'),
-	seedrandom = require('seedrandom');
-
-// logging
-var dateFormat = require('dateformat'),
-	fs = require('fs'),
-	logFile = __dirname + '/debug.log';
-
-var instance = null;
+var _= require('underscore'),
+	instance = null;
 
 /**
  *
  * @constructor
  */
-var BiomeGenerator = function () {
+var BiomeFactory = function () {
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
-	this.rng = null;
+	this.matrixService = require('../services/MatrixService').getInstance();
+	this.rngService = require('../services/RngService').getInstance();
 	this.terrainTypes = [];
 	this.filledTiles = 0;
 };
@@ -26,56 +20,13 @@ var BiomeGenerator = function () {
  * @param mapData
  * @param settings
  */
-BiomeGenerator.prototype.fillMap = function(mapData, settings){
+BiomeFactory.prototype.fillMap = function(mapData, settings){
 	var _this = this;
 
-	_this.rng = seedrandom(mapData.seed);
 	_this.filledTiles = 0;
 
-	this.log(mapData.name, 'start filling tiles');
 	while(this.filledTiles < mapData.height * mapData.width * 0.9){
 		_this.createRandomComplexBiome(mapData, settings);
-	}
-
-	_this.finalizeMap(mapData, settings);
-};
-
-/**
- *
- * @param data
- */
-BiomeGenerator.prototype.log = function(data) {
-	fs.appendFileSync(logFile, dateFormat(new Date(), "dd-mm-yyyy, H:MM:ss") + ' ---- ' + data + '\n');
-};
-
-/**
- *
- * @param mapData
- */
-BiomeGenerator.prototype.finalizeMap = function(mapData){
-	var _this = this;
-
-	for (var y = 0; y < mapData.height; y++) {
-		if(mapData.matrix[y] === undefined){
-			mapData.matrix[y] = {}
-		}
-		for (var x = 0; x < mapData.width; x++) {
-			if(!mapData.matrix[y][x]) {
-				_this.initMatrixPosition(mapData.matrix, {x: x, y: y});
-				mapData.matrix[y][x].terrain  = 'grass';
-			}
-
-			// place mountains near border
-			var distanceToBorderTop = y,
-				distanceToBorderBottom = mapData.height - 1 - y,
-				distanceToBorderLeft = x,
-				distanceToBorderRight = mapData.width - 1 - x,
-				isMountainThreshold = Math.min(distanceToBorderTop, distanceToBorderBottom, distanceToBorderLeft, distanceToBorderRight);
-
-			if (_this.randomInt(1, 3) > isMountainThreshold) {
-				mapData.matrix[y][x].terrain  = 'mountain';
-			}
-		}
 	}
 };
 
@@ -84,10 +35,10 @@ BiomeGenerator.prototype.finalizeMap = function(mapData){
  * @param mapData
  * @param settings
  */
-BiomeGenerator.prototype.createRandomComplexBiome = function(mapData, settings){
+BiomeFactory.prototype.createRandomComplexBiome = function(mapData, settings){
 	var _this = this;
 
-	settings.centerPosition = {x: Math.floor(_this.random() * mapData.width), y: Math.floor(_this.random() * mapData.height)};
+	settings.centerPosition = {x: Math.floor(_this.rngService.random() * mapData.width), y: Math.floor(_this.rngService.random() * mapData.height)};
 
 	this.createRandomComplexBiomeAtPosition(mapData, settings);
 };
@@ -97,11 +48,11 @@ BiomeGenerator.prototype.createRandomComplexBiome = function(mapData, settings){
  * @param mapData
  * @param settings
  */
-BiomeGenerator.prototype.createRandomComplexBiomeAtPosition = function(mapData, settings){
+BiomeFactory.prototype.createRandomComplexBiomeAtPosition = function(mapData, settings){
 	var _this = this,
-		terrainObject = this.terrainRepository.createRandom(_this.rng);
+		terrainObject = this.terrainRepository.createRandom();
 
-	settings.size = this.randomInt(terrainObject.minSize, terrainObject.maxSize);
+	settings.size = this.rngService.randomInt(terrainObject.minSize, terrainObject.maxSize);
 	settings.terrainType = terrainObject.name;
 
 	this.createBiomeFromSettings(mapData, settings);
@@ -115,12 +66,12 @@ BiomeGenerator.prototype.createRandomComplexBiomeAtPosition = function(mapData, 
  * @param mapData
  * @param settings
  */
-BiomeGenerator.prototype.appendBiome = function(mapData, settings){
+BiomeFactory.prototype.appendBiome = function(mapData, settings){
 	settings = _.extend({}, settings);
 
 	var _this = this,
-		offsetX = _this.randomInt(settings.size, settings.size * 2) * (_this.randomInt(1, 2) - 1),
-		offsetY = _this.randomInt(settings.size, settings.size * 2) * (_this.randomInt(1, 2) - 1);
+		offsetX = _this.rngService.randomInt(settings.size, settings.size * 2) * (_this.rngService.randomInt(1, 2) - 1),
+		offsetY = _this.rngService.randomInt(settings.size, settings.size * 2) * (_this.rngService.randomInt(1, 2) - 1);
 	settings.centerPosition = {
 		x: settings.centerPosition.x + offsetX,
 		y: settings.centerPosition.y + offsetY
@@ -130,64 +81,18 @@ BiomeGenerator.prototype.appendBiome = function(mapData, settings){
 };
 
 /**
- * @param {number} min
- * @param {number} max
- * @returns {number}
- */
-BiomeGenerator.prototype.randomInt = function(min, max){
-	var _this = this;
-	return min + Math.floor(_this.random() * (max - min));
-};
-
-/**
- * wrapper for possible logging when generating a random number
- * @returns {number}
- */
-BiomeGenerator.prototype.random = function() {
-	return this.rng();
-};
-
-/**
  *
  * @param mapData
  * @param settings
  */
-BiomeGenerator.prototype.createRandomBiome = function (mapData, settings) {
-	var _this = this;
-	settings.centerPosition = {
-		x: _this.randomInt(0, mapData.width),
-		y: _this.randomInt(0, mapData.height)
-	};
-	this.createRandomBiomeAtPosition(mapData, settings);
-};
-
-/**
- *
- * @param mapData
- * @param settings
- */
-BiomeGenerator.prototype.createRandomBiomeAtPosition = function (mapData, settings) {
-	var _this = this,
-		terrainObject = this.terrainRepository.createRandom(_this.rng);
-	settings.size = this.randomInt(terrainObject.minSize, terrainObject.maxSize);
-	settings.terrainType = terrainObject.type;
-
-	this.createBiomeFromSettings(mapData, settings);
-};
-
-/**
- *
- * @param mapData
- * @param settings
- */
-BiomeGenerator.prototype.createBiomeFromSettings = function (mapData, settings) {
+BiomeFactory.prototype.createBiomeFromSettings = function (mapData, settings) {
 	var transformedNodes = {},
 		biomeSize        = settings.size,
 		matrix           = mapData.matrix,
 		centerPosition   = settings.centerPosition;
 
 	// begin at starting point
-	this.initMatrixPosition(matrix, centerPosition);
+	this.matrixService.initMatrixPosition(matrix, centerPosition);
 
 	if(!mapData.matrix[centerPosition.y][centerPosition.x].terrain) {
 		matrix[centerPosition.y][centerPosition.x].terrain = settings.terrainType;
@@ -223,28 +128,11 @@ BiomeGenerator.prototype.createBiomeFromSettings = function (mapData, settings) 
 
 /**
  *
- * @param matrix
- * @param position
- */
-BiomeGenerator.prototype.initMatrixPosition = function (matrix, position) {
-	var x = position.x,
-		y = position.y;
-
-	if (!matrix[y]) {
-		matrix[y] = {};
-	}
-	if (!matrix[y][x]) {
-		matrix[y][x] = position;
-	}
-};
-
-/**
- *
  * @param mapData
  * @param position
  * @param settings
  */
-BiomeGenerator.prototype.transformNeighborsToTargetType = function (mapData, position, settings) {
+BiomeFactory.prototype.transformNeighborsToTargetType = function (mapData, position, settings) {
 	var _this = this,
 		targetType = settings.terrainType,
 		neighborPositions = this.getTileNeighborPositions(position),
@@ -252,12 +140,12 @@ BiomeGenerator.prototype.transformNeighborsToTargetType = function (mapData, pos
 
 	for (var i = 0; i < neighborPositions.length; i++) {
 		var neighborPosition = neighborPositions[i];
-		if (settings.randomizeEdge && _this.random() > 0.7) {
+		if (settings.randomizeEdge && _this.rngService.random() > 0.7) {
 			indicesToUnset.push(i);
 		} else {
 			// check if neighbor is still within map limits
 			if (this.tileIsInMapBoundaries(neighborPosition, mapData)) {
-				this.initMatrixPosition(mapData.matrix, neighborPosition);
+				this.matrixService.initMatrixPosition(mapData.matrix, neighborPosition);
 				if(!mapData.matrix[neighborPosition.y][neighborPosition.x].terrain) {
 					mapData.matrix[neighborPosition.y][neighborPosition.x].terrain = targetType;
 					this.filledTiles++;
@@ -278,7 +166,7 @@ BiomeGenerator.prototype.transformNeighborsToTargetType = function (mapData, pos
  * @param tilePosition
  * @returns {*[]}
  */
-BiomeGenerator.prototype.getTileNeighborPositions = function (tilePosition) {
+BiomeFactory.prototype.getTileNeighborPositions = function (tilePosition) {
 	var x = tilePosition.x;
 	var y = tilePosition.y;
 	var neighborPositions = [
@@ -307,7 +195,7 @@ BiomeGenerator.prototype.getTileNeighborPositions = function (tilePosition) {
  * @param mapData
  * @returns {boolean}
  */
-BiomeGenerator.prototype.tileIsInMapBoundaries = function (tilePosition, mapData) {
+BiomeFactory.prototype.tileIsInMapBoundaries = function (tilePosition, mapData) {
 	return (
 		tilePosition.y >= 0 &&
 		tilePosition.y < mapData.height &&
@@ -318,7 +206,7 @@ BiomeGenerator.prototype.tileIsInMapBoundaries = function (tilePosition, mapData
 
 var getInstance = function(){
 	if(!instance){
-		instance = new BiomeGenerator();
+		instance = new BiomeFactory();
 	}
 	return instance;
 };
