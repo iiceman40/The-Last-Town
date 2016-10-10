@@ -85,7 +85,7 @@ var TerrainRepository = function () {
 		mountain: {
 			name: 'mountain',
 			description: 'Insurmountable',
-			probability: 3,
+			probability: 5,
 			minSize: 0,
 			maxSize: 2,
 			searchTime: 0,

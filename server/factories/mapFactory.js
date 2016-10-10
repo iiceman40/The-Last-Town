@@ -7,8 +7,8 @@ var instance = null;
 
 var MapFactory = function(){
 	console.log('initializing map factory');
-	this.maxMapWith = 120;
-	this.maxMapHeight = 90;
+	this.maxMapWith = 100;
+	this.maxMapHeight = 100;
 
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	this.mapCreationService = require('../services/MapCreationService').getInstance();
