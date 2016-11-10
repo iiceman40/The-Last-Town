@@ -33,7 +33,7 @@ define([
 					yPosition = -0.7 + tile.altitude * 0.1;
 
 				tile.decorationChunkIndex = chunkIndex;
-				console.log(i * numberOfDecorationsPerTile);
+				//console.log(i * numberOfDecorationsPerTile);
 				if (numberOfDecorationsPerTile > 0) {
 					this.particles[i * numberOfDecorationsPerTile].position.x = (x * options.hexagonSize + offset) * 0.9 - 0.1;
 					this.particles[i * numberOfDecorationsPerTile].position.z = (y * options.hexagonSize) * 0.8 + 0.1;
@@ -149,10 +149,10 @@ define([
 					hasDecoration = false;
 			}
 
-			mesh.material.freeze();
+			//mesh.material.freeze();
 			mesh.position = new BABYLON.Vector3(options.startingPosition.x, 0, options.startingPosition.z);
-			mesh.freezeWorldMatrix();
-			mesh.freezeNormals();
+			//mesh.freezeWorldMatrix();
+			//mesh.freezeNormals();
 
 			// first call to setParticles() settings
 			SPS.initParticles();

@@ -150,10 +150,11 @@ define([
 		}
 
 		mesh.position = new BABYLON.Vector3(options.startingPosition.x, 0, options.startingPosition.z);
-		//mesh.freezeWorldMatrix();
+		mesh.freezeWorldMatrix();
 		mesh.freezeNormals();
 
 		SPS.initParticles = function () {
+
 			for (var i = 0; i < numberOfTiles; i++) {
 				var tile = tiles[i],
 					x         = tile.x,

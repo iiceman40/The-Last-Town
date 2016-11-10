@@ -116,7 +116,6 @@ MapCreationService.prototype.setHeightLevels = function(mapData, position) {
 		tile.altitude = _this.rngService.randomInt(0, 10);
 	}
 
-	// TODO raise some tiles randomly
 };
 
 var getInstance = function(){

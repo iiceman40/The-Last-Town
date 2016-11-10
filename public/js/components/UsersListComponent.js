@@ -14,7 +14,7 @@ define(['knockout', 'text!templates/users-list.html', 'UserViewModel', 'undersco
 				_this.user = params.user;
 
 				// observables
-				_this.isActive = ko.observable(true).subscribeTo('usersListIsActive');
+				_this.isActive = ko.observable(false).subscribeTo('usersListIsActive');
 				_this.selectedUser = ko.observable().syncWith('selectedUser');
 				_this.connectedUsers = ko.observableArray([]);
 

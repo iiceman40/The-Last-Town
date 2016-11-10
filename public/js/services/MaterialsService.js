@@ -1,4 +1,4 @@
-define(['babylonjs'], function (bjs) {
+define(['babylonjs', 'knockout'], function (bjs, ko) {
 	var instance = null;
 	// TODO rename to factory
 
@@ -10,8 +10,8 @@ define(['babylonjs'], function (bjs) {
 	};
 
 	MaterialsService.prototype.initMaterials = function () {
-		var _this = this;
-		var scene = this.scene;
+		var _this = this,
+			scene = this.scene;
 
 		this.materials.snow = new BABYLON.StandardMaterial('snowMaterial', scene);
 		this.materials.snow.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.85);
@@ -69,6 +69,43 @@ define(['babylonjs'], function (bjs) {
 		this.materials.tree.diffuseColor = new BABYLON.Color3(0.10, 0.20, 0.05);
 		this.materials.tree.specularColor = new BABYLON.Color3(0.05, 0.05, 0.05);
 		this.materials.tree.specularPower = 32;
+
+		// color grading
+		// var colorGrading = new BABYLON.ColorGradingTexture("assets/textures/LateSunset.3dl", scene);
+		// for (var material in this.materials) {
+		// 	if (this.materials.hasOwnProperty(material)) {
+		// 		console.log('adding color grading', material);
+		// 		this.materials[material].cameraColorGradingTexture = colorGrading;
+		// 	}
+		// }
+		//
+		// var i = 0;
+		// scene.registerBeforeRender(function(){
+		// 	colorGrading.level = Math.sin(i++ / 1200);
+		// });
+
+		// color curve
+		var curve = new BABYLON.ColorCurves();
+		curve.GlobalHue = 255;
+		//curve.GlobalDensity = 100;
+		//curve.GlobalSaturation = -50;
+		for (var material in this.materials) {
+			if (this.materials.hasOwnProperty(material)) {
+				this.materials[material].cameraColorCurves = curve;
+			}
+		}
+
+		// var time = 1200;
+		// var i = 0;
+		// scene.registerBeforeRender(function(){
+		// 	curve.GlobalDensity    =  Math.sin(i++ / time) * Math.sin(i++ / time) * 250;
+		// 	curve.GlobalSaturation = -1 * Math.sin(i++ / time) * Math.sin(i++ / time) * 40;
+		// });
+		ko.postbox.subscribe("worldTime", function(newValue) {
+			curve.GlobalDensity    = Math.pow((newValue - 12) * 1.5, 2) * 0.7;
+			curve.GlobalSaturation = -Math.pow((newValue - 12) * 1.5, 2) * 0.2;
+			// console.log(curve.GlobalDensity, curve.GlobalSaturation);
+		});
 
 		return this.materials;
 	};

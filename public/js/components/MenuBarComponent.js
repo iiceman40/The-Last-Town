@@ -30,6 +30,7 @@ define(['knockout', 'knockout-postbox', 'text!templates/menu-bar.html'],
 							}
 						}),
 						'Chat': ko.observable().syncWith('chatIsActive'),
+						'Debug': ko.observable().syncWith('debugIsActive'),
 						'---': false,
 						'Close all': 'closeAllPanels'
 					}
@@ -65,7 +66,7 @@ define(['knockout', 'knockout-postbox', 'text!templates/menu-bar.html'],
 						}
 					}
 				};
-				
+
 				_this.toggleDebug = function(){
 					_this.debug(!_this.debug());
 					console.log('toggle debug', _this.debug());

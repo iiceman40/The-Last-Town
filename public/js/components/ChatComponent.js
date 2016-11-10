@@ -15,7 +15,7 @@ define(['knockout', 'text!templates/chat.html', 'UserViewModel', 'MessageViewMod
 				_this.socket = params.socket;
 
 				// observables
-				_this.isActive = ko.observable(true).subscribeTo('chatIsActive');
+				_this.isActive = ko.observable(false).subscribeTo('chatIsActive');
 				_this.user = params.user;
 				_this.selectedUser = ko.observable().syncWith('selectedUser');
 				_this.newMessage = ko.observable(new MessageViewModel({}));

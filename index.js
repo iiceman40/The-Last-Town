@@ -5,10 +5,12 @@ var io = require('socket.io').listen(server);
 
 // DATABASE
 var mongoose = require('mongoose');
+mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://localhost/the_last_town');
 var models = {
 	User: require('./server/models/database/User'),
-	Game: require('./server/models/database/Game')
+	Game: require('./server/models/database/Game'),
+	Player: require('./server/models/database/Player')
 };
 
 // Connection to DB
@@ -23,7 +25,7 @@ db.once('open', function() {
 
 	// handle incoming events
 	io.on('connection', function (socket) {
-		console.log('connection established');
+		console.log('DEBUG - socket connection established');
 		userManagement.handleIncomingEvents(socket);
 		chatService.handleIncomingEvents(socket);
 		gameManagement.handleIncomingEvents(socket)
@@ -33,9 +35,9 @@ db.once('open', function() {
 });
 
 io.on('connection', function (socket) {
-	console.log('connection established outside of database connection');
+	console.log('DEBUG - socket connection established outside of database connection');
 });
 
 io.on('reconnect', function (socket) {
-	console.log('connection re-established outside of database connection');
+	console.log('DEBUG - socket connection re-established outside of database connection');
 });

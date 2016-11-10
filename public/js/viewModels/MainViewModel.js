@@ -1,12 +1,12 @@
 'use strict';
 
 define([
-		'knockout', 'socket.io', 'UserViewModel', 'FlashMessagesComponent', 'UsersListComponent', 'LoginComponent',
+		'knockout', 'socket.io', 'UserViewModel', 'DebugComponent', 'FlashMessagesComponent', 'UsersListComponent', 'LoginComponent',
 		'ProfileComponent', 'ChatComponent', 'ListGamesComponent', 'NewGameComponent', 'EditMapComponent',
 		'BabylonComponent', 'MenuBarComponent'
 	],
 	function (
-		ko, io, UserViewModel, FlashMessagesComponent, UsersListComponent, LoginComponent,
+		ko, io, UserViewModel, DebugComponent, FlashMessagesComponent, UsersListComponent, LoginComponent,
 		ProfileComponent, ChatComponent, ListGamesComponent, NewGameComponent, EditMapComponent,
 		BabylonComponent, MenuBarComponent
 	) {
@@ -21,6 +21,7 @@ define([
 			_this.connectedUsers = ko.observableArray([]);
 
 			// register components
+			ko.components.register('debug', DebugComponent);
 			ko.components.register('flash-messages', FlashMessagesComponent);
 			ko.components.register('users-list', UsersListComponent);
 			ko.components.register('profile', ProfileComponent);

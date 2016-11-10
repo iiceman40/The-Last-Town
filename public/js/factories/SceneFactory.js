@@ -30,21 +30,23 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderSer
 	SceneFactory.prototype.setupCamera = function(scene){
 		var camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 4, 50, BABYLON.Vector3.Zero(), scene);
 
-		/*
-		camera.lowerRadiusLimit = 7;
+		camera.lowerRadiusLimit = 17;
 		camera.upperRadiusLimit = 80;
 		camera.panningSensibility = 100;
 
-		scene.registerBeforeRender(function(){
-			camera.upperBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40));
-			camera.lowerBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40));
-		});
-		*/
+		// scene.registerBeforeRender(function(){
+		// 	camera.upperBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40)) + 0.3;
+		// 	camera.lowerBetaLimit = Math.max(0.01, 1.5 * (1 - camera.radius/40));
+		// });
 
 		camera.keysUp = [];
 		camera.keysDown = [];
 		camera.keysLeft = [];
 		camera.keysRight = [];
+
+		// camera.panningAxis = new BABYLON.Vector3(1, 0, 1);
+		// camera.inertialPanningX = 0;
+		// camera.inertialPanningY = 0;
 
 		// TODO add key events for panning the camera
 
@@ -85,6 +87,12 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderSer
 		//scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
 		//scene.fogStart = 40.0;
 		//scene.fogEnd = 60.0;
+
+		// ko.postbox.subscribe("worldTime", function(newValue) {
+		// 	ambientLight.intensity = 1 - Math.pow(newValue - 12, 2) / 240;
+		// 	ambientLight.diffuse.g = 1 - Math.pow(newValue - 12, 2) / 240;
+		// 	ambientLight.diffuse.b = 1 - Math.pow(newValue - 12, 2) / 240;
+		// });
 	};
 
 	// TODO move events to another class??
