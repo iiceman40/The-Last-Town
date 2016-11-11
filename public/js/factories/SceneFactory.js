@@ -105,30 +105,14 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderSer
 		});
 		this.canvas.addEventListener("pointerup", function () {
 			var pickResult = scene.pick(scene.pointerX, scene.pointerY),
-				terrainTilesService = TerrainTilesService.getInstance(),
-				tilesRenderService = TilesRenderService.getInstance(),
-				selectDisc = terrainTilesService.getSelectDisc(),
 				clickIntended = Math.abs(scene.pointerX - pointerPosition.x) + Math.abs(scene.pointerY - pointerPosition.y) < 10;
 
-			if (pickResult.hit && pickResult.pickedMesh && selectDisc && clickIntended) {
-				selectDisc.isVisible = true;
-
-				var SPS = tilesRenderService.solidParticleSystemsByMeshName[pickResult.pickedMesh.name];
-
-				var meshFaceId = pickResult.faceId;
-
-				if(SPS === undefined && pickResult.pickedMesh){
-					// FIXME check what gets hit if SPS is undefined
-					console.log('SPS undefined', pickResult.pickedMesh.name)
-				}
-
-				if (meshFaceId == -1 || SPS === undefined) { return; }
-				var idx = SPS.pickedParticles[meshFaceId].idx;
-				var p = SPS.particles[idx];
-
-				ko.postbox.publish("selectTile", p);
-				selectDisc.position = p.position.clone().add(pickResult.pickedMesh.position);
-				selectDisc.position.y = 0.005;
+			if (pickResult.hit && pickResult.pickedMesh && clickIntended) {
+				ko.postbox.publish("selectTile", {
+					meshName:     pickResult.pickedMesh.name,
+					meshFaceId:   pickResult.faceId,
+					meshPosition: pickResult.pickedMesh.position
+				});
 			}
 		});
 

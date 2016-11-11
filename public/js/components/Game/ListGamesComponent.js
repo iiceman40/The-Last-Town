@@ -37,7 +37,8 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 
 				_this.joinGame = function(game){
 					// get complete game data
-					_this.socket.emit('getGame', {game: game});
+					//_this.socket.emit('getGame', {game: game});
+					_this.socket.emit('joinGame', {game: game});
 					// hide all other panels
 					ko.postbox.publish("usersListIsActive", false);
 					ko.postbox.publish("flashMessagesIsActive", false);

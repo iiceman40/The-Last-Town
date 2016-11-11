@@ -1,5 +1,8 @@
-define(['knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'FlashMessageViewModel', 'SelectedNodeViewModel', 'BabylonComponent'],
-	function (ko, template, GameViewModel, FlashMessageViewModel, SelectedNodeViewModel, BabylonComponent) {
+define([
+	'knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'FlashMessageViewModel', 'SelectedNodeViewModel', 'BabylonComponent',
+	'TerrainTilesService', 'TilesRenderService'
+	],
+	function (ko, template, GameViewModel, FlashMessageViewModel, SelectedNodeViewModel, BabylonComponent, TerrainTilesService, TilesRenderService) {
 
 		var instance = null;
 
@@ -27,8 +30,28 @@ define(['knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'Flash
 				_this.terrainTypes = ko.observableArray(_this.babylonViewModel.terrainTypes);
 				_this.selectedNode = ko.observable();
 
-				ko.postbox.subscribe("selectTile", function(p) {
+				ko.postbox.subscribe("selectTile", function(data) {
+					console.log('select Tile', data);
+					var terrainTilesService = TerrainTilesService.getInstance(),
+						tilesRenderService = TilesRenderService.getInstance(),
+						selectDisc = terrainTilesService.getSelectDisc(),
+						SPS = tilesRenderService.solidParticleSystemsByMeshName[data.meshName];
+
+					if(SPS === undefined && pickResult.pickedMesh){
+						// FIXME check what gets hit if SPS is undefined
+						console.log('SPS undefined', pickResult.pickedMesh.name)
+					}
+
+					if (data.meshFaceId == -1 || SPS === undefined) { return; }
+
+					var idx = SPS.pickedParticles[data.meshFaceId].idx,
+						p   = SPS.particles[idx];
+
 					_this.selectedNode(new SelectedNodeViewModel(p.tile, p, _this.babylonViewModel));
+
+					selectDisc.isVisible = true;
+					selectDisc.position = p.position.clone().add(data.meshPosition);
+					selectDisc.position.y = 0.005;
 				}, this);
 
 			};
