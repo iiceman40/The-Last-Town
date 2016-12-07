@@ -1,5 +1,9 @@
-define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory', 'MaterialsService', 'TerrainTilesService', 'RenderingService', 'pepjs'],
-	function (ko, template, underscore, moment, SceneFactory, MaterialsService, TerrainTilesService, RenderingService, pepjs) {
+'use strict';
+
+define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'SceneFactory',
+		'MaterialsService', 'TerrainTilesService', 'MapService', 'RenderingService', 'pepjs'],
+	function (ko, template, _, moment, SceneFactory,
+	          MaterialsService, TerrainTilesService, MapService, RenderingService, pepjs) {
 
 		var instance = null;
 
@@ -53,10 +57,12 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				});
 
 				_this.renderingService = RenderingService.getInstance();
+				_this.mapService = MapService.getInstance();
 
 				// observables
-				_this.user = params.user;
+				_this.user        = params.user;
 				_this.currentGame = params.currentGame;
+				_this.myPlayer    = null;
 
 				// computed observables
 
@@ -73,10 +79,10 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					}
 
 					// init game map
+					_this.map.indexedTiles = _this.mapService.indexTilesByType(_this.map);
 					_this.renderingService.initMap(_this);
-
 					// TODO init players
-					//_this.renderingService.initPlayers(_this.currentGame().players(), _this);
+					_this.renderingService.initPlayers(_this);
 
 				});
 
@@ -84,44 +90,9 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.socket.emit('getTerrainTypes', {});
 				_this.socket.on('updateTerrainTypes', function (data) {
 					_this.terrainTypes = Object.keys(data.terrainTypes);
-					// TODO move to separate function that gets called on first time change of _this.terrainTypes/Tiles
-					// init background map for menu
-					// TODO get placeholder terrain types from server or terrain types
-					var placeholderTerrainTypes = [
-						'grass', 'grass', 'grass', 'grass',
-						'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest', 'forest','forest',
-						'mountain', 'mountain', 'mountain',
-						'cave', 'cave', 'cave',
-						'dirt', 'dirt', 'dirt', 'dirt', 'dirt',
-						'mud', 'mud',
-						'water'];
-					var mapData = {};
-					mapData.width = 10;
-					mapData.height = 10;
-					mapData.matrix = [];
-					mapData.indexedTiles = {};
-					var indexedTiles = mapData.indexedTiles;
-					for(var y = 0; y < mapData.height; y++){
-						mapData.matrix[y] = [];
-						for(var x = 0; x < mapData.width; x++) {
-							var newTerrainType = placeholderTerrainTypes[Math.floor(Math.random() * placeholderTerrainTypes.length)];
-							mapData.matrix[y][x] = {};
-							mapData.matrix[y][x].terrain = newTerrainType;
-							mapData.matrix[y][x].x = x;
-							mapData.matrix[y][x].y = y;
-							mapData.matrix[y][x].altitude = (newTerrainType === 'water') ? 0 : Math.floor(Math.random() * 10);
-
-							var terrainType = mapData.matrix[y][x].terrain;
-							if(!indexedTiles.hasOwnProperty(terrainType)) {
-								indexedTiles[terrainType] = [];
-							}
-							indexedTiles[terrainType].push(mapData.matrix[y][x]);
-						}
-					}
-					_this.map = mapData;
-
+					_this.map = _this.mapService.createRandomTestMap();
+					_this.map.indexedTiles = _this.mapService.indexTilesByType(_this.map);
 					_this.renderingService.initMap(_this);
-
 				});
 
 				// init interactions highlighting

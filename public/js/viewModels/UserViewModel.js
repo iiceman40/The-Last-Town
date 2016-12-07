@@ -1,17 +1,16 @@
 'use strict';
 
 define(['knockout'], function (ko) {
-	// UserViewModel model
 	var UserViewModel = function (data) {
 		if (!data) data = {};
 
-		this.name = ko.observable(data.name || '');
-		this.email = ko.observable(data.email || '');
-		this.password = ko.observable(data.password || '');
-		this.rememberMe = ko.observable(data.rememberMe || true);
-		this._id = ko.observable(data._id || '');
+		this._id              = ko.observable(data._id || '');
+		this.name             = ko.observable(data.name || '');
+		this.email            = ko.observable(data.email || '');
+		this.password         = ko.observable(data.password || '');
+		this.rememberMe       = ko.observable(data.rememberMe || true);
 		this.connectionStatus = ko.observable(this.CONNECTION_STATUS_DISCONNECTED);
-		this.loginStatus = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
+		this.loginStatus      = ko.observable(this.LOGIN_STATUS_LOGGED_OUT);
 
 		// computed observable
 		this.isOnline = ko.computed(function () {

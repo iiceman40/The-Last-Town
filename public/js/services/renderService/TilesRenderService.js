@@ -19,7 +19,7 @@ define([
 		this.dataHelperService = DataHelperService.getInstance();
 	};
 
-	TilesRenderService.prototype.initTileTypes = function(){
+	TilesRenderService.prototype.initTileTypes = function () {
 		var _this = this;
 		this.options.tileTypes = {
 			baseTerrainTile: _this.terrainTilesService.createBaseTile(),
@@ -32,14 +32,14 @@ define([
 	/**
 	 * @param babylonViewModel
 	 */
-	TilesRenderService.prototype.renderTiles = function(babylonViewModel) {
+	TilesRenderService.prototype.renderTiles = function (babylonViewModel) {
 		var _this = this,
 			map = babylonViewModel.map;
 
 		_this.babylonViewModel = babylonViewModel;
 		_this.scene = babylonViewModel.scene;
 
-		if(!this.options.tileTypes) {
+		if (!this.options.tileTypes) {
 			this.initTileTypes();
 		}
 
@@ -61,10 +61,10 @@ define([
 	 *
 	 * @param map
 	 */
-	TilesRenderService.prototype.buildSpsForAllTerrainTypes = function(map){
+	TilesRenderService.prototype.buildSpsForAllTerrainTypes = function (map) {
 		var _this = this;
 
-		for(terrainType in map.indexedTiles) {
+		for (terrainType in map.indexedTiles) {
 			if (map.indexedTiles.hasOwnProperty(terrainType)) {
 				_this.buildSpsForTerrainType(terrainType, map);
 			}
@@ -75,8 +75,8 @@ define([
 	 * @param terrainType
 	 * @param map
 	 */
-	TilesRenderService.prototype.buildSpsForTerrainType = function(terrainType, map){
-		if(terrainType != 'none') {
+	TilesRenderService.prototype.buildSpsForTerrainType = function (terrainType, map) {
+		if (terrainType != 'none') {
 			var _this = this,
 				tiles = map.indexedTiles[terrainType],
 				numberOfTiles = tiles.length,
@@ -85,9 +85,9 @@ define([
 
 			var chunks = _this.dataHelperService.chunkify(tiles, numberOfChunks, true);
 
-			for(var i = 0; i < chunks.length; i++) {
+			for (var i = 0; i < chunks.length; i++) {
 				var chunkIndex = 'chunk' + i;
-				if(!this.indexedChunks.hasOwnProperty(terrainType)){
+				if (!this.indexedChunks.hasOwnProperty(terrainType)) {
 					this.indexedChunks[terrainType] = {};
 				}
 
@@ -111,9 +111,9 @@ define([
 	/**
 	 *
 	 * @param terrainType
- * @param chunkIndex
+	 * @param chunkIndex
 	 */
-	TilesRenderService.prototype.buildSpsForChunk = function(terrainType, chunkIndex){
+	TilesRenderService.prototype.buildSpsForChunk = function (terrainType, chunkIndex) {
 		var _this = this,
 			tiles = _this.indexedChunks[terrainType][chunkIndex],
 			numberOfTiles = tiles.length,
@@ -157,23 +157,27 @@ define([
 
 			for (var i = 0; i < numberOfTiles; i++) {
 				var tile = tiles[i],
-					x         = tile.x,
-					y         = tile.y,
+					x = tile.x,
+					y = tile.y,
 					yPosition = tileHeight / 2 + tile.altitude * 0.05,
-					height    = yPosition * 2,
-					offset    = (y % 2 === 0) ? options.hexagonSize / 2 : 0; // every second row with offset
+					height = yPosition * 2,
+					offset = (y % 2 === 0) ? options.hexagonSize / 2 : 0; // every second row with offset
 
-				if(tile.terrain === 'mountain') {
+				if (tile.terrain === 'mountain') {
 					yPosition += tile.altitude * 0.03;
 				}
 
 				tile.chunkIndex = chunkIndex;
+				tile.position = new BABYLON.Vector3(
+					(x * options.hexagonSize + offset) * 0.9,
+					yPosition,
+					(y * options.hexagonSize) * 0.8
+				);
 
-				this.particles[i].position.x = (x * options.hexagonSize + offset) * 0.9;
-				this.particles[i].position.z = (y * options.hexagonSize) * 0.8;
-				this.particles[i].position.y = yPosition;
+				this.particles[i].position = tile.position;
 				this.particles[i].scale.y = height;
 				this.particles[i].tile = tile;
+
 			}
 		};
 

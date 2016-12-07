@@ -3,12 +3,12 @@
 define([
 		'knockout', 'socket.io', 'UserViewModel', 'DebugComponent', 'FlashMessagesComponent', 'UsersListComponent', 'LoginComponent',
 		'ProfileComponent', 'ChatComponent', 'ListGamesComponent', 'NewGameComponent', 'EditMapComponent',
-		'BabylonComponent', 'MenuBarComponent'
+		'BabylonComponent', 'MenuBarComponent', 'SelectedTileComponent', 'CurrentPlayerComponent'
 	],
 	function (
 		ko, io, UserViewModel, DebugComponent, FlashMessagesComponent, UsersListComponent, LoginComponent,
 		ProfileComponent, ChatComponent, ListGamesComponent, NewGameComponent, EditMapComponent,
-		BabylonComponent, MenuBarComponent
+		BabylonComponent, MenuBarComponent, SelectedTileComponent, CurrentPlayerComponent
 	) {
 
 		return function MainViewModel() {
@@ -32,6 +32,8 @@ define([
 			ko.components.register('edit-map', EditMapComponent);
 			ko.components.register('babylon', BabylonComponent);
 			ko.components.register('menu-bar', MenuBarComponent);
+			ko.components.register('selected-tile', SelectedTileComponent);
+			ko.components.register('current-player', CurrentPlayerComponent);
 		};
 	}
 );

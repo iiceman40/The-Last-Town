@@ -36,6 +36,9 @@
 		<div class="col-sm-3">
 			<div data-bind='component: {name: "list-games", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 			<div data-bind='component: {name: "new-game", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
+			<div data-bind='component: {name: "edit-map", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
+			<div data-bind='component: {name: "selected-tile", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
+			<div data-bind='component: {name: "current-player", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 		</div>
 		<div class="col-sm-6">
 			<div data-bind='component: {name: "users-list", params: { socket: socket, user: user }}'></div>
@@ -46,12 +49,6 @@
 			<div data-bind="visible: user().isOnline">
 				<div data-bind='component: {name: "chat", params: { socket: socket, user: user }}'></div>
 			</div>
-		</div>
-	</div>
-
-	<div class="row" data-bind="if: user().isOnline">
-		<div class="col-sm-3">
-			<div data-bind='component: {name: "edit-map", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 		</div>
 	</div>
 

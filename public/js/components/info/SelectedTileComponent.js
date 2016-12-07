@@ -1,15 +1,15 @@
 define([
-	'knockout', 'text!templates/game/edit-map.html', 'GameViewModel', 'FlashMessageViewModel', 'SelectedNodeViewModel', 'BabylonComponent',
-	'SelectTileService'
+		'knockout', 'text!templates/info/selected-tile.html', 'GameViewModel', 'FlashMessageViewModel', 'SelectedNodeViewModel', 'BabylonComponent',
+		'SelectTileService'
 	],
-	function (ko, template, GameViewModel, FlashMessageViewModel, SelectedNodeViewModel, BabylonComponent,SelectTileService) {
+	function (ko, template, GameViewModel, FlashMessageViewModel, SelectedNodeViewModel, BabylonComponent, SelectTileService) {
 
 		var instance = null;
 
-		var EditMapViewModelFactory = function (params, componentInfo) {
+		var SelectedTileViewModelFactory = function (params, componentInfo) {
 			if (!params) params = {};
 
-			var EditMapViewModel = function (params) {
+			var SelectedTileViewModel = function (params) {
 				if (!params) params = {};
 
 				var _this = this;
@@ -18,7 +18,7 @@ define([
 				// observable array
 
 				// observables
-				_this.isActive = ko.observable(false).subscribeTo('editMapIsActive');
+				_this.isActive = ko.observable(false).subscribeTo('selectedTileIsActive');
 				_this.configNewGameIsActive = ko.observable(false);
 				_this.user = params.user;
 				_this.currentGame = params.currentGame;
@@ -42,7 +42,7 @@ define([
 			};
 
 			if (!instance) {
-				instance = new EditMapViewModel(params);
+				instance = new SelectedTileViewModel(params);
 			}
 
 			return instance;
@@ -50,7 +50,7 @@ define([
 
 		return {
 			viewModel: {
-				createViewModel: EditMapViewModelFactory
+				createViewModel: SelectedTileViewModelFactory
 			},
 			template: template
 		};

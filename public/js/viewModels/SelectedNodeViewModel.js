@@ -4,6 +4,13 @@ define([
 	'knockout', 'RenderingService', 'TilesRenderService', 'TileDecorationsRenderService', 'underscore'
 ], function (ko, RenderingService, TilesRenderService, TileDecorationsRenderService, _) {
 
+	/**
+	 *
+	 * @param { {terrain: (string), x: (int), y: (int), z: (int), chunkIndex: (int)} } data
+	 * @param {{}} particle
+	 * @param {{}} babylonViewModel
+	 * @constructor
+	 */
 	var SelectedNodeViewModel = function (data, particle, babylonViewModel) {
 		var _this = this;
 
@@ -28,6 +35,7 @@ define([
 			// TODO send tile update information to server
 		});
 
+		// TODO update altitude
 		// TODO make improvements editable
 	};
 

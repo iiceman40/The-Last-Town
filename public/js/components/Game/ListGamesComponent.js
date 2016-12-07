@@ -43,6 +43,8 @@ define(['knockout', 'text!templates/game/list.html', 'GameViewModel', 'FlashMess
 					ko.postbox.publish("usersListIsActive", false);
 					ko.postbox.publish("flashMessagesIsActive", false);
 					ko.postbox.publish("chatIsActive", false);
+					ko.postbox.publish("selectedTileIsActive", true);
+					ko.postbox.publish("currentPlayerIsActive", true);
 					// show loading screen
 					_this.loading(true);
 				};

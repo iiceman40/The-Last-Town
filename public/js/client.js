@@ -29,6 +29,7 @@ require.config({
 		// VIEW MODELS
 		'MainViewModel':                'js/viewModels/MainViewModel',
 		'UserViewModel':                'js/viewModels/UserViewModel',
+		'PlayerViewModel':              'js/viewModels/PlayerViewModel',
 		'MessageViewModel':             'js/viewModels/MessageViewModel',
 		'FlashMessageViewModel':        'js/viewModels/FlashMessageViewModel',
 		'GameViewModel':                'js/viewModels/GameViewModel',
@@ -42,6 +43,9 @@ require.config({
 		'TileDecorationsRenderService': 'js/services/renderService/TileDecorationsRenderService',
 		'MaterialsService':             'js/services/MaterialsService',
 		'TerrainTilesService':          'js/services/TerrainTilesService',
+		'MapService':                   'js/services/MapService',
+		'SelectTileService':            'js/services/SelectTileService',
+		'CameraService':                'js/services/CameraService',
 		// COMPONENTS
 		'DebugComponent':               'js/components/DebugComponent',
 		'UsersListComponent':           'js/components/UsersListComponent',
@@ -53,7 +57,9 @@ require.config({
 		'NewGameComponent':             'js/components/game/NewGameComponent',
 		'EditMapComponent':             'js/components/game/EditMapComponent',
 		'BabylonComponent':             'js/components/BabylonComponent',
-		'MenuBarComponent':             'js/components/MenuBarComponent'
+		'MenuBarComponent':             'js/components/MenuBarComponent',
+		'SelectedTileComponent':        'js/components/info/SelectedTileComponent',
+		'CurrentPlayerComponent':       'js/components/info/CurrentPlayerComponent'
 	}
 
 });

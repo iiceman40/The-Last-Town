@@ -54,36 +54,17 @@ MapFactory.prototype.build = function(settings){
  * @returns {*}
  */
 MapFactory.prototype.createMapGrid = function (mapData) {
-	mapData.tiles = [];
+	//mapData.tiles = [];
 	mapData.matrix = [];
 	mapData.enemyMatrix = [];
 
 	mapData = this.mapCreationService.createMap(mapData);
 
-	mapData.indexedTiles = this.indexTilesByType(mapData);
+	//mapData.indexedTiles = this.indexTilesByType(mapData);
 	mapData.id = 'new-Map-random-' + Math.floor(Math.random() * 1000000);
 
 	return mapData;
 };
-
-/**
- * index tiles by terrain type after map is completed
- * @param mapData
- */
-MapFactory.prototype.indexTilesByType = function(mapData){
-	var indexedTiles = {};
-	for (var y = 0; y < mapData.height; y++) {
-		for (var x = 0; x < mapData.width; x++) {
-			var terrainType = mapData.matrix[y][x].terrain;
-			if(!indexedTiles.hasOwnProperty(terrainType)) {
-				indexedTiles[terrainType] = [];
-			}
-			indexedTiles[terrainType].push(mapData.matrix[y][x]);
-		}
-	}
-	return indexedTiles;
-};
-
 
 var getInstance = function(){
 	if(!instance){

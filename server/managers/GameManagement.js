@@ -122,16 +122,18 @@ GameManagement.prototype.createNewGame = function (socket, data) {
  */
 GameManagement.prototype.updateGame = function (socket, data) {
 	var _this = this;
-	var query = _this.GameModel.where({_id: data.game._id});
-	query.findOne(function (err, game) {
-		if (err) return console.error(err);
-		if (game instanceof _this.GameModel) {
-			_this.comService.emit(socket, 'updateGame', {
-				message: {text: 'game has been loaded', type: 'success'},
-				game: game
-			}, socket.id);
-		}
-	});
+	_this.GameModel
+		.findOne({_id: data.game._id})
+		.populate('players')
+		.exec(function (err, game) {
+			if (err) return console.error(err);
+			if (game instanceof _this.GameModel) {
+				_this.comService.emit(socket, 'updateGame', {
+					message: {text: 'game has been loaded', type: 'success'},
+					game: game
+				}, socket.id);
+			}
+		});
 };
 
 /**
@@ -142,30 +144,16 @@ GameManagement.prototype.updateGame = function (socket, data) {
  */
 GameManagement.prototype.updateGamesList = function (socket, data, all) {
 	var _this = this;
-	var gamesList = [];
-
-	_this.GameModel.find({}, function (err, games) {
-		if (err) return console.error(err);
-		for (var i = 0; i < games.length; i++) {
-			var game = games[i];
-			gamesList.push({
-				_id: game._id,
-				name: game.name,
-				players: game.players,
-				status: game.status,
-				map: {
-					height: game.map.height,
-					width: game.map.width,
-					seed: game.map.seed
-				}
-			})
-		}
-
-		_this.comService.emit(socket, 'updateGamesList', {
-			message: {text: 'games list has been updated', type: 'success'},
-			games: gamesList
-		}, all ? 'all' : socket.id);
-	});
+	_this.GameModel
+		.find({})
+		.populate('players')
+		.exec(function (err, games) {
+			if (err) return console.error(err);
+			_this.comService.emit(socket, 'updateGamesList', {
+				message: {text: 'games list has been updated', type: 'success'},
+				games: games
+			}, all ? 'all' : socket.id);
+		});
 };
 
 /**
@@ -175,23 +163,18 @@ GameManagement.prototype.updateGamesList = function (socket, data, all) {
  */
 GameManagement.prototype.joinGame = function (socket, data) {
 	var _this = this;
-	_this.GameModel.findOne({_id: data.game._id}, function(err, game){
+	_this.GameModel.findOne({_id: data.game._id}, function (err, game) {
 		_this.PlayerModel.findOne({
 			'game': game._id,
 			'user': socket.user._id
 		}, function (err, player) {
 			if (err) return console.error(err);
-			console.log('DEBUG - player: ', player);
-			if (player instanceof _this.PlayerModel) {
-				console.log('FOUND A PLAYER:', player);
-			} else {
-				console.log('NO PLAYER FOUND -> CREATE ONE');
+			if (player instanceof _this.PlayerModel === false) {
 				var player = _this.createPlayer(socket.user, game, game.map.townPosition);
-				player.save(function(err,player) {
-					game.players.push(player);
+				player.save(function (err, player) {
+					game.players.push(player._id);
 					game.save(function (err, game) {
 						if (err) return console.error(err);
-
 						var all = true;
 						_this.updateGamesList(socket, data, all);
 					});

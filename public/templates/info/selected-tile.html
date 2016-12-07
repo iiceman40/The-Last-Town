@@ -1,0 +1,23 @@
+<!-- ko if: isActive -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Selected Tile
+		</h3>
+	</div>
+	<div class="panel-body" data-bind="if: selectedNode">
+		<div>
+			<label>Terrain: </label>
+			<span data-bind="text: selectedNode().terrain"></span>
+			<span data-bind="text: selectedNode().chunkIndex"></span>
+			<select data-bind="options: terrainTypes, value: selectedNode().terrain" class="form-control input-sm"></select>
+		</div>
+		<div>
+			<label>Position: </label>
+			<span class="label label-as-badge">x: <span data-bind="text: selectedNode().x"></span></span>
+			<span class="label label-as-badge">y: <span data-bind="text: selectedNode().y"></span></span>
+		</div>
+	</div>
+	<div class="panel-footer text-right"></div>
+</div>
+<!-- /ko -->

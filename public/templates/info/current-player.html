@@ -1,0 +1,23 @@
+<!-- ko if: isActive -->
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Current Player
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div data-bind="if: currentPlayer">
+			<div>
+				<label>Position: </label>
+				<span class="label label-as-badge">x: <span data-bind="text: currentPlayer().position().x"></span></span>
+				<span class="label label-as-badge">y: <span data-bind="text: currentPlayer().position().y"></span></span>
+			</div>
+			<div>
+				<label>Name: </label>
+				<span  data-bind="text: currentPlayer().name"></span>
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer text-right"></div>
+</div>
+<!-- /ko -->
