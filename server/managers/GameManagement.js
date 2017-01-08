@@ -27,7 +27,7 @@ var GameManagement = function (io, models) {
 };
 
 /**
- * handles all UserManagement related incoming requests
+ * handles all GameManagement related incoming requests
  * @param socket
  */
 GameManagement.prototype.handleIncomingEvents = function (socket) {
@@ -69,6 +69,7 @@ GameManagement.prototype.createPlayer = function (user, game, position) {
 		position: position
 	});
 };
+
 /**
  * creates a new map with the MapFactory
  * @param socket
@@ -169,8 +170,11 @@ GameManagement.prototype.joinGame = function (socket, data) {
 			'user': socket.user._id
 		}, function (err, player) {
 			if (err) return console.error(err);
+
+			// create player if no player for the current user exists in this game
 			if (player instanceof _this.PlayerModel === false) {
 				var player = _this.createPlayer(socket.user, game, game.map.townPosition);
+
 				player.save(function (err, player) {
 					game.players.push(player._id);
 					game.save(function (err, game) {

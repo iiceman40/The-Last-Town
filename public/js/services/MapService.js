@@ -5,8 +5,8 @@ define(['babylonjs'], function (bjs) {
 
 		// this.scene = params.scene;
 		// this.materials = params.materials;
-		// this.selectDisc = null;
-		// this.hoverDisc = null;
+		// this.selectMarker = null;
+		// this.hoverMarker = null;
 		//
 		// this.hexagonSize = params.hexagonSize;
 		// this.baseTileHeight = 1;

@@ -13,6 +13,8 @@ var MapFactory = function(){
 	this.terrainRepository = require('../repositories/TerrainRepository').getInstance();
 	this.mapCreationService = require('../services/MapCreationService').getInstance();
 	this.rngService = require('../services/RngService').getInstance();
+
+	this.matrixService = require('../services/MatrixService').getInstance();
 };
 
 /**

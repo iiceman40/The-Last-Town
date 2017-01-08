@@ -7,11 +7,11 @@ define(['babylonjs', 'knockout'], function (bjs, ko) {
 		this.scene = params.scene;
 		this.materials = {};
 
+		this.initMaterials();
 	};
 
 	MaterialsService.prototype.initMaterials = function () {
-		var _this = this,
-			scene = this.scene;
+		var scene = this.scene;
 
 		this.materials.snow = new BABYLON.StandardMaterial('snowMaterial', scene);
 		this.materials.snow.diffuseColor = new BABYLON.Color3(0.8, 0.8, 0.85);

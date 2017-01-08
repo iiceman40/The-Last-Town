@@ -25,22 +25,26 @@ define([
 				_this.babylonViewModel = BabylonComponent.viewModel.createViewModel();
 				_this.scene = _this.babylonViewModel.scene;
 
+				_this.currentPlayer = ko.observable();
+
 				_this.currentGame.subscribe(function(game){
 					console.log('currentGame changed', game);
-					var players = game.players();
-					for(var i = 0; i < players.length; i++) {
-						var player = players[i];
-						console.log(player.user(), _this.user()._id());
-						if(player.user() === _this.user()._id()){
-							_this.currentPlayer(player);
-						}
-					}
+					console.log('userId', _this.user()._id());
+					var _myPlayer = game.getPlayerByUserId(_this.user()._id());
+					console.log(_myPlayer);
+					_this.currentPlayer(_myPlayer);
+					_this.babylonViewModel.myPlayer = _this.currentPlayer;
 					console.log('currentPlayer', _this.currentPlayer());
 				});
 
 				console.log('DEBUG - Player View Model', _this.user(), _this.currentGame());
 
-				_this.currentPlayer = ko.observable();
+				/**
+				 *
+				 */
+				_this.goToTile = function() {
+					console.log('TODO - impelment moving to tile step by step');
+				}
 
 			};
 

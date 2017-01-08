@@ -1,8 +1,8 @@
 'use strict';
 
 define([
-	'knockout', 'RenderingService', 'TilesRenderService', 'TileDecorationsRenderService', 'underscore'
-], function (ko, RenderingService, TilesRenderService, TileDecorationsRenderService, _) {
+	'knockout', 'RenderingService', 'TilesRenderService', 'DecorationsRenderService', 'underscore'
+], function (ko, RenderingService, TilesRenderService, DecorationsRenderService, _) {
 
 	/**
 	 *
@@ -16,9 +16,12 @@ define([
 
 		this.tile = data;
 		this.terrain = ko.observable(data.terrain);
+		this.altitude = ko.observable(data.altitude);
 		this.x = ko.observable(data.x);
 		this.y = ko.observable(data.y);
 		this.z = ko.observable(data.z);
+
+		this.particle = particle;
 
 		this.chunkIndex = ko.observable(data.chunkIndex);
 
@@ -26,7 +29,7 @@ define([
 		this.scene = babylonViewModel.scene;
 		this.renderingService = RenderingService.getInstance();
 		this.tilesRenderService = TilesRenderService.getInstance();
-		this.tileDecorationsRenderService = TileDecorationsRenderService.getInstance();
+		this.tileDecorationsRenderService = DecorationsRenderService.getInstance();
 
 		this.oldTerrainType = this.terrain();
 
@@ -35,7 +38,12 @@ define([
 			// TODO send tile update information to server
 		});
 
-		// TODO update altitude
+		this.altitude.subscribe(function (newAltitude) {
+			_this.tile.altitude = newAltitude;
+			_this.updateTile();
+			// TODO send tile update information to server
+		});
+
 		// TODO make improvements editable
 	};
 
@@ -45,6 +53,9 @@ define([
 	 */
 	SelectedNodeViewModel.prototype.updateTile = function(oldTerrainType, newTerrainType){
 		var _this = this;
+
+		oldTerrainType = oldTerrainType || _this.terrain();
+		newTerrainType = newTerrainType || _this.terrain();
 
 		// determine the chunk the tile is in
 		var oldChunkIndex = _this.tile.chunkIndex,
@@ -153,6 +164,15 @@ define([
 			_this.tilesRenderService.options
 		);
 
+	};
+
+	/**
+	 * converts the node to a data transfer object
+	 */
+	SelectedNodeViewModel.prototype.toDto = function() {
+		return {
+			tile: this.tile
+		}
 	};
 
 	return SelectedNodeViewModel;

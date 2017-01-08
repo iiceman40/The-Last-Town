@@ -1,7 +1,7 @@
 define([
-	'TilesRenderService', 'TileDecorationsRenderService', 'MaterialsService', 'CameraService', 'babylonjs'
+	'underscore', 'TilesRenderService', 'DecorationsRenderService', 'MaterialsService', 'CameraService', 'babylonjs'
 ], function (
-	TilesRenderService, TileDecorationsRenderService, MaterialsService, CameraService, bjs
+	_, TilesRenderService, DecorationsRenderService, MaterialsService, CameraService, bjs
 ) {
 	var instance = null;
 
@@ -13,7 +13,7 @@ define([
 		this.models = {};
 		this.assetsInitialized = false;
 		this.tilesRenderService = TilesRenderService.getInstance();
-		this.tileDecorationsRenderService = TileDecorationsRenderService.getInstance();
+		this.tileDecorationsRenderService = DecorationsRenderService.getInstance();
 		this.materialsService = MaterialsService.getInstance();
 	};
 
@@ -96,16 +96,15 @@ define([
 
 		console.log({game: game, map: map, players: players});
 
-		// offset of the map - TODO move to some kind of map service?
+		// offset of the map - TODO move to MapService
 		var startPosition = new BABYLON.Vector3(
 			-map.width * babylonViewModel.settings.hexagonSize / 2,
 			0,
 			-map.height * babylonViewModel.settings.hexagonSize / 2
 		);
 
-		for(var i = 0; i < players.length; i++) {
-			var player = players[i],
-				playerAvatar = BABYLON.MeshBuilder.CreateBox('playerAvatar', {size: 0.5, height: 2}, scene),
+		_.each(players, function(player) {
+			var playerAvatar = BABYLON.MeshBuilder.CreateBox('playerAvatar', {size: 0.5, height: 2}, scene),
 				tile = map.matrix[player.position().y][player.position().x];
 
 			playerAvatar.material = _this.materialsService.materials.select;
@@ -125,7 +124,7 @@ define([
 				});
 				cameraService.centerOnPlayer(player);
 			}
-		}
+		});
 	};
 
 	return {

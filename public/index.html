@@ -33,17 +33,17 @@
 	<!-- /ko -->
 
 	<div class="row" data-bind="if: user().isOnline">
-		<div class="col-sm-3">
+		<div class="ui ui-left">
 			<div data-bind='component: {name: "list-games", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 			<div data-bind='component: {name: "new-game", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 			<div data-bind='component: {name: "edit-map", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 			<div data-bind='component: {name: "selected-tile", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 			<div data-bind='component: {name: "current-player", params: { socket: socket, user: user, currentGame: currentGame }}'></div>
 		</div>
-		<div class="col-sm-6">
+		<div class="ui ui-center">
 			<div data-bind='component: {name: "users-list", params: { socket: socket, user: user }}'></div>
 		</div>
-		<div class="col-sm-3">
+		<div class="ui ui-right">
 			<div data-bind='component: {name: "flash-messages", params: { socket: socket, user: user }}'></div>
 			<div data-bind='component: {name: "debug", params: { socket: socket, user: user }}'></div>
 			<div data-bind="visible: user().isOnline">

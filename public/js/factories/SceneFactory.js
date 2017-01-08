@@ -3,7 +3,7 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderSer
 
 	var SceneFactory = function () {
 		this.canvas = document.getElementById("canvas");
-		this.engine = new BABYLON.Engine(this.canvas, true);
+		this.engine = new BABYLON.Engine(this.canvas, true, { stencil: true });
 		this.scene = null;
 	};
 
@@ -116,35 +116,18 @@ define(['babylonjs', 'pepjs', 'knockout', 'TerrainTilesService', 'TilesRenderSer
 			}
 		});
 
-		/*
-		var step = 0;
 		this.canvas.addEventListener("pointermove", function () {
-			if(step ===0) {
-				var pickResult = scene.pick(scene.pointerX, scene.pointerY),
-					terrainTilesService = TerrainTilesService.getInstance(),
-					tilesRenderService = TilesRenderService.getInstance(),
-					hoverDisc = terrainTilesService.getHoverDisc();
+			var pickResult = scene.pick(scene.pointerX, scene.pointerY),
+				clickIntended = Math.abs(scene.pointerX - pointerPosition.x) + Math.abs(scene.pointerY - pointerPosition.y) < 10;
 
-				if (pickResult.hit && pickResult.pickedMesh && hoverDisc) {
-					hoverDisc.isVisible = true;
-
-					var SPS = tilesRenderService.solidParticleSystemsByMeshName[pickResult.pickedMesh.name];
-
-					var meshFaceId = pickResult.faceId;
-					if (meshFaceId === -1 || SPS === undefined) {
-						return;
-					}
-					var idx = SPS.pickedParticles[meshFaceId].idx;
-					var p = SPS.particles[idx];
-
-					//ko.postbox.publish("selectedMesh", pickResult.pickedMesh.uniqueId);
-					hoverDisc.position = p.position.clone().add(pickResult.pickedMesh.position);
-					hoverDisc.position.y = 0.01;
-				}
+			if (pickResult.hit && pickResult.pickedMesh) {
+				ko.postbox.publish("hoverTile", {
+					meshName:     pickResult.pickedMesh.name,
+					meshFaceId:   pickResult.faceId,
+					meshPosition: pickResult.pickedMesh.position
+				});
 			}
-			step = (step + 1) % 3;
 		});
-		*/
 
 		window.addEventListener("resize", function () {
 			_this.engine.resize();

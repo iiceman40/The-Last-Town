@@ -1,7 +1,7 @@
 define([
-	'TerrainTilesService', 'MaterialsService', 'TileDecorationsRenderService', 'DataHelperService',
+	'TerrainTilesService', 'MaterialsService', 'DecorationsRenderService', 'DataHelperService',
 	'babylonjs', 'underscore'
-], function (TerrainTilesService, MaterialsService, TileDecorationsRenderService, DataHelperService, bjs, _) {
+], function (TerrainTilesService, MaterialsService, DecorationsRenderService, DataHelperService, bjs, _) {
 	var instance = null;
 
 	var TilesRenderService = function () {
@@ -15,7 +15,7 @@ define([
 
 		this.terrainTilesService = TerrainTilesService.getInstance();
 		this.materialsService = MaterialsService.getInstance();
-		this.tileDecorationsRenderService = TileDecorationsRenderService.getInstance();
+		this.tileDecorationsRenderService = DecorationsRenderService.getInstance();
 		this.dataHelperService = DataHelperService.getInstance();
 	};
 

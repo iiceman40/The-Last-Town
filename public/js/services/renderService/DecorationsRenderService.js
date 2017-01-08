@@ -5,7 +5,7 @@ define([
 ) {
 	var instance = null;
 
-	var TileDecorationsRenderService = function () {
+	var DecorationsRenderService = function () {
 		this.babylonViewModel = null;
 		this.terrainTilesService = TerrainTilesService.getInstance();
 		this.materialsService = MaterialsService.getInstance();
@@ -18,7 +18,7 @@ define([
 	 *
 	 * @param {Object} parameters
 	 */
-	TileDecorationsRenderService.prototype.initForestDecorationParticle = function(parameters){
+	DecorationsRenderService.prototype.initForestDecorationParticle = function(parameters){
 		var tiles = parameters.tiles,
 			numberOfDecorationsPerTile = parameters.numberOfDecorationsPerTile,
 			options = parameters.options,
@@ -62,7 +62,7 @@ define([
 	 *
 	 * @param {Object} parameters
 	 */
-	TileDecorationsRenderService.prototype.initMountainDecorationParticle = function (parameters) {
+	DecorationsRenderService.prototype.initMountainDecorationParticle = function (parameters) {
 		var tiles = parameters.tiles,
 			numberOfDecorationsPerTile = parameters.numberOfDecorationsPerTile,
 			options = parameters.options,
@@ -96,7 +96,7 @@ define([
 	 * @param babylonViewModel
 	 * @param options
 	 */
-	TileDecorationsRenderService.prototype.buildDecorationSpsForChunk = function(terrainType, chunkIndex, indexedChunks, babylonViewModel, options){
+	DecorationsRenderService.prototype.buildDecorationSpsForChunk = function(terrainType, chunkIndex, indexedChunks, babylonViewModel, options){
 
 		var _this = this,
 			tiles = indexedChunks[terrainType][chunkIndex],
@@ -171,13 +171,13 @@ define([
 		}
 	};
 
-	TileDecorationsRenderService.prototype.handleImprovementDecorations = function(terrainTypeIndex, terrainTileInstance){
+	DecorationsRenderService.prototype.handleImprovementDecorations = function(terrainTypeIndex, terrainTileInstance){
 		if(terrainTypeIndex === 'mainTownTile'){
 			this.createTownhallDecoration(terrainTileInstance);
 		}
 	};
 
-	TileDecorationsRenderService.prototype.createForestTerrainTileDecoration = function(terrainTileInstance){
+	DecorationsRenderService.prototype.createForestTerrainTileDecoration = function(terrainTileInstance){
 		var treesInstance = this.models.trees.createInstance('trees');
 		treesInstance.rotation.y = 0.7 * Math.random() - 0.5;
 		treesInstance.position = terrainTileInstance.position.add(new BABYLON.Vector3(0, 0, 0));
@@ -186,7 +186,7 @@ define([
 		terrainTileInstance.tileDecoration = treesInstance;
 	};
 
-	TileDecorationsRenderService.prototype.createTownhallDecoration = function(terrainTileInstance){
+	DecorationsRenderService.prototype.createTownhallDecoration = function(terrainTileInstance){
 		var townhallInstance = this.models.townhall.createInstance('trees');
 		townhallInstance.rotation.y = 0.7 * Math.random() - 0.5;
 		townhallInstance.position = terrainTileInstance.position.add(new BABYLON.Vector3(0, 0, 0));
@@ -198,7 +198,7 @@ define([
 	return {
 		getInstance: function () {
 			if (!instance) {
-				instance = new TileDecorationsRenderService();
+				instance = new DecorationsRenderService();
 			}
 			return instance;
 		}

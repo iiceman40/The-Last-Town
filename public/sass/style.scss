@@ -97,3 +97,24 @@ textarea.form-control.input-sm {
 
 .interface-panel-wrapper {
 }
+
+.ui-left {
+	position: fixed;
+	left: 15px;
+	top: 75px;
+	width: 25%;
+}
+
+.ui-center {
+	position: fixed;
+	left: 25%;
+	top: 75px;
+	width: 25%;
+}
+
+.ui-right {
+	position: fixed;
+	right: 15px;
+	top: 75px;
+	width: 25%;
+}

@@ -22,8 +22,8 @@ require.config({
 		'jquery':                       'modules/jquery/dist/jquery',
 		'knockout':                     'modules/knockout/build/output/knockout-latest',
 		'knockout-postbox':             'modules/knockout-postbox/build/knockout-postbox.min',
-		//'babylonjs':                    'modules/babylonjs/babylon.max', // TODO update to 2.5
-		'babylonjs':                    'js/vendor/babylon',
+		'babylonjs':                    'modules/babylonjs/babylon.max',
+		//'babylonjs':                    'js/vendor/babylon',
 		'pepjs':                        'modules/pepjs/dist/pep.min',
 		'bootstrap':                    'modules/bootstrap/dist/js/bootstrap.min',
 		// VIEW MODELS
@@ -40,7 +40,8 @@ require.config({
 		'RenderingService':             'js/services/RenderingService',
 		'DataHelperService':            'js/services/DataHelperService',
 		'TilesRenderService':           'js/services/renderService/TilesRenderService',
-		'TileDecorationsRenderService': 'js/services/renderService/TileDecorationsRenderService',
+		'DecorationsRenderService':     'js/services/renderService/DecorationsRenderService',
+		'HighlightService':             'js/services/renderService/HighlightService',
 		'MaterialsService':             'js/services/MaterialsService',
 		'TerrainTilesService':          'js/services/TerrainTilesService',
 		'MapService':                   'js/services/MapService',

@@ -27,6 +27,7 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.mapTilesMeshes = [];
 
 				_this.settings = {
+					baseTileHeight: 1,
 					hexagonSize: 3
 				};
 
@@ -47,12 +48,9 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 				_this.materialsService = MaterialsService.getInstance({
 					scene: _this.scene
 				});
-				// init materials
-				_this.materialsService.initMaterials();
 
 				_this.terrainTilesFactory = TerrainTilesService.getInstance({
 					scene: _this.scene,
-					materials: _this.materialsService.materials,
 					hexagonSize: _this.settings.hexagonSize
 				});
 
@@ -81,7 +79,6 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					// init game map
 					_this.map.indexedTiles = _this.mapService.indexTilesByType(_this.map);
 					_this.renderingService.initMap(_this);
-					// TODO init players
 					_this.renderingService.initPlayers(_this);
 
 				});
@@ -94,10 +91,6 @@ define(['knockout', 'text!templates/babylon.html', 'underscore', 'moment', 'Scen
 					_this.map.indexedTiles = _this.mapService.indexTilesByType(_this.map);
 					_this.renderingService.initMap(_this);
 				});
-
-				// init interactions highlighting
-				_this.terrainTilesFactory.initSelectDisc();
-				_this.terrainTilesFactory.initHoverDisc();
 
 				//_this.scene.activeCamera.setPosition(new BABYLON.Vector3(20, 12, 6));
 

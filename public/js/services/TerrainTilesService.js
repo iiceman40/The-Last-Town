@@ -1,44 +1,21 @@
-define(['babylonjs'], function (bjs) {
+define(['babylonjs', 'MaterialsService'], function (bjs, MaterialsService) {
 	var instance = null;
 	// TODO separate factory class form service
 
 	var TerrainTilesService = function (params) {
+		var _this = this;
 
 		this.scene = params.scene;
-		this.materials = params.materials;
-		this.terrainTiles = {};
-		this.selectDisc = null;
-		this.hoverDisc = null;
+
+		this.materialsService = MaterialsService.getInstance({
+			scene: _this.scene
+		});
+
+		this.materials = _this.materialsService.materials;
 
 		this.hexagonSize = params.hexagonSize;
 		this.baseTileHeight = 1;
 
-	};
-
-	TerrainTilesService.prototype.getSelectDisc = function(){
-		return this.selectDisc;
-	};
-
-	TerrainTilesService.prototype.getHoverDisc = function(){
-		return this.hoverDisc;
-	};
-
-	TerrainTilesService.prototype.initSelectDisc = function() {
-		this.selectDisc = new BABYLON.Mesh.CreateDisc('select', this.hexagonSize/2 * 1.07, 6, this.scene);
-		this.selectDisc.rotation.x = Math.PI/2;
-		this.selectDisc.rotation.y = Math.PI/2;
-		this.selectDisc.material = this.materials.select;
-		this.selectDisc.isVisible = false;
-		return this.selectDisc;
-	};
-
-	TerrainTilesService.prototype.initHoverDisc = function() {
-		this.hoverDisc = new BABYLON.Mesh.CreateDisc('hover', this.hexagonSize/2 * 1.07, 6, this.scene);
-		this.hoverDisc.rotation.x = Math.PI/2;
-		this.hoverDisc.rotation.y = Math.PI/2;
-		this.hoverDisc.material = this.materials.hover;
-		this.hoverDisc.isVisible = false;
-		return this.hoverDisc;
 	};
 
 	/**
