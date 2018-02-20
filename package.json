@@ -16,7 +16,7 @@
     "dateformat": "latest",
     "express": "^4.13.4",
     "font-awesome": "^4.5.0",
-    "jquery": "^2.2.1",
+    "jquery": "^3.0.0",
     "knockout": "^3.4.1",
     "knockout-postbox": "^0.5.2",
     "moment": "^2.12.0",
